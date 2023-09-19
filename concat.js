@@ -3,22 +3,21 @@ const fs = require('fs');
 const package = require('./package.json');
 
 (async ()=> { 
-    const libPath = `./lib/${package.version}`;
+    const libPath = `./dist/`;
     if(fs.existsSync(libPath)) {
-        throw new Error('This version of library bundle is already available in the repository. Please upgrade your version number and re-publish the bundle.');
-        return;
+        fs.rmSync(libPath, { recursive: true })
     }
 
     fs.mkdirSync(libPath, { recursive: true });
     const jsFiles = [
-        `./dist/${package.name}/runtime.js`,
-        `./dist/${package.name}/polyfills.js`,
-        `./dist/${package.name}/scripts.js`,
-        `./dist/${package.name}/main.js`
+        `./private/${package.name}/runtime.js`,
+        `./private/${package.name}/polyfills.js`,
+        `./private/${package.name}/scripts.js`,
+        `./private/${package.name}/main.js`
     ];
 
     const cssFiles = [ 
-        `./dist/${package.name}/styles.css`
+        `./private/${package.name}/styles.css`
     ];
 
     await concat(jsFiles, `${libPath}/ca-chat-container.js`);
