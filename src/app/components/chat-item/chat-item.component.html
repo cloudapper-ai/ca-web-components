@@ -57,10 +57,10 @@
             </div>
         </ng-container>
         <ng-container *ngIf="message.suggestions && message.suggestions.length > 0">
-            <div class="chat-suggestion">
+            <div class="chat-suggestion" [ngStyle]="{'background-color': botColorProfile.backgroundColor}">
                 <ng-container *ngFor="let suggestion of message.suggestions">
                     <suggestion-item 
-                        [colorProfile]="userColorProfile"
+                        [colorProfile]="botColorProfile"
                         [message]="suggestion"  
                         (onMessageSelected)="onSuggestionSelected($event)"  
                     ></suggestion-item>

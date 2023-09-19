@@ -39,7 +39,7 @@ export class SuggestionItemComponent implements OnInit {
           'border-color': this.colorProfile.textColor,
           'background-color': 'transperant',
           'font-weight': '500',
-          'font-size': 'medium'
+          'font-size': 'normal'
         };
       }
     
@@ -49,7 +49,7 @@ export class SuggestionItemComponent implements OnInit {
           'border-color': this.colorProfile.labelColor,
           'background-color': 'transperant',
           'font-weight': '400',
-          'font-size': 'medium'
+          'font-size': 'normal'
         };
       }
 

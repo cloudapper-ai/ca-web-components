@@ -38,6 +38,8 @@ export class ChatContainerComponent implements OnInit, OnChanges {
         }
         
         this.setupChatWindowClass(this.windowposition);
+        this.updateUserColorProfile()
+        this.updateBotColorProfile()
     }
     
     ngOnChanges(changes: SimpleChanges): void {
@@ -94,7 +96,7 @@ export class ChatContainerComponent implements OnInit, OnChanges {
     get botlabelcolor(): string { return this._botLabelColor }
     set botlabelcolor(value: string) { this._botLabelColor = value; this.updateBotColorProfile(); }
   
-    private _userBackgroundColor: string = '#c7c7c9';
+    private _userBackgroundColor: string = '#edefef';
     @Input() 
     get userbackgroundcolor(): string { return this._userBackgroundColor; }
     set userbackgroundcolor(value: string) { this._userBackgroundColor = value; this.updateUserColorProfile(); }
@@ -128,7 +130,7 @@ export class ChatContainerComponent implements OnInit, OnChanges {
         'CloudApper AI', 
         'user0123', 
         'AI Assistant', 
-        new ChatWindowColorProfile('#1960d1', '#ffffff', '#f2f2f2'), 
+        new ChatWindowColorProfile('#1960d1', '#ffffff', '#FFFFFF'), 
         {},
         false
     );
