@@ -1,0 +1,18 @@
+import { Observable } from "rxjs";
+import { ChatHistory } from "src/app/models/chat-message.model";
+import { RESULT } from "src/app/models/result.model";
+
+export interface IChatService {
+    /**
+     * returns AI response for user query.
+     * @param query This is whaat customer is looking for 
+     * @param history the history of customer query and ai response.
+     */
+    submitUserReply(query: string, history: ChatHistory[], onComplete: ()=>void): Observable<RESULT<string>> 
+
+    /**
+     * If the history list becomes large then this function reduces the size of the request.
+     * @param history 
+     */
+    dumpChatHistory(history: ChatHistory[]): ChatHistory[]
+}

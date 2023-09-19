@@ -1,0 +1,6 @@
+.chat-suggestion { 
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 3px;
+    padding: 8px 16px;
+    margin: 4px;
+}
