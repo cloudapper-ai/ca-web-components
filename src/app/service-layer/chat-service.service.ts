@@ -21,8 +21,17 @@ export class ChatService {
             const observable = this.dataService.submitUserReply(query, this.history, ()=> {
                 ended = true;
                 this.history.push(new ChatHistory(EnumChatUserRoles.User, query));
-                this.history.push(new ChatHistory(EnumChatUserRoles.Assistant, replyFromBot));
-                onComplete();
+                if(replyFromBot.trim().length > 0) {
+                    this.history.push(new ChatHistory(EnumChatUserRoles.Assistant, replyFromBot));
+                    onComplete();
+                } else if(!encountedError) {
+                    observer.next(RESULT.error(new Error("We were unable to produce a response for you, typically indicating a configuration problem. Please review your settings and attempt the operation once more.")))
+                    setTimeout(onComplete, 10);
+                } else { 
+                    onComplete();
+                }
+                
+                
             })
             observable.pipe(takeWhile(()=> { 
                 return !ended;
@@ -30,6 +39,7 @@ export class ChatService {
                 next: (result: RESULT<string>) => { 
                     switch(result.isError) { 
                         case true:
+                            replyFromBot = '';
                             observer.next(RESULT.error(result.error!));
                             encountedError = true;
                             break;

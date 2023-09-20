@@ -18,8 +18,14 @@ import { RESULT } from "src/app/models/result.model";
     animations: [
         trigger('chatBox', [
             transition(':enter', [
-                style({ opacity: 0 }),
-                animate(150, style({opacity: 1}))
+                style({ 
+                    opacity: 0,
+                    transform: 'scale(0) translate(100%, 100%)'
+                }),
+                animate(300, style({
+                    opacity: 1,
+                    transform: 'scale(1) translate(0, 0)'
+                }))
             ]),
             transition(':leave', [
                 style({opacity: 1}),

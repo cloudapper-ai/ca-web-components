@@ -8,19 +8,25 @@
   
 .chat-box-message-section {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     margin-top: 8px;
 }
 
 .chat-box-message-section img {
-    width: 64px;
+    max-width: 72px;
+    padding: 8px;
 }
 
 .chat-box-message {
+    width: 100%;
     font-size: 1em;
     font-weight: 400;
+}
+
+.chat-box-message-center {
+    text-align: center;
 }
 
 ::ng-deep .chat-box-message p {
