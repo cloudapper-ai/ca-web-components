@@ -24,7 +24,7 @@ import { createCustomElement } from '@angular/elements';
     MarkdownModule.forRoot()
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  // bootstrap: [AppComponent]
 })
 export class AppModule { 
   constructor(injector: Injector) {
