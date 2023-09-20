@@ -1,5 +1,6 @@
 * {
     font-family: Roboto,sans-serif !important;
+    font-size: 16px;
 }
 
 .chat-container-background { 
@@ -13,8 +14,8 @@
 }
 
 .chat-box-container {
-    width: 400px;
-    height: 712px;
+    height: 80%;
+    aspect-ratio: 1.2/2;
     border-radius: 8px;
     box-shadow: rgba(107, 107, 110, 0.2) 0px 7px 29px 0px;
     position: absolute;

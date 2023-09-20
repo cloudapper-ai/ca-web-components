@@ -76,22 +76,22 @@ export class ChatContainerComponent implements OnInit, OnChanges {
     get botname(): string { return this._botName; }
     set botname(value: string) { this._botName = value; this.initialParameter.botName = value; }
   
-    private _userTextColor: string = '#0e1221';
+    private _userTextColor: string = '#414042';
     @Input() 
     get usertextcolor(): string { return this._userTextColor; }
     set usertextcolor(value: string) { this._userTextColor = value; this.updateUserColorProfile(); }
 
-    private _botTextColor: string = '#0e1221';
+    private _botTextColor: string = '#414042';
     @Input() 
     get bottextcolor(): string { return this._botTextColor; }
     set bottextcolor(value: string) { this._botTextColor = value; this.updateBotColorProfile(); }
   
-    private _userLabelColor: string = '#38383b';
+    private _userLabelColor: string = '#939598';
     @Input() 
     get userlabelcolor(): string { return this._userLabelColor; }
     set userlabelcolor(value: string) { this._userLabelColor = value; this.updateUserColorProfile(); }
 
-    private _botLabelColor: string = '#1a1a9c';
+    private _botLabelColor: string = '#00aaff';
     @Input() 
     get botlabelcolor(): string { return this._botLabelColor }
     set botlabelcolor(value: string) { this._botLabelColor = value; this.updateBotColorProfile(); }

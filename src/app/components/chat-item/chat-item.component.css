@@ -2,8 +2,8 @@
     padding: 16px 48px;
 }
 .chat-box-user {
-    font-size: small;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 400;
 }
   
 .chat-box-message-section {
@@ -19,7 +19,7 @@
 }
 
 .chat-box-message {
-    font-size: medium;
+    font-size: 1em;
     font-weight: 400;
 }
 
