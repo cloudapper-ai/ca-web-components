@@ -37,29 +37,63 @@ export class ChatDataService implements IChatService {
                 },
                 body: JSON.stringify(request)
             }).then(response=> { 
-                
-                const bodyStream = response.body;
-                if(bodyStream) {
-                    // Create a TextDecoder to decode the response data (adjust encoding as needed)
-                    const decoder = new TextDecoder('utf-8');
-                                    
-                    // Process the response data as chunks become available
-                    const reader = bodyStream.getReader();
-                    this.readStream(decoder, reader, ()=> { 
-                        this.isStreaming = false;   
-                        setTimeout(onComplete, 10);
-                    }, (result)=> { 
-                        observer.next(result);
-                    })
+                if(response.ok) {
+                    if(response.headers.get('Content-Type')==='text/event-stream') {
+                        const bodyStream = response.body;
+                        if(bodyStream) {
+                            // Create a TextDecoder to decode the response data (adjust encoding as needed)
+                            const decoder = new TextDecoder('utf-8');
+                                            
+                            // Process the response data as chunks become available
+                            const reader = bodyStream.getReader();
+                            this.readStream(decoder, reader, ()=> { 
+                                this.isStreaming = false;   
+                                setTimeout(onComplete, 10);
+                            }, (result)=> { 
+                                observer.next(result);
+                            })
+                            
+                        } else { 
+                            observer.next(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
+                            this.isStreaming = false;
+                            setTimeout(onComplete, 10);
+                        }
+                    } else { 
+                        return response.json()
+                    }
                     
                 } else { 
-                    observer.next(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
+                    if(response.statusText && response.statusText.trim().length > 0) {
+                        observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`)));
+                    } else { 
+                        observer.next(RESULT.error(new Error(`${response.status} - We have encountered a problem. Please try again later.`)));
+                    }
                     this.isStreaming = false;
                     setTimeout(onComplete, 10);
                 }
                 
-            }).catch(error=> { 
-                observer.next(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
+                return undefined;
+                
+            }).then(value=>{ 
+                if(value && value['ResponseCode'] && value['ResponseCode'] !== 200) { 
+                    let code = value['ResponseCode'];
+                    let errorMessage: string = '';
+                    if (value['Message'] && value['Message'].trim().length > 0) {
+                        let message = value['Message'].trim();
+                        errorMessage = `We have encountered a problem. Please try again later.\n${code}-**${message}**`;
+                    } else { 
+                        errorMessage = `${code} - We have encountered a problem. Please try again later.`;
+                    }
+
+                    observer.next(RESULT.error(new Error(
+                        errorMessage
+                    )));
+
+                    this.isStreaming = false;
+                    setTimeout(onComplete, 10);
+                }
+            }).catch(reason=> {
+                observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${reason}`)));
                 this.isStreaming = false;
                 setTimeout(onComplete, 10);
             })

@@ -1,6 +1,21 @@
 .chat-suggestion { 
-    border-radius: 8px;
+    --border-color: blue;
+    --foreground-color: black;
+    --border-color-hover: blue;
+    --foreground-color-hover: black;
+    border-radius: 16px;
+    border: 1px solid #1960d1;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 3px;
     padding: 8px 16px;
     margin: 4px;
+    border-color: var(--border-color);
+    color: var(--foreground-color);
+    font-weight: 300;
+    font-size: 0.8rem;
+}
+
+.chat-suggestion:hover { 
+    border-color: var(--border-color-hover);
+    color: var(--foreground-color-hover);
+    font-weight: 400;
 }

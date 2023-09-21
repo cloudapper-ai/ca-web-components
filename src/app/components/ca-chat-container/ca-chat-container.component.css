@@ -1,5 +1,11 @@
 * {
     font-family: Roboto,sans-serif !important;
+    font-size: 16px;
+}
+
+.container { 
+    --bubble-background-color: '#edefef';
+    --bubble-foreground-color: '#414042';
 }
 
 .chat-container-background { 
@@ -13,33 +19,60 @@
 }
 
 .chat-box-container {
-    width: 512px;
-    height: 512px;
+    height: 80%;
+    aspect-ratio: 1.2/2;
     border-radius: 8px;
-    box-shadow: rgba(107, 107, 110, 0.2) 0px 7px 29px 0px;
     position: absolute;
     z-index: 1100;    
 }
 
 
 .chat-box-container-left {
-    bottom: 96px;
+    bottom: 120px;
     left: 64px;
+    animation: chat-container-grow 0.5s ease;
 }
 
 .chat-box-container-right {
-    bottom: 96px;
+    bottom: 120px;
     right: 64px;
+    animation: chat-container-grow 0.5s ease;
+}
+
+@keyframes chat-container-grow {
+    0% {
+        height: 0%; 
+        transform: scale(0) translate(100%, 100%); 
+    }
+
+    10% { 
+        height: 0%; 
+        transform: scale(0.01) translate(0%, 100%);
+    }
+
+    100% { 
+        height: 80%; 
+        transform: scale(1) translate(0, 0); 
+    }
 }
 
 .chat-box-bubble {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
     overflow: hidden;
     border-radius: 50%;
+    box-shadow: rgba(107, 107, 110, 0.2) 0px 7px 29px 0px;
+    transform: scale(1);
+    transition: all 0.3s ease-in-out;
+    -webkit-transition: all .3s ease-in-out;
+    -moz-transition: all .3s ease-in-out;
+}
+
+.chat-box-bubble:hover { 
+    transform: scale(1.1);
 }
 
 .chat-container-bubble {
@@ -50,27 +83,122 @@
 }
 
 .chat-container-bubble-left {
-    bottom: 96px;
+    bottom: 120px;
     left: 64px;
 }
 
 .chat-container-bubble-right {
-    bottom: 96px;
+    bottom: 120px;
     right: 64px;
 }
 
 .chat-box-bubble img {
     max-width: 36px;
+    animation: chat-box-bubble-img-animation 0.3s linear;
+}
+
+@keyframes chat-box-bubble-img-animation { 
+    100% {
+        transform: scale(1);
+    }
+    0% {
+        transform: scale(0);
+    }
 }
 
 .chat-box-bubble-left {
     position: absolute;
-    bottom: -48px;
-    left: -8px;
+    bottom: -72px;
+    left: -12px;
 }
 
 .chat-box-bubble-right {
     position: absolute;
-    bottom: -48px;
-    right: -8px;
+    bottom: -72px;
+    right: -12px;
 }
+
+.chat-box-bubble-text {
+    z-index: 1100;
+    position: absolute;
+    background-color: var(--bubble-background-color); 
+    color: var(--bubble-foreground-color); 
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin: 20px;
+    display: inline-block;
+}
+
+.chat-box-bubble-text p {
+    margin: 0;
+}
+.chat-box-bubble-text-left {
+    right: -200px;
+    top: 20px;
+    animation: chat-bubble-text-grow-left 0.5s ease-in-out;
+}
+
+@keyframes chat-bubble-text-grow-left {
+    0% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0;
+        transform: scaleX(0) translateX(-100%);
+    }
+
+    100% {
+        width: auto;
+        opacity: 1;
+        transform: scaleX(1) translateX(0);
+    }
+}
+
+.chat-box-bubble-text-left::before { 
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    border-width: 10px;
+    border-style: solid;
+    border-color: var(--bubble-background-color) transparent  transparent transparent ; 
+    transform: translateY(-50%);
+}
+
+.chat-box-bubble-text-right {
+    left: -200px;
+    top: 20px;
+    animation: chat-bubble-text-grow-right 0.5s ease;
+}
+
+@keyframes chat-bubble-text-grow-right {
+    0% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0;
+        transform: scaleX(0) translateX(100%);
+    }
+
+    100% {
+        width: auto;
+        opacity: 1;
+        transform: scaleX(1) translateX(0);
+    }
+}
+
+.chat-box-bubble-text-right::before { 
+    content: "";
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    border-width: 10px;
+    border-style: solid;
+    border-color: var(--bubble-background-color) transparent  transparent transparent ; 
+    transform: translateY(-50%);
+}
+

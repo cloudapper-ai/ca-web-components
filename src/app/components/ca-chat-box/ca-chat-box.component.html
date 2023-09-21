@@ -2,7 +2,7 @@
     <div class="chat-box-title" [ngStyle]="{ 'background-color': initialParameters.windowColors.primaryColor, 'color': initialParameters.windowColors.onPrimaryColor }">
         {{initialParameters.title}}
     </div>
-    <div class="chat-box-body">
+    <div class="chat-box-body" [ngStyle]="{'background-color': initialParameters.windowColors.secondaryColor}">
         <ng-container *ngFor="let message of messages; trackBy:trackBy"> 
             <chat-item 
                 [id]="message.id"

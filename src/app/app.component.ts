@@ -15,7 +15,7 @@ export class AppComponent implements AfterViewInit {
         'Hi, I am Raven. I can help you surfing the contents of this website.',
       ]
       this.chatContainer.suggestionmessages = [
-        "I am looking for Facily management software",
+        "I am looking for Facility management software",
         "I am a UKG Ready customer. Looking for a simple Clock in/out solution."
       ]
       // this.chatContainer.cancelOnTouchOutside = true;
