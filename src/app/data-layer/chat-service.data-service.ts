@@ -63,7 +63,11 @@ export class ChatDataService implements IChatService {
                     }
                     
                 } else { 
-                    observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`)));
+                    if(response.statusText && response.statusText.trim().length > 0) {
+                        observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`)));
+                    } else { 
+                        observer.next(RESULT.error(new Error(`${response.status} - We have encountered a problem. Please try again later.`)));
+                    }
                     this.isStreaming = false;
                     setTimeout(onComplete, 10);
                 }
