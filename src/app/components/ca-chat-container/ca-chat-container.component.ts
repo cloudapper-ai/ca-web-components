@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
 import { ChatConstants } from "src/app/models/chat-constants.model";
 import { ChatBoxInputs, ChatColorProfile, ChatWindowColorProfile, EnumWindowPosition } from "src/app/models/chat-ui.model";
 import { CaChatBoxComponent } from "../ca-chat-box/ca-chat-box.component";
@@ -14,7 +14,12 @@ import { RESULT } from "src/app/models/result.model";
 @Component({ 
     selector: 'chat-container',
     templateUrl: './ca-chat-container.component.html',
-    styleUrls: [ './ca-chat-container.component.css' ]
+    styleUrls: [ 
+        './ca-chat-container.component.css',
+        './ca-chat-box-container.component.css',
+        './ca-chat-box-bubble-container.component.css',
+    ],
+    encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ChatContainerComponent implements OnChanges {
     private chatDataService?: IChatService;
