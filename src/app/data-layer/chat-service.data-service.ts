@@ -151,6 +151,7 @@ export class ChatDataService implements IChatService {
                 }
             } else {
                 valueCallback(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
+                completion();
             }
 
         }).catch((reason)=> { 
