@@ -75,23 +75,33 @@ export class ChatDataService implements IChatService {
                 return undefined;
                 
             }).then(value=>{ 
-                if(value && value['ResponseCode'] && value['ResponseCode'] !== 200) { 
-                    let code = value['ResponseCode'];
-                    let errorMessage: string = '';
-                    if (value['Message'] && value['Message'].trim().length > 0) {
-                        let message = value['Message'].trim();
-                        errorMessage = `We have encountered a problem. Please try again later.\n${code}-**${message}**`;
-                    } else { 
-                        errorMessage = `${code} - We have encountered a problem. Please try again later.`;
+                if(value) {
+                    if(value['ResponseCode'] && value['ResponseCode'] !== 200) { 
+                        let code = value['ResponseCode'];
+                        let errorMessage: string = '';
+                        if (value['Message'] && value['Message'].trim().length > 0) {
+                            let message = value['Message'].trim();
+                            errorMessage = `We have encountered a problem. Please try again later.\n${code}-**${message}**`;
+                        } else { 
+                            errorMessage = `${code} - We have encountered a problem. Please try again later.`;
+                        }
+    
+                        observer.next(RESULT.error(new Error(
+                            errorMessage
+                        )));
+    
+                        
+                    } else {
+                        if(value['query_result'] && value['query_result'].trim().length > 0) { 
+                            observer.next(RESULT.ok(value['query_result'].trim()))
+                        } else { 
+                            observer.next(RESULT.ok(''));
+                        }
                     }
-
-                    observer.next(RESULT.error(new Error(
-                        errorMessage
-                    )));
-
                     this.isStreaming = false;
                     setTimeout(onComplete, 10);
-                }
+                } 
+                
             }).catch(reason=> {
                 observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${reason}`)));
                 this.isStreaming = false;
