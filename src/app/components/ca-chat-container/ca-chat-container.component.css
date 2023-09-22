@@ -35,3 +35,14 @@
     right: 64px;
 }
 
+@media screen and (max-width:480px) {
+    .chat-container-bubble-left {
+        bottom: 60px;
+        left: 32px;
+    }
+    
+    .chat-container-bubble-right {
+        bottom: 60px;
+        right: 32px;
+    }
+}

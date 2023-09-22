@@ -34,3 +34,19 @@
         transform: scale(1) translate(0, 0); 
     }
 }
+
+@media screen and (max-width:480px) {
+    .chat-box-container { 
+        width: 90%;
+        height: 80%;
+    }
+    .chat-box-container-left {
+        bottom: 60px;
+        left: 32px;
+    }
+    
+    .chat-box-container-right {
+        bottom: 60px;
+        right: 32px;
+    }
+}

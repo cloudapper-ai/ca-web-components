@@ -51,16 +51,12 @@
     color: var(--bubble-foreground-color); 
     padding: 10px 20px;
     border-radius: 10px;
-    margin: 20px;
     display: inline-block;
 }
 
-.chat-box-bubble-text p {
-    margin: 0;
-}
 .chat-box-bubble-text-left {
-    right: -200px;
-    top: 20px;
+    right: -220px;
+    top: 40px;
     animation: chat-bubble-text-grow-left 0.5s ease-in-out;
 }
 
@@ -94,8 +90,8 @@
 }
 
 .chat-box-bubble-text-right {
-    left: -200px;
-    top: 20px;
+    left: -220px;
+    top: 40px;
     animation: chat-bubble-text-grow-right 0.5s ease;
 }
 
@@ -127,3 +123,4 @@
     border-color: var(--bubble-background-color) transparent  transparent transparent ; 
     transform: translateY(-50%);
 }
+

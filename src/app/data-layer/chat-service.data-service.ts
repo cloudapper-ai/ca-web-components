@@ -92,11 +92,17 @@ export class ChatDataService implements IChatService {
     
                         
                     } else {
-                        if(value['query_result'] && value['query_result'].trim().length > 0) { 
-                            observer.next(RESULT.ok(value['query_result'].trim()))
+                        const result = value['Result'];
+                        if(result) { 
+                            if(result['query_result'] && result['query_result'].trim().length > 0) { 
+                                observer.next(RESULT.ok(result['query_result'].trim()))
+                            } else { 
+                                observer.next(RESULT.ok(''));
+                            }
                         } else { 
-                            observer.next(RESULT.ok(''));
+                            observer.next(RESULT.error(new Error("We have encountered a problem. Please try again later.")));
                         }
+                        
                     }
                     this.isStreaming = false;
                     setTimeout(onComplete, 10);
