@@ -12,7 +12,7 @@ import { ChatDataService } from "src/app/data-layer/chat-service.data-service";
 import { RESULT } from "src/app/models/result.model";
 
 @Component({ 
-    selector: 'chat-container',
+    selector: 'ca-ai-chat-container',
     templateUrl: './ca-chat-container.component.html',
     styleUrls: [ 
         './ca-chat-container.component.css',
@@ -35,21 +35,14 @@ export class ChatContainerComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['identifier'] || changes['knowledgebaseId'] || changes['aiURL']) {
             if(this.identifier && this.identifier.trim().length > 0 
-            && this.knowledgebaseid && this.knowledgebaseid.trim() 
             && this.instanceurl && this.instanceurl.trim()) {
-                this.chatDataService = new ChatDataService(this.instanceurl.trim(), this.identifier.trim(), this.knowledgebaseid.trim());
+                this.chatDataService = new ChatDataService(this.instanceurl.trim(), this.identifier.trim(), this.knowledgebaseid ? this.knowledgebaseid.trim(): '');
             } else { 
                 this.chatDataService = new DummyChatDataService();
             }
 
             this.chatService = new ChatService(this.chatDataService!);
         }
-        const container = document.getElementsByName('container');
-        if(container && container.length > 0) { 
-            for(let i = 0; i<container.length-1; i++) { 
-                container[i].innerHTML = ''
-            }
-        } 
     }
 
     @Input() bubbletext: string = ''
@@ -238,18 +231,11 @@ export class ChatContainerComponent implements OnChanges {
             }
         }, 100);
         
-        
     }
 
     protected closeChatWindow() {
         if(this.chatBox) {
             this.chatBox.reset();
-            const container = document.getElementsByName('container');
-            if(container && container.length > 0) { 
-                for(let i = 0; i<container.length -1; i++) { 
-                    container[i].innerHTML = ''
-                }
-            } 
             this.showChatWindow = false;
         }
     }

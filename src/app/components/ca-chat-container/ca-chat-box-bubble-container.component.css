@@ -124,3 +124,31 @@
     transform: translateY(-50%);
 }
 
+.chat-container-bubble {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    z-index: 1100;   
+}
+
+.chat-container-bubble-left {
+    bottom: 120px;
+    left: 64px;
+}
+
+.chat-container-bubble-right {
+    bottom: 120px;
+    right: 64px;
+}
+
+@media screen and (max-width:480px) {
+    .chat-container-bubble-left {
+        bottom: 90px;
+        left: 32px;
+    }
+    
+    .chat-container-bubble-right {
+        bottom: 90px;
+        right: 32px;
+    }
+}

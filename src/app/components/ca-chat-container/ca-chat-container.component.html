@@ -1,7 +1,7 @@
 <ng-container *ngIf="showChatWindow && initialParameter.cancelOnClickOutside">
     <div class="chat-container-background" (click)="tryToCloseWindow()"></div>
 </ng-container>
-<div name="container" 
+<div
     class="container" 
     [style.--bubble-background-color]="bubblebackgroundcolor" 
     [style.--bubble-foreground-color]="bubbleforegroundcolor">
@@ -41,6 +41,7 @@
                 #chatBox
                 [initialParameters]="initialParameter"
                 (userReplySubmitted)="onReceiveUserReply($event)"
+                (chatExitRequestReceived)="closeChatWindow()"
             ></ca-chat-box>
             
         </div>

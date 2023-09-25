@@ -115,4 +115,10 @@ export class CaChatBoxComponent {
       this.postUserReply(message);
     }
   }
+
+  @Output() chatExitRequestReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  protected requestChatExit() {
+    this.chatExitRequestReceived.next(true);
+  }
 }

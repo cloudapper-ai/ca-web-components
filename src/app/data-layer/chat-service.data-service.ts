@@ -20,13 +20,24 @@ export class ChatDataService implements IChatService {
         return new Observable<RESULT<string>>(observer=> { 
             if(this.isStreaming) { return; }
             this.isStreaming = true;
-            const request = { 
-                group_ids: [ this.knowledgeBaseId ],
-                similarity_top_k: 4, 
-                query: query, 
-                chat_history: history,
-                system_context: 'You are an AI Assistant made by CloudApper AI.'
-            };
+            let request = {}
+            if(this.knowledgeBaseId.length > 0) {
+                request = { 
+                    group_ids: [ this.knowledgeBaseId ],
+                    similarity_top_k: 4, 
+                    query: query, 
+                    chat_history: history,
+                    system_context: 'You are an AI Assistant made by CloudApper AI.'
+                };    
+            } else {
+                request = { 
+                    similarity_top_k: 4, 
+                    query: query, 
+                    chat_history: history,
+                    system_context: 'You are an AI Assistant made by CloudApper AI.'
+                };
+            }
+            
             fetch(this.url, { 
                 method: 'post',
                 headers: { 

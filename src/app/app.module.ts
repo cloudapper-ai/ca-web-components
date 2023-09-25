@@ -1,4 +1,4 @@
-import { Injector, NgModule } from '@angular/core';
+import { ApplicationRef, DoBootstrap, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -23,11 +23,15 @@ import { createCustomElement } from '@angular/elements';
     BrowserAnimationsModule,
     MarkdownModule.forRoot()
   ],
-  providers: []
+  providers: [],
+  // bootstrap: [AppComponent]
 })
-export class AppModule { 
+export class AppModule implements DoBootstrap { 
   constructor(injector: Injector) {
     const elem = createCustomElement(ChatContainerComponent, { injector: injector})
     customElements.define('chat-container', elem);
+  }
+  ngDoBootstrap(appRef: ApplicationRef): void {
+    
   }
 }
