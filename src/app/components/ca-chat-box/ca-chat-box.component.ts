@@ -75,16 +75,19 @@ export class CaChatBoxComponent {
 
     this.messages = messages;
     setTimeout(()=> {
-      const elem = document.getElementById(newMessage.id)
-      if(elem) {
-        elem.scrollIntoView({ behavior: 'smooth', inline: 'end', block: 'end' });
+      if(this.chatbody) { 
+        this.chatbody.nativeElement.scroll({
+          top: this.chatbody.nativeElement.scrollHeight,
+          left: 0,
+          behavior: 'smooth'
+        });
       }
     }, 250);
     return true;
   }
 
   @ViewChild('chatUserInput') chatUserInput?: ElementRef;
-
+  @ViewChild('chatbody') chatbody?: ElementRef;
 
   private postUserReply(message: string) {
     if(this.addReplyFromUser(message)) { 
