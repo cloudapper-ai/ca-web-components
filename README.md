@@ -20,11 +20,11 @@ With CloudApper AI Public Chat-box, businesses can easily integrate the chatbot 
 		This is the custom element to show CloudApper AI chat-box.
 	-->
 	<chat-container
-        id="chatContainer"
-        title="CloudAppper BI"
-        botname="AI Assistant"
-				identifier="-- request your own identifier from cloudapper ai team --"
-    ></chat-container>
+	        id="chatContainer"
+	        title="CloudAppper BI"
+	        botname="AI Assistant"
+		identifier="-- request your own identifier from cloudapper ai team --"
+	    ></chat-container>
 	<!--
 		Add this line inside the body tag after putting chat-container element.
 	-->
