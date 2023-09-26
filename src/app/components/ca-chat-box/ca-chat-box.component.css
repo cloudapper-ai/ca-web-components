@@ -31,15 +31,18 @@
 
 .chat-box-input input {
     width: 100%;
-    border: none;
-    height: 36px;
-    padding: 0 16px;
-    font-size: 1rem;
-    font-weight: 300;
+    outline: 0 !important;
+    border: none !important;
+    height: 36px !important;
+    padding: 0 16px !important;
+    font-size: 1rem !important;
+    font-weight: 300 !important;
+    margin: 0 !important;
   }
   
 .chat-box-input input:focus {
-    outline: 0;
+    outline: 0 !important;
+    margin: 0 !important;
 }
 
 .chat-box-input img {
