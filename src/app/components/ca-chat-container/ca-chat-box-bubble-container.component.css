@@ -1,5 +1,6 @@
 .chat-box-bubble {
     display: flex;
+    position: absolute;
     justify-content: center;
     align-items: center;
     width: 56px;
@@ -33,13 +34,11 @@
 
 
 .chat-box-bubble-left {
-    position: absolute;
     bottom: -72px;
     left: -12px;
 }
 
 .chat-box-bubble-right {
-    position: absolute;
     bottom: -72px;
     right: -12px;
 }
@@ -127,7 +126,7 @@
 .chat-container-bubble {
     width: 20px;
     height: 20px;
-    position: absolute;
+    position: fixed;
     z-index: 1100;   
 }
 
