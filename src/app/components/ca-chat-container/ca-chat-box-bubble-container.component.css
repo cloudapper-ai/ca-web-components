@@ -44,7 +44,7 @@
 }
 
 .chat-box-bubble-text {
-    z-index: 1100;
+    z-index: 20000;
     position: absolute;
     background-color: var(--bubble-background-color); 
     color: var(--bubble-foreground-color); 
@@ -127,7 +127,7 @@
     width: 20px;
     height: 20px;
     position: fixed;
-    z-index: 1100;   
+    z-index: 20000;   
 }
 
 .chat-container-bubble-left {
