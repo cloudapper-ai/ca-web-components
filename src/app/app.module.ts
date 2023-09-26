@@ -23,8 +23,7 @@ import { createCustomElement } from '@angular/elements';
     BrowserAnimationsModule,
     MarkdownModule.forRoot()
   ],
-  providers: [],
-  // bootstrap: [AppComponent]
+  providers: []
 })
 export class AppModule implements DoBootstrap { 
   constructor(injector: Injector) {
