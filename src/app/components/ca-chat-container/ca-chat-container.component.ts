@@ -18,7 +18,8 @@ import { RESULT } from "src/app/models/result.model";
         './ca-chat-container.component.css',
         './ca-chat-box-container.component.css',
         './ca-chat-box-bubble-container.component.css',
-    ]
+    ],
+    encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ChatContainerComponent implements OnChanges {
     private chatDataService?: IChatService;
