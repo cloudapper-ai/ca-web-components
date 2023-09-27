@@ -1,24 +1,59 @@
-.chat-box-bubble {
+.chat-box-bubble, .chat-box-bubble-callout {
     display: flex;
     position: absolute;
     justify-content: center;
     align-items: center;
     width: 56px;
     height: 56px;
-    overflow: hidden;
     border-radius: 50%;
     box-shadow: rgba(107, 107, 110, 0.2) 0px 7px 29px 0px;
     transform: scale(1);
     transition: all 0.3s ease-in-out;
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
+    
 }
 
-.chat-box-bubble:hover { 
+.chat-box-bubble-callout::before {
+    content: "";
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    border-width: 16px;
+    border-radius: 25%;
+    border-style: solid;
+    border-color: transparent transparent #1960d1 transparent; 
+}
+
+.chat-box-bubble:hover, .chat-box-bubble-callout:hover { 
     transform: scale(1.1);
 }
 
-.chat-box-bubble img {
+@keyframes glow-bubble {
+    0% { 
+        opacity: 0.9;
+        transform: scale(1);
+    }
+
+    50% { 
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+.chat-box-bubble-animation { 
+    animation-name: glow-bubble;
+    animation-duration: 2s;
+    animation-delay: 0.2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.chat-box-bubble img, .chat-box-bubble-callout img {
     max-width: 36px;
     animation: chat-box-bubble-img-animation 0.3s linear;
 }
@@ -34,47 +69,36 @@
 
 
 .chat-box-bubble-left {
-    bottom: -72px;
+    bottom: 0px;
     left: -12px;
 }
 
 .chat-box-bubble-right {
-    bottom: -72px;
+    bottom: 0px;
     right: -12px;
 }
 
 .chat-box-bubble-text {
     z-index: 20000;
     position: absolute;
+    bottom: 50%;
+    transform: translateY(50%);
     background-color: var(--bubble-background-color); 
     color: var(--bubble-foreground-color); 
     padding: 10px 20px;
     border-radius: 10px;
-    display: inline-block;
+    width: max-content;
+    max-width: 200px;
 }
 
 .chat-box-bubble-text-left {
-    right: -220px;
-    top: 40px;
+    left: 64px;
     animation: chat-bubble-text-grow-left 0.5s ease-in-out;
 }
 
-@keyframes chat-bubble-text-grow-left {
-    0% {
-        transform: scaleX(0);
-        opacity: 0;
-    }
-
-    10% {
-        opacity: 0;
-        transform: scaleX(0) translateX(-100%);
-    }
-
-    100% {
-        width: auto;
-        opacity: 1;
-        transform: scaleX(1) translateX(0);
-    }
+.chat-box-bubble-text-right {
+    right: 64px;
+    animation: chat-bubble-text-grow-right 0.5s ease-in-out;
 }
 
 .chat-box-bubble-text-left::before { 
@@ -88,30 +112,6 @@
     transform: translateY(-50%);
 }
 
-.chat-box-bubble-text-right {
-    left: -220px;
-    top: 40px;
-    animation: chat-bubble-text-grow-right 0.5s ease;
-}
-
-@keyframes chat-bubble-text-grow-right {
-    0% {
-        transform: scaleX(0);
-        opacity: 0;
-    }
-
-    10% {
-        opacity: 0;
-        transform: scaleX(0) translateX(100%);
-    }
-
-    100% {
-        width: auto;
-        opacity: 1;
-        transform: scaleX(1) translateX(0);
-    }
-}
-
 .chat-box-bubble-text-right::before { 
     content: "";
     position: absolute;
@@ -123,31 +123,67 @@
     transform: translateY(-50%);
 }
 
+@keyframes chat-bubble-text-grow-left {
+    0% {
+        transform: scaleX(0) translateY(50%);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0;
+        transform: scaleX(0) translateX(-100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scaleX(1) translateX(0)  translateY(50%);
+    }
+}
+
+@keyframes chat-bubble-text-grow-right {
+    0% {
+        transform: scaleX(0) translateY(50%);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0;
+        transform: scaleX(0) translateX(100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scaleX(1) translateX(0) translateY(50%);
+    }
+}
+
+
+
 .chat-container-bubble {
-    width: 20px;
-    height: 20px;
+    width: 48px;
+    height: 48px;
     position: fixed;
     z-index: 20000;   
 }
 
 .chat-container-bubble-left {
-    bottom: 120px;
+    bottom: 48px;
     left: 64px;
 }
 
 .chat-container-bubble-right {
-    bottom: 120px;
+    bottom: 48px;
     right: 64px;
 }
 
 @media screen and (max-width:480px) {
     .chat-container-bubble-left {
-        bottom: 90px;
+        bottom: 24px;
         left: 32px;
     }
     
     .chat-container-bubble-right {
-        bottom: 90px;
+        bottom: 24px;
         right: 32px;
     }
 }

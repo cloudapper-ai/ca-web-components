@@ -20,3 +20,8 @@ export enum EnumWindowPosition {
     BottomLeft = 'BOTTOM_LEFT',
     BottomRight = 'BOTTOM_RIGHT'
 }
+
+export enum EnumBubbleStyle { 
+    Regular = 0,
+    Callout = 1
+}

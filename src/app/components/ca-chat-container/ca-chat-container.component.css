@@ -14,4 +14,5 @@
     height: 100%;
     background: #fff1;
     z-index: 18000;
+    overflow: hidden;
 }
