@@ -1,24 +1,59 @@
-.chat-box-bubble {
+.chat-box-bubble, .chat-box-bubble-callout {
     display: flex;
     position: absolute;
     justify-content: center;
     align-items: center;
     width: 56px;
     height: 56px;
-    overflow: hidden;
     border-radius: 50%;
     box-shadow: rgba(107, 107, 110, 0.2) 0px 7px 29px 0px;
     transform: scale(1);
     transition: all 0.3s ease-in-out;
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
+    
 }
 
-.chat-box-bubble:hover { 
+.chat-box-bubble-callout::before {
+    content: "";
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    border-width: 16px;
+    border-radius: 25%;
+    border-style: solid;
+    border-color: transparent transparent #1960d1 transparent; 
+}
+
+.chat-box-bubble:hover, .chat-box-bubble-callout:hover { 
     transform: scale(1.1);
 }
 
-.chat-box-bubble img {
+@keyframes glow-bubble {
+    0% { 
+        opacity: 0.9;
+        transform: scale(1);
+    }
+
+    50% { 
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+.chat-box-bubble-animation { 
+    animation-name: glow-bubble;
+    animation-duration: 2s;
+    animation-delay: 0.2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.chat-box-bubble img, .chat-box-bubble-callout img {
     max-width: 36px;
     animation: chat-box-bubble-img-animation 0.3s linear;
 }

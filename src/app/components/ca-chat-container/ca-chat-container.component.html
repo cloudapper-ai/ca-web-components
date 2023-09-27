@@ -1,6 +1,7 @@
 <ng-container *ngIf="showChatWindow && initialParameter.cancelOnClickOutside">
     <div class="chat-container-background" (click)="tryToCloseWindow()"></div>
 </ng-container>
+
 <div  
     class="container" 
     [style.--bubble-background-color]="bubblebackgroundcolor" 
@@ -19,7 +20,7 @@
                 srcset="">
         </div>  
         <div [className]="chatBubbleTextClass" [ngStyle]="{ 
-            display: (showChatWindow || (bubbletext.trim().length < 1)) ? 'none': 'inline-block' 
+            display: (showChatWindow || !isBubbleDelayCompleted || (bubbletext.trim().length < 1)) ? 'none': 'inline-block' 
         }">
         {{bubbletext}}
         </div>
@@ -47,8 +48,5 @@
         </div>
     </div>
 </div>
-
-
-
 
 

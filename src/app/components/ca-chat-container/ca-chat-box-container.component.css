@@ -7,6 +7,7 @@
     overflow: hidden;
     animation: chat-container-grow 0.5s ease; 
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    min-width: 360px;
 }
 
 .chat-box-container-left {
