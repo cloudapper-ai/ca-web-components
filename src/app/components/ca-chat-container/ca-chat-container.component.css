@@ -4,6 +4,7 @@
     --bubble-foreground-color: '#414042';
     font-family: Roboto,sans-serif !important;
     font-size: 16px;
+    line-height: 1.3em !important;
 }
 
 .chat-container-background { 
@@ -15,4 +16,11 @@
     background: #fff1;
     z-index: 18000;
     overflow: hidden;
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+
+        line-height: 1em !important;
+    }
 }
