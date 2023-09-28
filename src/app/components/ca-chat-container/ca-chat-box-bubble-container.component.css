@@ -11,7 +11,7 @@
     transition: all 0.3s ease-in-out;
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
-    background-color: var(--bubble-popup-color);
+    background-color: var(--chat-box-primary-color);
     
 }
 
@@ -23,7 +23,7 @@
     border-width: 16px;
     border-radius: 25%;
     border-style: solid;
-    border-color: transparent transparent var(--bubble-popup-color) transparent; 
+    border-color: transparent transparent var(--chat-box-primary-color) transparent; 
 }
 
 .chat-box-bubble:hover, .chat-box-bubble-callout:hover { 

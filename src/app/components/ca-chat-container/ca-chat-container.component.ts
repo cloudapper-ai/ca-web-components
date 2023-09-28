@@ -263,10 +263,13 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
     }
 
     private resetGlowEffect() {
-        if(this.addgloweffect && this.isBubbleDelayCompleted) {
-            this.addgloweffect = false;
-            this.setupChatWindowClass(this.windowposition);
+        if(this.addgloweffect) { 
+            if(this.showChatWindow || (this.isBubbleDelayCompleted && this.bubbletext.trim().length > 0)) {
+                this.addgloweffect = false;
+                this.setupChatWindowClass(this.windowposition);
+            }
         }
+        
     }
 
     private updateUserColorProfile() {
@@ -325,8 +328,8 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
     protected showChatWindow: boolean = false;
 
     openChatWindow() {
-        this.resetGlowEffect();   
         this.showChatWindow = true;
+        this.resetGlowEffect();   
         this.bubbletext = ''
         this.changeScrollState(this.windowWidth > 480 && !this.cancelontouchoutside)
         setTimeout(()=> {
