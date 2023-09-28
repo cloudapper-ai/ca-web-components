@@ -2,7 +2,8 @@
     all: initial;
     --bubble-background-color: '#edefef';
     --bubble-foreground-color: '#414042';
-    --bubble-popup-color: '#edefef';
+    --chat-box-primary-color: '#edefef';
+    --chat-box-on-primary-color: 'white';
     font-family: Roboto,sans-serif !important;
     font-size: 16px;
     line-height: 1.3em !important;
