@@ -17,20 +17,22 @@ export class CaChatBoxComponent {
   addWarningfromBot(id: string, message: string) {
     const chatMessage = new ChatMessage(id, ChatConstants.BotId, message);
     chatMessage.warning = true;
-    this.isLoading = false;
     this.updateMessageQueue(chatMessage);
   }
 
   reset() {
     this.messages = [];
-    this.isLoading = false;
+    this.setReadyForUserReply(true);
   }
 
   addReplyFromBot(id: string, message: string, suggestions?: string[]) {
-    this.isLoading = false;
     const chatMessage = new ChatMessage(id, ChatConstants.BotId, message);
     chatMessage.suggestions = suggestions;
     this.updateMessageQueue(chatMessage);
+  }
+
+  setReadyForUserReply(ready: boolean) {
+    this.isLoading = !ready;
   }
 
   protected addReplyFromUser(message: string): boolean {
@@ -52,8 +54,11 @@ export class CaChatBoxComponent {
   private isLoading: boolean = false;
 
   private updateMessageQueue(newMessage: ChatMessage): boolean {
-    if(this.isLoading) { return false; }
-    this.isLoading = newMessage.loading;
+    if(this.isLoading) {
+      if(newMessage.userId !== ChatConstants.BotId) {
+        return false; 
+      }
+    }
 
     const messages = [...this.messages];
     const loadingItemIndex = messages.findIndex(entry=>entry.loading);
@@ -91,8 +96,10 @@ export class CaChatBoxComponent {
 
   private postUserReply(message: string) {
     if(this.addReplyFromUser(message)) { 
+      
       setTimeout(()=> {
         this.addLoadingMessage();
+        this.setReadyForUserReply(false);
         this.userReplySubmitted.next(message);
       }, 500);
       if(this.chatUserInput) { 
