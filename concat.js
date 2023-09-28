@@ -16,10 +16,5 @@ const package = require('./package.json');
         `./private/${package.name}/main.js`
     ];
 
-    const cssFiles = [ 
-        `./private/${package.name}/styles.css`
-    ];
-
     await concat(jsFiles, `${libPath}/ca-chat-container.js`);
-    await concat(cssFiles, `${libPath}/ca-chat-container.css`);
 })();
