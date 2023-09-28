@@ -31,7 +31,7 @@
 
 .chat-box-input input {
     width: 100%;
-    outline: 0 !important;
+    outline: none !important;
     border: none !important;
     height: 36px !important;
     padding: 0 16px !important;
@@ -41,7 +41,7 @@
   }
   
 .chat-box-input input:focus {
-    outline: 0 !important;
+    outline: none !important;
     margin: 0 !important;
 }
 

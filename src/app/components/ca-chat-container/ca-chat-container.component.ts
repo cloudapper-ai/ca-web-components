@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
 import { ChatConstants } from "src/app/models/chat-constants.model";
 import { ChatBoxInputs, ChatColorProfile, ChatWindowColorProfile, EnumBubbleStyle, EnumWindowPosition } from "src/app/models/chat-ui.model";
 import { CaChatBoxComponent } from "../ca-chat-box/ca-chat-box.component";
@@ -18,7 +18,8 @@ import { RESULT } from "src/app/models/result.model";
         './ca-chat-container.component.css',
         './ca-chat-box-container.component.css',
         './ca-chat-box-bubble-container.component.css',
-    ]
+    ],
+    encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ChatContainerComponent implements AfterViewInit, OnChanges {
     private chatDataService?: IChatService;
@@ -33,6 +34,30 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
         
     }
 
+    private _windowWidth: number = 0;
+    private get windowWidth(): number { 
+        return this._windowWidth;
+    }
+
+    private set windowWidth(value: number) {
+        this._windowWidth = value;
+        if(this.showChatWindow) {
+            if(value > 480) { 
+                this.changeScrollState(!this.cancelontouchoutside)
+            } else { 
+                this.changeScrollState(true)
+            }
+        } else { 
+            this.changeScrollState(true);
+        }
+        
+    }
+
+    @HostListener('window: resize', ['$event']) 
+    onResize(event: any) {
+        this.windowWidth = window.innerWidth;
+    }
+
     protected isBubbleDelayCompleted: boolean = false;
 
     ngAfterViewInit(): void {
@@ -42,6 +67,7 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
                 this.resetGlowEffect();
             }
         }, this.bubbledelay * 1000)
+        this.windowWidth = window.innerWidth;
     }
     
     ngOnChanges(changes: SimpleChanges): void {
@@ -169,7 +195,23 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
     private _cancelOnTouchOutside: boolean = false;
     @Input()
     get cancelontouchoutside(): boolean { return this._cancelOnTouchOutside; }
-    set cancelontouchoutside(value: boolean) { this._cancelOnTouchOutside = value; this.initialParameter.cancelOnClickOutside = value; }
+    set cancelontouchoutside(value: boolean) { 
+        this._cancelOnTouchOutside = value; 
+        this.initialParameter.cancelOnClickOutside = value; 
+    }
+
+    private changeScrollState(allow: boolean) {
+        if(!allow) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    
+            window.onscroll = function() {
+                window.scrollTo(scrollLeft, scrollTop);
+            }
+        } else { 
+            window.onscroll = function() { }
+        }
+    }
 
     protected initialParameter: ChatBoxInputs = new ChatBoxInputs(
         'CloudApper AI', 
@@ -243,6 +285,9 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
             let ended: boolean = false;
             const observable = this.chatService.submitUserReplyToBOT(message, ()=> {
                 ended = true;
+                if(this.chatBox) { 
+                    this.chatBox.setReadyForUserReply(true);
+                }
             });
             observable.pipe(takeWhile(()=> { return !ended; })).subscribe({
                 next: (result: RESULT<string>)=> { 
@@ -283,6 +328,7 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
         this.resetGlowEffect();   
         this.showChatWindow = true;
         this.bubbletext = ''
+        this.changeScrollState(this.windowWidth > 480 && !this.cancelontouchoutside)
         setTimeout(()=> {
             if(this.chatBox){
                 let message: string = ''
@@ -304,6 +350,7 @@ export class ChatContainerComponent implements AfterViewInit, OnChanges {
         if(this.chatBox) {
             this.chatBox.reset();
             this.showChatWindow = false;
+            this.changeScrollState(true)
         }
     }
 }

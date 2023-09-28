@@ -12,10 +12,11 @@ export class DummyChatDataService implements IChatService {
                     .pipe(
                         take(responses.length), 
                         concatMap((_value: number, index: number)=> {
-                            return of(responses[index]);
-                            if(index === responses.length) {
+                            
+                            if(index === responses.length - 1) {
                                 setTimeout(()=> { onComplete(); }, 10);
                             }
+                            return of(responses[index]);
                         }
                     )).subscribe({ 
                         next: (value)=> {

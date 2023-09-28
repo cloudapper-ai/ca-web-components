@@ -4,6 +4,7 @@
 
 <div  
     class="container" 
+    [style.--bubble-popup-color]="initialParameter.windowColors.primaryColor"
     [style.--bubble-background-color]="bubblebackgroundcolor" 
     [style.--bubble-foreground-color]="bubbleforegroundcolor">
     <div [className]="chatContainerBubbleClass">
@@ -11,7 +12,6 @@
             (click)="openChatWindow()" 
             [className]="chatBoxBubbleClass" 
             [ngStyle]="{ 
-                background: initialParameter.windowColors.primaryColor, 
                 display: showChatWindow ? 'none': 'flex' 
             }">
             <img 

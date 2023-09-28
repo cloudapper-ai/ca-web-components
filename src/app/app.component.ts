@@ -7,6 +7,12 @@ import { ChatContainerComponent } from './components/ca-chat-container/ca-chat-c
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit {
+  readonly array: number[] = []
+  constructor() { 
+    for(let i=0; i<100; i++) {
+      this.array.push(i + 1)
+    }
+  }
   ngAfterViewInit(): void {
     if(this.chatContainer) { 
       this.chatContainer.welcomemessages = [

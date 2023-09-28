@@ -2,6 +2,7 @@
     all: initial;
     --bubble-background-color: '#edefef';
     --bubble-foreground-color: '#414042';
+    --bubble-popup-color: '#edefef';
     font-family: Roboto,sans-serif !important;
     font-size: 16px;
     line-height: 1.3em !important;
@@ -15,7 +16,6 @@
     height: 100%;
     background: #fff1;
     z-index: 18000;
-    overflow: hidden;
 }
 
 @media screen and (max-width: 480px) {
