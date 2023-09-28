@@ -8,45 +8,41 @@ With CloudApper AI Public Chat-box, businesses can easily integrate the chatbot 
 
 ```html
 
-<head>
-	<!--
-		Add this line inside the head tag before your own style css
-	-->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cloudapperinc/ca-web-components@1.0.5/dist/ca-chat-container.min.css">
-</head>
-
 <body>
 	<!--
 		This is the custom element to show CloudApper AI chat-box.
 	-->
 	<chat-container
 	        id="chatContainer"
-	        title="CloudAppper BI"
+	        title="Talk to AI"
+	        username="Participant"
 	        botname="AI Assistant"
+		bubbletext="Hi, I am here to help."
+		bubbledelay="5"
 		identifier="-- request your own identifier from cloudapper ai team --"
 	    ></chat-container>
 	<!--
 		Add this line inside the body tag after putting chat-container element.
 	-->
-	<script src="https://cdn.jsdelivr.net/gh/cloudapperinc/ca-web-components@1.0.5/dist/ca-chat-container.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/cloudapperinc/ca-web-components@1.0.12/dist/ca-chat-container.min.js"></script>
 
 	<script>
-		function loadChatContainer() {
-		    const chatContainer = document.getElementById('chatContainer');
-		    if(chatContainer) {
-		        chatContainer.welcomemessages = [
-		            'Hi, I am Raven. How can I help you today?',
-		            'Hi, I am Raven. May be I can help you search quickly.',
-		            'Hi, I am Raven. I can help you surfing the contents of this website.',
-		        ];
-		        chatContainer.suggestionmessages = [
-		            "I am looking for Facily management software",
-		            "I am a UKG Ready customer. Looking for a simple Clock in/out solution."
-		        ];
-		    }
-		}
+		const chatContainer = document.getElementById('chatContainer')
 
-		loadChartContainer();
+	        function loadChatProperties() {
+	            chatContainer.chatprimarycolor = '#1e4b80';
+	            chatContainer.chatonprimarycolor = 'white';
+	            chatContainer.welcomemessages = [
+	                "Hi, I am an AI. I am powered by CloudApper AI. How can I help you today?"
+	            ];
+	
+	            chatContainer.bubblestyle = 1;
+	            chatContainer.cancelontouchoutside = true;
+	            chatContainer.addgloweffect = true;
+	            chatContainer.bubbletext = 'Hi, I am here to answer your questions.';
+	        }
+	
+	        loadChatProperties();
 	</script>
 </body>
 ```
@@ -97,8 +93,14 @@ There are many attributes for the CloudApper AI Chatbox. Bellow is the descripti
     
     Should you opt to display accompanying bubble text alongside your brand logo, you can input that content using the `**bubbletext**` attribute. This text will be visible in conjunction with your brand logo within the chat box interface.
     
+- ***bubbledelay***
+    At times, you may desire to display the tooltip text after a specified delay. To achieve this, you can utilize the `**bubbledelay**` attribute and specify the delay duration in seconds.
 
-You also have the capability to include a welcome message and suggested responses that will appear when the chatbox is initially opened. A sample of that is provided in the above mentioned code block.
+- ***addgloweffect***
+    To enable a pre-opening animation for the bubble icon before the user accesses the chat box, simply set `**addgloweffect**` to "true."
+
+  
+You also have the capability to include a welcome message and suggested responses that will appear when the chatbox is initially opened. A sample of that is provided in the above-mentioned code block.
 
 
 ![parts of cloudapper ai chatbox](https://github.com/cloudapperinc/ca-web-components/assets/79566517/09670fb0-4c25-4d5c-abdb-42a28ab19361)
