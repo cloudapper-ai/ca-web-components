@@ -16,11 +16,9 @@ import { uuidv4 } from "src/app/service-layer/utils";
     styleUrls: [ './ca-chat-container.component.css' ]
 })
 export class CAChatContainer implements AfterViewInit {
-    private chatDataService?: IChatService;
     private chatService?: ChatService;
     constructor() { 
-        this.chatDataService = new DummyChatDataService();
-        this.chatService = new ChatService(this.chatDataService!)
+        this.chatService = new ChatService(new DummyChatDataService())
         this.updateUserColorProfile()
         this.updateBotColorProfile()
     }
@@ -32,9 +30,9 @@ export class CAChatContainer implements AfterViewInit {
         if(this.knowledgebaseid.trim().length > 0 
         && this.instanceurl.trim().length > 0
         && this.identifier.trim().length > 0) {
-            this.chatDataService = new ChatDataService(this.instanceurl, this.identifier, this.knowledgebaseid);
+            this.chatService = new ChatService(new ChatDataService(this.instanceurl, this.identifier, this.knowledgebaseid));
         } else { 
-            this.chatDataService = new DummyChatDataService();
+            this.chatService = new ChatService(new DummyChatDataService());
         }
     }
 
@@ -53,7 +51,7 @@ export class CAChatContainer implements AfterViewInit {
     private _instanceurl: string = '';
     @Input() 
     get instanceurl(): string { return this._instanceurl; }
-    set instanceurl(value: string) { this.instanceurl = value; this.setupChatDataService(); }
+    set instanceurl(value: string) { this._instanceurl = value; this.setupChatDataService(); }
 
     private _title: string = 'CloudApper AI'
     @Input() 
@@ -173,8 +171,11 @@ export class CAChatContainer implements AfterViewInit {
     }
 
     private initiateChatMessages() { 
-        this.chatBox?.reset();
-        const index = Math.round(Math.random() * (this.welcomemessages.length - 1));
-        this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages)
+        setTimeout(()=> {
+            this.chatBox?.reset();
+            const index = Math.round(Math.random() * (this.welcomemessages.length - 1));
+            this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages)
+        }, 10)
+        
     }
 }

@@ -15,15 +15,17 @@
   [username]="'User 0213'"
   [cancelontouchoutside]="true"
   [addgloweffect]="true"
-
+  hidden
 ></ca-ai-chat-popup-container>
 
-<div class="chat-container" hidden>
+<div class="chat-container" >
   <ca-chat-container
+  #chatsimple
     [title]="'Talk to AI'"
     [botname]="'AI Assistant'"
-    [username]="'User 0213'"
+    [username]="'Participants'"
     [welcomemessages]="welcomemessages"
     [suggestionmessages]="suggestedmessages"
+    [instanceurl]="'https://dev-api.cloudapper.com'"
   ></ca-chat-container>
 </div>
