@@ -131,4 +131,6 @@ export class CaChatBoxComponent {
   protected requestChatExit() {
     this.chatExitRequestReceived.next(true);
   }
+
+  @Input() allowExit: boolean = true;
 }

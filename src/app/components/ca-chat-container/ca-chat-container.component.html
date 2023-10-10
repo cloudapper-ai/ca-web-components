@@ -1,53 +1,13 @@
-<ng-container *ngIf="showChatWindow && initialParameter.cancelOnClickOutside">
-    <div class="chat-container-background" (click)="tryToCloseWindow()"></div>
-</ng-container>
-
-<div  
-    class="container" 
+<div class="chat-box-container" 
     [style.--chat-box-primary-color]="initialParameter.windowColors.primaryColor"
     [style.--chat-box-on-primary-color]="initialParameter.windowColors.onPrimaryColor"
-    [style.--bubble-background-color]="bubblebackgroundcolor" 
-    [style.--bubble-foreground-color]="bubbleforegroundcolor">
-    <div [className]="chatContainerBubbleClass">
-        <div 
-            (click)="openChatWindow()" 
-            [className]="chatBoxBubbleClass" 
-            [ngStyle]="{ 
-                display: showChatWindow ? 'none': 'flex' 
-            }">
-            <img 
-                [src]="brandlogo" 
-                alt="brand-logo" 
-                srcset="">
-        </div>  
-        <div [className]="chatBubbleTextClass" [ngStyle]="{ 
-            display: (showChatWindow || !isBubbleDelayCompleted || (bubbletext.trim().length < 1)) ? 'none': 'inline-block' 
-        }">
-        {{bubbletext}}
-        </div>
-
-        <div 
-            (click)="closeChatWindow()" 
-            [className]="chatBoxBubbleClass" 
-            [ngStyle]="{ background: initialParameter.windowColors.primaryColor, display: showChatWindow ? 'flex': 'none' }">
-            <img 
-                src="data:image/png;base64,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" 
-                alt="cancel-icon" 
-                srcset="">
-        </div>
-    </div>
-    
-    <div [className]="chatBoxClass" [ngStyle]="{ display: showChatWindow ? 'block': 'none'}">
-        <div style="width: 100%; height: 100%;">
-            <ca-chat-box 
-                #chatBox
-                [initialParameters]="initialParameter"
-                (userReplySubmitted)="onReceiveUserReply($event)"
-                (chatExitRequestReceived)="closeChatWindow()"
-            ></ca-chat-box>
-            
-        </div>
-    </div>
+    [style.--suggestion-border-color]="botlabelcolor"
+    [style.--suggestion-foreground-color]="bottextcolor"
+    [style.--suggestion-border-color-hover]="bottextcolor"
+    [style.--suggestion-foreground-color-hover]="botlabelcolor">
+    <ca-chat-box
+        #simplechatBox
+        [initialParameters]="initialParameter"
+        (userReplySubmitted)="onReceiveUserReply($event)"
+    ></ca-chat-box>
 </div>
-
-

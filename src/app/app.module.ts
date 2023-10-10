@@ -6,9 +6,10 @@ import { AppComponent } from './app.component';
 import { CaChatBoxComponent } from './components/ca-chat-box/ca-chat-box.component';
 import { ChatItemComponent } from './components/chat-item/chat-item.component';
 import { SuggestionItemComponent } from './components/suggestion-item/suggestion-item.component';
-import { ChatContainerComponent } from './components/ca-chat-container/ca-chat-container.component';
+import { ChatPopupContainerComponent } from './components/ca-chat-popup/ca-chat-popup-container.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { createCustomElement } from '@angular/elements';
+import { CAChatContainer } from './components/ca-chat-container/ca-chat-container.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { createCustomElement } from '@angular/elements';
     ChatItemComponent,
     SuggestionItemComponent,
     CaChatBoxComponent,
-    ChatContainerComponent
+    ChatPopupContainerComponent,
+    CAChatContainer
   ],
   imports: [
     BrowserModule,
@@ -27,8 +29,11 @@ import { createCustomElement } from '@angular/elements';
 })
 export class AppModule implements DoBootstrap { 
   constructor(injector: Injector) {
-    const elem = createCustomElement(ChatContainerComponent, { injector: injector})
-    customElements.define('chat-container', elem);
+    const elemOne = createCustomElement(ChatPopupContainerComponent, { injector: injector})
+    customElements.define('chat-popup-container', elemOne);
+
+    const elemTwo = createCustomElement(CAChatContainer, { injector: injector})
+    customElements.define('chat-container', elemTwo);
   }
   ngDoBootstrap(appRef: ApplicationRef): void {
     
