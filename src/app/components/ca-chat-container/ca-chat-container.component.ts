@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
+import { AfterContentInit, AfterViewInit, Component, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
 import { CaChatBoxComponent } from "../ca-chat-box/ca-chat-box.component";
 import { takeWhile } from "rxjs";
 import { ChatDataService } from "src/app/data-layer/chat-service.data-service";
@@ -13,7 +13,8 @@ import { uuidv4 } from "src/app/service-layer/utils";
 @Component({
     selector: 'ca-chat-container',
     templateUrl: './ca-chat-container.component.html',
-    styleUrls: [ './ca-chat-container.component.css' ]
+    styleUrls: [ './ca-chat-container.component.css' ],
+    encapsulation: ViewEncapsulation.ShadowDom
 })
 export class CAChatContainer implements AfterViewInit {
     private chatService?: ChatService;
