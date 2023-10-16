@@ -48,6 +48,7 @@
                 [initialParameters]="initialParameter"
                 (userReplySubmitted)="onReceiveUserReply($event)"
                 (chatExitRequestReceived)="closeChatWindow()"
+                [allowExit]="true"
             ></ca-chat-box>
             
         </div>
