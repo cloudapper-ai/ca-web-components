@@ -28,8 +28,7 @@ export class CAChatContainer implements AfterViewInit {
     }
 
     private setupChatDataService() {
-        if(this.knowledgebaseid.trim().length > 0 
-        && this.instanceurl.trim().length > 0
+        if(this.instanceurl.trim().length > 0
         && this.identifier.trim().length > 0) {
             this.chatService = new ChatService(new ChatDataService(this.instanceurl, this.identifier, this.knowledgebaseid));
         } else { 
