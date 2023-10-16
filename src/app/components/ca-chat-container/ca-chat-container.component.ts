@@ -103,7 +103,7 @@ export class CAChatContainer implements AfterViewInit {
         'CloudApper AI', 
         'user0123', 
         'AI Assistant', 
-        new ChatWindowColorProfile('#FFFFFF', '#00aaff', '#FFFFFF'), 
+        new ChatWindowColorProfile('#00aaff', '#ffffff', '#FFFFFF'), 
         {},
         false
     );
