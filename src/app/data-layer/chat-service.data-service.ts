@@ -16,7 +16,7 @@ export class ChatDataService implements IChatService {
     private readonly MAX_TOKEN_LIMIT = 2000;
     private isStreaming: boolean = false;
 
-    submitUserReply(query: string, history: ChatHistory[], onComplete: () => void): Observable<RESULT<string>> {
+    submitUserReply(query: string, sessionId: string, history: ChatHistory[], onComplete: () => void): Observable<RESULT<string>> {
         return new Observable<RESULT<string>>(observer=> { 
             if(this.isStreaming) { return; }
             this.isStreaming = true;
@@ -44,7 +44,8 @@ export class ChatDataService implements IChatService {
                     'Content-Type': 'application/json',
                     'Accept': '*/*',
                     'X-Ca-Identifier': this.identifier,
-                    'X-Ca-Stream-Response': 'true'
+                    'X-Ca-Stream-Response': 'true',
+                    'X-Ca-Chat-Session-Id': sessionId
                 },
                 body: JSON.stringify(request)
             }).then(response=> { 

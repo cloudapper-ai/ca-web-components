@@ -4,7 +4,7 @@ import { RESULT } from "../models/result.model";
 import { IChatService } from "./interfaces/chat-service.interface";
 
 export class DummyChatDataService implements IChatService {
-    submitUserReply(query: string, history: ChatHistory[], onComplete: ()=>void): Observable<RESULT<string>> {
+    submitUserReply(query: string, sessionId: string, history: ChatHistory[], onComplete: ()=>void): Observable<RESULT<string>> {
         return new Observable<RESULT<string>>(observer=> {
             setTimeout(()=> {
                 const responses: string[] = [ 'You', ' need', ' to', ' contact', ' Cloudapper', ' Sales', ' for', ' this', ' service.', ' You', ' can', ' do', ' so', ' from ', '[here](https://cloudapper.ai/contact-us)']

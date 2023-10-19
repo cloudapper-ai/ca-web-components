@@ -2,11 +2,15 @@ import { Observable, takeWhile } from "rxjs";
 import { IChatService } from "../data-layer/interfaces/chat-service.interface";
 import { ChatHistory, EnumChatUserRoles } from "../models/chat-message.model";
 import { RESULT } from "../models/result.model";
+import { uuidv4 } from "./utils";
 
 export class ChatService {
-    constructor(private dataService: IChatService) {}
+    constructor(private dataService: IChatService) {
+        this.sessionid = uuidv4();
+    }
 
     private history: ChatHistory[] = [];
+    private sessionid: string
 
     clearChatHistory() { 
         this.history = [];
@@ -18,7 +22,7 @@ export class ChatService {
         return new Observable<RESULT<string>>((observer)=>{
             this.history = this.dataService.dumpChatHistory(this.history)
             let ended = false;
-            const observable = this.dataService.submitUserReply(query, this.history, ()=> {
+            const observable = this.dataService.submitUserReply(query, this.sessionid, this.history, ()=> {
                 ended = true;
                 this.history.push(new ChatHistory(EnumChatUserRoles.User, query));
                 if(replyFromBot.trim().length > 0) {
