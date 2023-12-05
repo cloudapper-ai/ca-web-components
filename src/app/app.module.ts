@@ -25,8 +25,7 @@ import { CAChatContainer } from './components/ca-chat-container/ca-chat-containe
     BrowserAnimationsModule,
     MarkdownModule.forRoot()
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: []
 })
 export class AppModule implements DoBootstrap {
   constructor(injector: Injector) {

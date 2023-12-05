@@ -6,9 +6,9 @@ import { IChatService } from "./interfaces/chat-service.interface";
 export class ChatDataService implements IChatService {
     private url: string
     constructor(url: string, public identifier: string, public knowledgeBaseId: string) {
-        if(url.endsWith('/')) { 
+        if (url.endsWith('/')) {
             this.url = `${url}api/v2.0/ai/llm-chat`
-        } else { 
+        } else {
             this.url = `${url}/api/v2.0/ai/llm-chat`
         }
     }
@@ -17,30 +17,30 @@ export class ChatDataService implements IChatService {
     private isStreaming: boolean = false;
 
     submitUserReply(query: string, sessionId: string, history: ChatHistory[], onComplete: () => void): Observable<RESULT<string>> {
-        return new Observable<RESULT<string>>(observer=> { 
-            if(this.isStreaming) { return; }
+        return new Observable<RESULT<string>>(observer => {
+            if (this.isStreaming) { return; }
             this.isStreaming = true;
             let request = {}
-            if(this.knowledgeBaseId.length > 0) {
-                request = { 
-                    group_ids: [ this.knowledgeBaseId ],
-                    similarity_top_k: 4, 
-                    query: query, 
+            if (this.knowledgeBaseId.length > 0) {
+                request = {
+                    group_ids: [this.knowledgeBaseId],
+                    similarity_top_k: 4,
+                    query: query,
                     chat_history: history,
                     system_context: 'You are an AI Assistant made by CloudApper AI.'
-                };    
+                };
             } else {
-                request = { 
-                    similarity_top_k: 4, 
-                    query: query, 
+                request = {
+                    similarity_top_k: 4,
+                    query: query,
                     chat_history: history,
                     system_context: 'You are an AI Assistant made by CloudApper AI.'
                 };
             }
-            
-            fetch(this.url, { 
+
+            fetch(this.url, {
                 method: 'post',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Accept': '*/*',
                     'X-Ca-Identifier': this.identifier,
@@ -48,79 +48,79 @@ export class ChatDataService implements IChatService {
                     'X-Ca-Chat-Session-Id': sessionId
                 },
                 body: JSON.stringify(request)
-            }).then(response=> { 
-                if(response.ok) {
-                    if(response.headers.get('Content-Type')==='text/event-stream') {
+            }).then(response => {
+                if (response.ok) {
+                    if (response.headers.get('Content-Type') === 'text/event-stream') {
                         const bodyStream = response.body;
-                        if(bodyStream) {
+                        if (bodyStream) {
                             // Create a TextDecoder to decode the response data (adjust encoding as needed)
                             const decoder = new TextDecoder('utf-8');
-                                            
+
                             // Process the response data as chunks become available
                             const reader = bodyStream.getReader();
-                            this.readStream(decoder, reader, ()=> { 
-                                this.isStreaming = false;   
+                            this.readStream(decoder, reader, () => {
+                                this.isStreaming = false;
                                 setTimeout(onComplete, 10);
-                            }, (result)=> { 
+                            }, (result) => {
                                 observer.next(result);
                             })
-                            
-                        } else { 
+
+                        } else {
                             observer.next(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
                             this.isStreaming = false;
                             setTimeout(onComplete, 10);
                         }
-                    } else { 
+                    } else {
                         return response.json()
                     }
-                    
-                } else { 
-                    if(response.statusText && response.statusText.trim().length > 0) {
+
+                } else {
+                    if (response.statusText && response.statusText.trim().length > 0) {
                         observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`)));
-                    } else { 
+                    } else {
                         observer.next(RESULT.error(new Error(`${response.status} - We have encountered a problem. Please try again later.`)));
                     }
                     this.isStreaming = false;
                     setTimeout(onComplete, 10);
                 }
-                
+
                 return undefined;
-                
-            }).then(value=>{ 
-                if(value) {
-                    if(value['ResponseCode'] && value['ResponseCode'] !== 200) { 
+
+            }).then(value => {
+                if (value) {
+                    if (value['ResponseCode'] && value['ResponseCode'] !== 200) {
                         let code = value['ResponseCode'];
                         let errorMessage: string = '';
                         if (value['Message'] && value['Message'].trim().length > 0) {
                             let message = value['Message'].trim();
                             errorMessage = `We have encountered a problem. Please try again later.\n${code}-**${message}**`;
-                        } else { 
+                        } else {
                             errorMessage = `${code} - We have encountered a problem. Please try again later.`;
                         }
-    
+
                         observer.next(RESULT.error(new Error(
                             errorMessage
                         )));
-    
-                        
+
+
                     } else {
                         const result = value['Result'];
-                        if(result) { 
-                            if(result['query_result'] && result['query_result'].trim().length > 0) { 
+                        if (result) {
+                            if (result['query_result'] && result['query_result'].trim().length > 0) {
                                 observer.next(RESULT.ok(result['query_result'].trim()))
-                            } else { 
+                            } else {
                                 observer.next(RESULT.ok(''));
                             }
-                        } else { 
+                        } else {
                             observer.next(RESULT.error(new Error("We have encountered a problem. Please try again later.")));
                         }
-                        
+
                     }
                     this.isStreaming = false;
                     setTimeout(onComplete, 10);
-                } 
-                
-            }).catch(reason=> {
+                }
+
+            }).catch(reason => {
                 observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${reason}`)));
                 this.isStreaming = false;
                 setTimeout(onComplete, 10);
@@ -130,49 +130,49 @@ export class ChatDataService implements IChatService {
     }
 
     private readStream(
-        decoder: TextDecoder, 
-        reader: ReadableStreamDefaultReader, 
-        completion: ()=>void, 
-        valueCallback: (data: RESULT<string>)=>void) {
-        
-        reader.read().then((chunk)=> {
-            if(chunk.done) { completion(); return; }
+        decoder: TextDecoder,
+        reader: ReadableStreamDefaultReader,
+        completion: () => void,
+        valueCallback: (data: RESULT<string>) => void) {
+
+        reader.read().then((chunk) => {
+            if (chunk.done) { completion(); return; }
             const data = decoder.decode(chunk.value, { stream: true });
             let error: boolean = false;
             let complete: boolean = false;
-            if(data) {
+            if (data) {
                 let foundContent: boolean = false
                 const lines = data.split('\n');
-                for(const line of lines) { 
-                    if(line.startsWith('data:')) { 
+                for (const line of lines) {
+                    if (line.startsWith('data:')) {
                         foundContent = true;
                         const stream: ChatStreamResponse = JSON.parse(line.substring(5).trim());
-                        if(stream) {
-                            if(stream.error) { 
+                        if (stream) {
+                            if (stream.error) {
                                 error = true;
                                 break;
                             } else if (stream.finish_reason === 'done') {
                                 complete = true;
                                 break;
-                            } else if(stream.content) { 
+                            } else if (stream.content) {
                                 valueCallback(RESULT.ok(stream.content))
-                            } else { 
+                            } else {
                                 valueCallback(RESULT.ok(''))
                             }
-                        } else { 
+                        } else {
                             error = true;
                             break;
                         }
                     }
                 }
 
-                if(!foundContent) { valueCallback(RESULT.ok('')); }
+                if (!foundContent) { valueCallback(RESULT.ok('')); }
             } else {
                 valueCallback(RESULT.ok(''));
             }
-            
-            if(!error) {
-                if(complete) {
+
+            if (!error) {
+                if (complete) {
                     completion();
                 } else {
                     this.readStream(decoder, reader, completion, valueCallback);
@@ -182,7 +182,7 @@ export class ChatDataService implements IChatService {
                 completion();
             }
 
-        }).catch((reason)=> { 
+        }).catch((reason) => {
             console.log('We encounterd an error.' + reason);
             valueCallback(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
             completion();
@@ -190,18 +190,19 @@ export class ChatDataService implements IChatService {
     }
 
     dumpChatHistory(history: ChatHistory[]): ChatHistory[] {
-        const newHistory: ChatHistory[] = [];
-        let totalLength: number = 0
-        for(let j = history.length -1; j>=0; j--) {
-            const length = history[j].content.length;
-            totalLength += length;
-            if(totalLength > this.MAX_TOKEN_LIMIT) { break; }
-            newHistory.push(history[j]);
-        }
-        return newHistory.reverse();
+        return history;
+        // const newHistory: ChatHistory[] = [];
+        // let totalLength: number = 0
+        // for(let j = history.length -1; j>=0; j--) {
+        //     const length = history[j].content.length;
+        //     totalLength += length;
+        //     if(totalLength > this.MAX_TOKEN_LIMIT) { break; }
+        //     newHistory.push(history[j]);
+        // }
+        // return newHistory.reverse();
     }
 }
 
 class ChatStreamResponse {
-    constructor(public content: string|null, public finish_reason: string|null, public error: string|null) {}
+    constructor(public content: string | null, public finish_reason: string | null, public error: string | null) { }
 }
