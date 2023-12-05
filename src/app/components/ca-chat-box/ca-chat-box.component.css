@@ -63,18 +63,12 @@
     margin: 0 0 0 8px;
 }
 
-.chat-exit { 
-    display: none;
+.chat-minimize { 
+    display: flex;
     align-items: center;
+    margin-right: -16px;
 }
 
-.chat-exit img { 
+.chat-minimize img { 
     max-width: 36px;
-}
-
-@media screen and (max-width:480px) {
-    .chat-exit { 
-        display: flex;
-        margin-right: -16px;
-    }
 }

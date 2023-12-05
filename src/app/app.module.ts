@@ -25,17 +25,18 @@ import { CAChatContainer } from './components/ca-chat-container/ca-chat-containe
     BrowserAnimationsModule,
     MarkdownModule.forRoot()
   ],
-  providers: []
+  providers: [],
+  bootstrap: [AppComponent]
 })
-export class AppModule implements DoBootstrap { 
+export class AppModule implements DoBootstrap {
   constructor(injector: Injector) {
-    const elemOne = createCustomElement(ChatPopupContainerComponent, { injector: injector})
+    const elemOne = createCustomElement(ChatPopupContainerComponent, { injector: injector })
     customElements.define('chat-popup-container', elemOne);
 
-    const elemTwo = createCustomElement(CAChatContainer, { injector: injector})
+    const elemTwo = createCustomElement(CAChatContainer, { injector: injector })
     customElements.define('chat-container', elemTwo);
   }
   ngDoBootstrap(appRef: ApplicationRef): void {
-    
+
   }
 }

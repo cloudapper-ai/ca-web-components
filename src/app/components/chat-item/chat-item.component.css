@@ -31,6 +31,8 @@
 
 ::ng-deep .chat-box-message p {
     margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;  
 }
 
 .chat-suggestion {

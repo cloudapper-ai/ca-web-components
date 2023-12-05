@@ -11,7 +11,7 @@ import { uuidv4 } from 'src/app/service-layer/utils';
   styleUrls: ['./ca-chat-box.component.css']
 })
 export class CaChatBoxComponent {
-  
+
   @Input() initialParameters: ChatBoxInputs = new ChatBoxInputs('CloudApper AI', 'user0123', 'AI Assistant', new ChatWindowColorProfile('#1960d1', '#ffffff', '#f2f2f2'), {}, false)
 
   addWarningfromBot(id: string, message: string) {
@@ -54,33 +54,33 @@ export class CaChatBoxComponent {
   private isLoading: boolean = false;
 
   private updateMessageQueue(newMessage: ChatMessage): boolean {
-    if(this.isLoading) {
-      if(newMessage.userId !== ChatConstants.BotId) {
-        return false; 
+    if (this.isLoading) {
+      if (newMessage.userId !== ChatConstants.BotId) {
+        return false;
       }
     }
 
     const messages = [...this.messages];
-    const loadingItemIndex = messages.findIndex(entry=>entry.loading);
-    if(loadingItemIndex !== -1) { 
+    const loadingItemIndex = messages.findIndex(entry => entry.loading);
+    if (loadingItemIndex !== -1) {
       // update the loading item with new message
       messages[loadingItemIndex] = newMessage;
-    } else { 
+    } else {
       // look for message that has the same id
-      const oldMessageIndex = messages.findIndex(entry=> entry.id === newMessage.id);
-      if(oldMessageIndex !== -1) { 
-        if(messages[oldMessageIndex].message === newMessage.message) { return false; }
+      const oldMessageIndex = messages.findIndex(entry => entry.id === newMessage.id);
+      if (oldMessageIndex !== -1) {
+        if (messages[oldMessageIndex].message === newMessage.message) { return false; }
         messages[oldMessageIndex].updateCount += 1;
         messages[oldMessageIndex].message = newMessage.message;
         messages[oldMessageIndex].warning = newMessage.warning;
-      } else { 
+      } else {
         messages.push(newMessage);
       }
     }
 
     this.messages = messages;
-    setTimeout(()=> {
-      if(this.chatbody) { 
+    setTimeout(() => {
+      if (this.chatbody) {
         this.chatbody.nativeElement.scroll({
           top: this.chatbody.nativeElement.scrollHeight,
           left: 0,
@@ -94,43 +94,55 @@ export class CaChatBoxComponent {
   @ViewChild('chatUserInput') chatUserInput?: ElementRef;
   @ViewChild('chatbody') chatbody?: ElementRef;
 
+
+  applyInitialMessage(message: string) {
+    setTimeout(() => {
+      this.addLoadingMessage();
+      this.setReadyForUserReply(false);
+      this.userReplySubmitted.next(message);
+    }, 250);
+    if (this.chatUserInput) {
+      this.chatUserInput.nativeElement.value = '';
+    }
+  }
+
   private postUserReply(message: string) {
-    if(this.addReplyFromUser(message)) { 
-      
-      setTimeout(()=> {
+    if (this.addReplyFromUser(message)) {
+
+      setTimeout(() => {
         this.addLoadingMessage();
         this.setReadyForUserReply(false);
         this.userReplySubmitted.next(message);
       }, 500);
-      if(this.chatUserInput) { 
+      if (this.chatUserInput) {
         this.chatUserInput.nativeElement.value = '';
       }
     }
   }
 
   protected onSubmitReplyEvent() {
-    if(this.chatUserInput) { 
+    if (this.chatUserInput) {
       const message = this.chatUserInput.nativeElement.value;
-      if(message && message.length > 0) { 
+      if (message && message.length > 0) {
         this.postUserReply(message)
       }
     }
   }
 
   @Output()
-  userReplySubmitted: BehaviorSubject<string|undefined> = new BehaviorSubject<string|undefined>(undefined);
+  userReplySubmitted: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
 
-  protected onSuggsetionSelected(message: string|undefined) {
-    if(message && message.length > 0) { 
+  protected onSuggsetionSelected(message: string | undefined) {
+    if (message && message.length > 0) {
       this.postUserReply(message);
     }
   }
 
-  @Output() chatExitRequestReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  @Output() chatMinimizeRequestReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  protected requestChatExit() {
-    this.chatExitRequestReceived.next(true);
+  protected minimizeChatWindow() {
+    this.chatMinimizeRequestReceived.next(true);
   }
 
-  @Input() allowExit: boolean = true;
+  @Input() allowMinimize: boolean = true;
 }
