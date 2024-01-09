@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { ChatHistory } from "../models/chat-message.model";
+import { ChatHistory, ChatResponseStream, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
 import { RESULT } from "../models/result.model";
 import { IChatService } from "./interfaces/chat-service.interface";
 
@@ -14,12 +14,9 @@ export class ChatDataService implements IChatService {
     }
 
     private readonly MAX_TOKEN_LIMIT = 2000;
-    private isStreaming: boolean = false;
 
-    submitUserReply(query: string, sessionId: string, history: ChatHistory[], onComplete: () => void): Observable<RESULT<string>> {
-        return new Observable<RESULT<string>>(observer => {
-            if (this.isStreaming) { return; }
-            this.isStreaming = true;
+    submitUserReply(query: string, sessionId: string, history: ChatHistory[]): Observable<ChatResponseStream> {
+        return new Observable<ChatResponseStream>(observer => {
             let request = {}
             if (this.knowledgeBaseId.length > 0) {
                 request = {
@@ -51,142 +48,172 @@ export class ChatDataService implements IChatService {
             }).then(response => {
                 if (response.ok) {
                     if (response.headers.get('Content-Type') === 'text/event-stream') {
+                        const decoder = new TextDecoder('utf-8');
                         const bodyStream = response.body;
                         if (bodyStream) {
-                            // Create a TextDecoder to decode the response data (adjust encoding as needed)
-                            const decoder = new TextDecoder('utf-8');
-
-                            // Process the response data as chunks become available
+                            console.log('--------------')
                             const reader = bodyStream.getReader();
-                            this.readStream(decoder, reader, () => {
-                                this.isStreaming = false;
-                                setTimeout(onComplete, 10);
-                            }, (result) => {
-                                observer.next(result);
-                            })
+                            this.readStream(decoder, reader, (content) => {
+                                if (observer.closed) { return; }
+                                if (content) {
+                                    switch (content.event) {
+                                        case 'message':
+                                        case 'error':
+                                            {
+                                                // this contains the message we want to show to the user.
+                                                const data = this.parseMessageContent(content.data);
+                                                if (data) {
+                                                    observer.next(<ChatResponseStream>{
+                                                        message: data
+                                                    });
+                                                } else {
+                                                    observer.next(<ChatResponseStream>{
+                                                        message: new StreamChatMessageData(null, null, 'We have encountered a problem when we were parsing response.')
+                                                    });
+
+                                                    observer.complete();
+                                                }
+                                            }
+                                            break;
+                                        case 'data':
+                                            {
+                                                const cache = this.parseDataContent(content.data);
+                                                if (cache) {
+                                                    observer.next(<ChatResponseStream>{
+                                                        cache: cache
+                                                    });
+                                                }
+                                            }
+                                            break;
+                                    }
+                                } else {
+                                    observer.next(<ChatResponseStream>{});
+                                    observer.complete();
+                                }
+                            });
 
                         } else {
-                            observer.next(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
-                            this.isStreaming = false;
-                            setTimeout(onComplete, 10);
+                            observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, 'We have encountered a problem. Please try again later.') });
+                            observer.complete();
                         }
                     } else {
-                        return response.json()
+                        return response.json();
                     }
-
                 } else {
                     if (response.statusText && response.statusText.trim().length > 0) {
-                        observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`)));
+                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, `We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`) });
                     } else {
-                        observer.next(RESULT.error(new Error(`${response.status} - We have encountered a problem. Please try again later.`)));
+                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, `${response.status} - We have encountered a problem. Please try again later.`) });
                     }
-                    this.isStreaming = false;
-                    setTimeout(onComplete, 10);
+
+                    observer.complete();
+
                 }
-
                 return undefined;
-
             }).then(value => {
                 if (value) {
                     if (value['ResponseCode'] && value['ResponseCode'] !== 200) {
-                        let code = value['ResponseCode'];
+                        const code = value['ResponseCode'];
                         let errorMessage: string = '';
                         if (value['Message'] && value['Message'].trim().length > 0) {
-                            let message = value['Message'].trim();
+                            const message = value['Message'].trim();
                             errorMessage = `We have encountered a problem. Please try again later.\n${code}-**${message}**`;
                         } else {
                             errorMessage = `${code} - We have encountered a problem. Please try again later.`;
                         }
 
-                        observer.next(RESULT.error(new Error(
-                            errorMessage
-                        )));
-
-
+                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, errorMessage) });
                     } else {
                         const result = value['Result'];
                         if (result) {
                             if (result['query_result'] && result['query_result'].trim().length > 0) {
-                                observer.next(RESULT.ok(result['query_result'].trim()))
+                                observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(result['query_result'].trim(), null, null) });
                             } else {
-                                observer.next(RESULT.ok(''));
+                                observer.next(<ChatResponseStream>{ message: new StreamChatMessageData('', null, null) });
                             }
                         } else {
-                            observer.next(RESULT.error(new Error("We have encountered a problem. Please try again later.")));
+                            observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, 'We have encountered a problem. Please try again later.') });
                         }
-
                     }
-                    this.isStreaming = false;
-                    setTimeout(onComplete, 10);
-                }
 
+                    observer.complete();
+                } else {
+                    // we received an stream and its being handled.
+                }
             }).catch(reason => {
-                observer.next(RESULT.error(new Error(`We have encountered a problem. Please try again later.\n${reason}`)));
-                this.isStreaming = false;
-                setTimeout(onComplete, 10);
+                observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, `We have encountered a problem. Please try again later.\n${reason}`) });
+                observer.complete();
             })
 
         })
     }
 
-    private readStream(
-        decoder: TextDecoder,
-        reader: ReadableStreamDefaultReader,
-        completion: () => void,
-        valueCallback: (data: RESULT<string>) => void) {
 
-        reader.read().then((chunk) => {
-            if (chunk.done) { completion(); return; }
-            const data = decoder.decode(chunk.value, { stream: true });
-            let error: boolean = false;
-            let complete: boolean = false;
-            if (data) {
-                let foundContent: boolean = false
-                const lines = data.split('\n');
-                for (const line of lines) {
-                    if (line.startsWith('data:')) {
-                        foundContent = true;
-                        const stream: ChatStreamResponse = JSON.parse(line.substring(5).trim());
-                        if (stream) {
-                            if (stream.error) {
-                                error = true;
-                                break;
-                            } else if (stream.finish_reason === 'done') {
-                                complete = true;
-                                break;
-                            } else if (stream.content) {
-                                valueCallback(RESULT.ok(stream.content))
-                            } else {
-                                valueCallback(RESULT.ok(''))
-                            }
-                        } else {
-                            error = true;
-                            break;
+    private readStream(decoder: TextDecoder, reader: ReadableStreamDefaultReader, callback: (content: { event: string, data: string } | undefined) => void) {
+        let isClosed = false;
+        reader.closed.then(() => isClosed = true)
+        const processChunk = (chunk: ReadableStreamReadResult<Uint8Array>) => {
+            if (chunk.done) {
+                // Stream is completed, close the reader and invoke the callback
+                reader.releaseLock();
+                callback(undefined);
+            } else {
+                const data = decoder.decode(chunk.value, { stream: true });
+                if (data) {
+                    const lines = data.trim().split('\n');
+                    let eventName: string | undefined = undefined;
+                    let message: string | undefined = undefined;
+                    for (const line of lines) {
+                        if (line.startsWith('event:')) {
+                            eventName = line.substring(6).trim();
+                        } else if (line.startsWith('data:')) {
+                            message = line.substring(5).trim();
+                        }
+                        if (eventName && message && eventName.length && message.length) {
+                            callback({ event: eventName, data: message });
+                            eventName = undefined;
+                            message = undefined;
                         }
                     }
                 }
 
-                if (!foundContent) { valueCallback(RESULT.ok('')); }
-            } else {
-                valueCallback(RESULT.ok(''));
-            }
 
-            if (!error) {
-                if (complete) {
-                    completion();
-                } else {
-                    this.readStream(decoder, reader, completion, valueCallback);
+                if (isClosed) {
+                    // Stream is completed, close the reader and invoke the callback
+                    reader.releaseLock();
+                    callback(undefined);
+                    return;
                 }
-            } else {
-                valueCallback(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
-                completion();
+                // Continue reading recursively
+                reader.read().then(processChunk).catch(handleError);
             }
+        };
 
-        }).catch((reason) => {
-            console.log('We encounterd an error.' + reason);
-            valueCallback(RESULT.error(new Error('We have encountered a problem. Please try again later.')));
-            completion();
-        });
+        const handleError = (error: any) => {
+            // Handle errors during reading
+            callback({ event: 'message', data: `{ "error": "${error.message}" }` });
+
+            // Close the reader in case of error
+            setTimeout(() => {
+                callback(undefined);
+                reader.releaseLock();
+            }, 10);
+        };
+
+        // Start the initial read
+        reader.read().then(processChunk).catch(handleError);
+    }
+
+    private parseMessageContent(string: string): StreamChatMessageData | null {
+        const data: StreamChatMessageData = JSON.parse(string)
+        if (data) { return data }
+        else { return null; }
+    }
+
+    private parseDataContent(string: string): StreamChatCacheData | null {
+        const data: StreamChatCacheData = JSON.parse(string)
+        if (data) { return data }
+        else { return null; }
     }
 
     dumpChatHistory(history: ChatHistory[]): ChatHistory[] {

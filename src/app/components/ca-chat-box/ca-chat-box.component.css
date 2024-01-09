@@ -9,18 +9,18 @@
 .chat-box-title {
     display: flex;
     align-items: center;
-    padding: 12px 24px;
+    padding: 6px 24px;
     border-bottom: 1px solid #e1e1e1;
     background-color: var(--chat-box-primary-color);
     color: var(--chat-box-on-primary-color)
 }
 
 .chat-box-title-medium {
-    font-size: 1.1em;
+    font-size: 16px;
 }
 
 .chat-box-title-small {
-    font-size: 0.7em;
+    font-size: 10px;
     opacity: 0.75;
 }
 
@@ -40,18 +40,22 @@
     border-top: 1px solid #f0f0f0;
 }
 
-.chat-box-input input {
-    width: 100%;
+.chat-box-input textarea {
+    width: 100%; 
     outline: none !important;
     border: none !important;
-    height: 36px !important;
+    height: 36px;
+    min-height: 36px !important;
+    max-height: 160px !important;
     padding: 0 16px !important;
-    font-size: 1rem !important;
+    font-size: 14px !important;
     font-weight: 300 !important;
     margin: 0 !important;
+    resize: vertical;
+    font-family: 'Be Vietnam Pro', sans-serif !important;
   }
   
-.chat-box-input input:focus {
+.chat-box-input textarea:focus {
     outline: none !important;
     margin: 0 !important;
 }

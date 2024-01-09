@@ -1,6 +1,6 @@
 import { Observable, takeWhile } from "rxjs";
 import { IChatService } from "../data-layer/interfaces/chat-service.interface";
-import { ChatHistory, EnumChatUserRoles } from "../models/chat-message.model";
+import { ChatHistory, ChatResponseStream, EnumChatUserRoles } from "../models/chat-message.model";
 import { RESULT } from "../models/result.model";
 import { uuidv4 } from "./utils";
 
@@ -12,50 +12,41 @@ export class ChatService {
     private history: ChatHistory[] = [];
     private sessionid: string
 
-    clearChatHistory() { 
+    clearChatHistory() {
         this.history = [];
     }
-    
-    submitUserReplyToBOT(query: string, onComplete: ()=>void): Observable<RESULT<string>> {
+
+    submitUserReplyToBOT(query: string, onComplete: () => void): Observable<RESULT<string>> {
         let replyFromBot: string = '';
         let encountedError: boolean = false;
-        return new Observable<RESULT<string>>((observer)=>{
+        return new Observable<RESULT<string>>((observer) => {
             this.history = this.dataService.dumpChatHistory(this.history)
-            let ended = false;
-            const observable = this.dataService.submitUserReply(query, this.sessionid, this.history, ()=> {
-                ended = true;
-                this.history.push(new ChatHistory(EnumChatUserRoles.User, query));
-                if(replyFromBot.trim().length > 0) {
-                    this.history.push(new ChatHistory(EnumChatUserRoles.Assistant, replyFromBot));
-                    onComplete();
-                } else if(!encountedError) {
-                    observer.next(RESULT.error(new Error("We were unable to produce a response for you, typically indicating a configuration problem. Please review your settings and attempt the operation once more.")))
-                    setTimeout(onComplete, 10);
-                } else { 
-                    onComplete();
-                }
-                
-                
-            })
-            observable.pipe(takeWhile(()=> { 
-                return !ended;
-            })).subscribe({
-                next: (result: RESULT<string>) => { 
-                    switch(result.isError) { 
-                        case true:
+            const observable = this.dataService.submitUserReply(query, this.sessionid, this.history)
+            observable.subscribe({
+                next: (value: ChatResponseStream) => {
+                    if (observer.closed) { return; }
+                    if (value.message) {
+                        if (value.message.error) {
                             replyFromBot = '';
-                            observer.next(RESULT.error(result.error!));
+                            observer.next(RESULT.error(new Error(value.message.error)));
                             encountedError = true;
-                            break;
-                        case false: 
-                            replyFromBot += result.result || '';
-                            observer.next(RESULT.ok(replyFromBot));
-                            break;
+                            observer.complete();
+                        } else if (!encountedError) {
+                            if (value.message.content && value.message.content.length > 0) {
+                                replyFromBot += value.message.content
+                                observer.next(RESULT.ok(replyFromBot));
+                            } else {
+                                replyFromBot += ''
+                                observer.next(RESULT.ok(replyFromBot));
+                            }
+                        }
                     }
-                }
+                },
+                complete: () => { observer.complete(); onComplete(); }
+
             })
         });
-        
+
     }
 
 

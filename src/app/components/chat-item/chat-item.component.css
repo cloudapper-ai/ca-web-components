@@ -2,7 +2,7 @@
     padding: 16px 48px;
 }
 .chat-box-user {
-    font-size: 0.8rem;
+    font-size: 12px;
     font-weight: 400;
 }
   
@@ -11,7 +11,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 8px;
+    /* margin-top: 8px; */
 }
 
 .chat-box-message-section img {
@@ -21,7 +21,7 @@
 
 .chat-box-message {
     width: 100%;
-    font-size: 1em;
+    font-size: 14px;
     font-weight: 300;
 }
 

@@ -1,5 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;400;500;600&display=swap');
+
 body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
     height: 100vh;
     margin: 0;
     padding: 0;
