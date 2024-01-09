@@ -150,8 +150,7 @@ export class ChatDataService implements IChatService {
 
 
     private readStream(decoder: TextDecoder, reader: ReadableStreamDefaultReader, callback: (content: { event: string, data: string } | undefined) => void) {
-        let isClosed = false;
-        reader.closed.then(() => isClosed = true)
+
         const processChunk = (chunk: ReadableStreamReadResult<Uint8Array>) => {
             if (chunk.done) {
                 // Stream is completed, close the reader and invoke the callback
@@ -177,13 +176,6 @@ export class ChatDataService implements IChatService {
                     }
                 }
 
-
-                if (isClosed) {
-                    // Stream is completed, close the reader and invoke the callback
-                    reader.releaseLock();
-                    callback(undefined);
-                    return;
-                }
                 // Continue reading recursively
                 reader.read().then(processChunk).catch(handleError);
             }
@@ -191,7 +183,9 @@ export class ChatDataService implements IChatService {
 
         const handleError = (error: any) => {
             // Handle errors during reading
-            callback({ event: 'message', data: `{ "error": "${error.message}" }` });
+            // callback({ event: 'message', data: `{ "error": "${error.message}" }` });
+
+            console.log(`We encountered an error while reading stream. Error: ${error.message}`)
 
             // Close the reader in case of error
             setTimeout(() => {
