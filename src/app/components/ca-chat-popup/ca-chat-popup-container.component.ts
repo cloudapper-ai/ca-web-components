@@ -3,7 +3,7 @@ import { ChatConstants } from "src/app/models/chat-constants.model";
 import { ChatBoxInputs, ChatColorProfile, ChatWindowColorProfile, EnumBubbleStyle, EnumWindowPosition } from "src/app/models/chat-ui.model";
 import { CaChatBoxComponent } from "../ca-chat-box/ca-chat-box.component";
 import { uuidv4 } from "src/app/service-layer/utils";
-import { takeWhile } from "rxjs";
+import { Subscription, takeWhile } from "rxjs";
 import { IChatService } from "src/app/data-layer/interfaces/chat-service.interface";
 import { ChatService } from "src/app/service-layer/chat-service.service";
 import { DummyChatDataService } from "src/app/data-layer/dummy-chat-service.data-service";
@@ -279,19 +279,28 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
         this.initialParameter.userColors[ChatConstants.BotId] = new ChatColorProfile(this.botlabelcolor, this.bottextcolor, this.botbackgroundcolor);;
     }
 
+    private subscription?: Subscription;
+    private replyId?: string;
+    private replyMessage?: string;
+
     protected onReceiveUserReply(message?: string) {
         if (!message) { return; }
         // console.log('User replied: ' + message);
         if (this.chatService) {
             const replyId: string = uuidv4();
             let ended: boolean = false;
+            this.replyId = replyId;
+            this.replyMessage = undefined;
             const observable = this.chatService.submitUserReplyToBOT(message, () => {
                 ended = true;
+                this.replyId = undefined;
                 if (this.chatBox) {
                     this.chatBox.setReadyForUserReply(true);
                 }
+
+                this.subscription = undefined
             });
-            observable.pipe(takeWhile(() => { return !ended; })).subscribe({
+            this.subscription = observable.pipe(takeWhile(() => { return !ended; })).subscribe({
                 next: (result: RESULT<string>) => {
                     switch (result.isError) {
                         case true:
@@ -302,6 +311,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                             break;
                         case false:
                             if (this.chatBox) {
+                                this.replyMessage = result.result
                                 this.chatBox.addReplyFromBot(replyId, result.result!)
                             }
                             break;
@@ -309,6 +319,15 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                 }
             })
         }
+    }
+
+    protected onCancelUserRequest() {
+        if (this.chatBox && this.replyId) {
+            this.replyMessage = (this.replyMessage ? this.replyMessage : '') + (this.replyMessage ? '<br>' : '') + '![](data:image/png;base64,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)<br>**Request was canceled.**'
+            this.chatBox.addReplyFromBot(this.replyId, this.replyMessage)
+        }
+        this.subscription?.unsubscribe()
+        this.subscription = undefined;
     }
 
     @ViewChild('chatBox')

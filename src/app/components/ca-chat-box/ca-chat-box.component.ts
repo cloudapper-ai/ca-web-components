@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ChatConstants } from 'src/app/models/chat-constants.model';
 import { ChatMessage } from 'src/app/models/chat-message.model';
@@ -51,7 +51,7 @@ export class CaChatBoxComponent {
     }
 
     protected messages: ChatMessage[] = [];
-    private isLoading: boolean = false;
+    protected isLoading: boolean = false;
 
     private updateMessageQueue(newMessage: ChatMessage): boolean {
         if (this.isLoading) {
@@ -135,6 +135,13 @@ export class CaChatBoxComponent {
                 this.postUserReply(message)
             }
         }
+    }
+
+    @Output()
+    cancelUserRequest: EventEmitter<void> = new EventEmitter();
+
+    protected onCancelUserRequest() {
+        this.cancelUserRequest.next();
     }
 
     @Output()

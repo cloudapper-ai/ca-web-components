@@ -9,6 +9,7 @@
         #simplechatBox
         [initialParameters]="initialParameter"
         (userReplySubmitted)="onReceiveUserReply($event)"
+        (cancelUserRequest)="onCancelUserRequest()"
         [allowMinimize]="false"
     ></ca-chat-box>
 </div>

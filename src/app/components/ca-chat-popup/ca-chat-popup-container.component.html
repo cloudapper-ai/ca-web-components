@@ -46,6 +46,7 @@
             <ca-chat-box 
                 #chatBox
                 [initialParameters]="initialParameter"
+                (cancelUserRequest)="onCancelUserRequest()"
                 (userReplySubmitted)="onReceiveUserReply($event)"
                 (chatMinimizeRequestReceived)="closeChatWindow(true)"
                 [allowMinimize]="true"
