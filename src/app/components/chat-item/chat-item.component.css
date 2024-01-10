@@ -42,3 +42,115 @@
     padding: 0px 48px 16px 48px;
     margin: -8px 0 0 0;
 }
+
+::ng-deep .chat-box-message .linked-messages {
+    margin-top: 8px;
+    border-radius: 8px;
+    padding: 8px;
+    background-color: #f4f4f4;
+    width: fit-content;
+}
+::ng-deep .chat-box-message .linked-messages a {
+    text-decoration: none;
+}
+
+::ng-deep .chat-box-message .linked-messages a img {
+    margin: auto;
+    max-width: 70%;
+    max-height: 400px;
+    border-radius: 8px;
+    display: block;
+}
+
+::ng-deep .chat-box-message h1 {
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .chat-box-message h2 {
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .chat-box-message h3 {
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .chat-box-message h4 {
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .chat-box-message h5 {
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .chat-box-message strong {
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .chat-box-message b {
+    margin: 0 !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+}
+
+::ng-deep .chat-box-message em {
+    margin: 0 !important;
+    padding: 2px;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    background-color: var(--codeblockcolor);
+    color: var(--highlightedtextcolor);
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+    font-size: 15px !important;
+    font-weight: 300 !important;
+}
+
+::ng-deep .chat-box-message table {
+    padding: 8px;
+    background: var(--codeblockcolor);
+    border-radius: 8px;
+    margin: 8px 0;
+}
+
+::ng-deep .chat-box-message table th {
+    padding: 4px 8px;
+    text-align: left;
+    font-weight: 400;
+}
+
+::ng-deep .chat-box-message table td {
+    padding: 4px 8px;
+    text-align: left;
+}
+
+::ng-deep .chat-box-message pre {
+    padding: 16px;
+    background-color: var(--codeblockcolor);
+    border-radius: 8px;
+}
