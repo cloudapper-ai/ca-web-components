@@ -1,5 +1,7 @@
 .chat-box {
     padding: 16px 48px;
+    --codeblockcolor: #e4f9ff;
+    --highlightedtextcolor: #090d1a;
 }
 .chat-box-user {
     font-size: 12px;
