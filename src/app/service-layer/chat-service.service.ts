@@ -42,7 +42,15 @@ export class ChatService {
                         }
                     }
                 },
-                complete: () => { observer.complete(); onComplete(); }
+                complete: () => {
+                    if (!encountedError) {
+                        this.history.push(...[
+                            new ChatHistory(EnumChatUserRoles.User, query),
+                            new ChatHistory(EnumChatUserRoles.Assistant, replyFromBot),
+                        ])
+                    }
+                    observer.complete(); onComplete();
+                }
 
             })
         });
