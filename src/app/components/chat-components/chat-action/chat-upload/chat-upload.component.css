@@ -1,25 +1,23 @@
 .upload-file-container {
-    /* 
-    display: flex;
-    flex-direction: column;
-    gap: 10px; */
     padding: 8px;
-    width: fit-content;
-    height: fit-content;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
     --primarycolor: #434;
     font-size: 14px;
     background-color: white;
 }
 
 .file-section {
-    width: 300px;
+    max-width: 300px;
     aspect-ratio: 1 / 1;
-    max-width: 100%;
+    width: 100%;
     background-color: white;
     overflow: hidden;
     padding: 8px;
     border-radius: 4px;
     box-shadow: #0002 0px 1px 3px 1px;
+    box-sizing: border-box;
 }
 
 .upload-files {

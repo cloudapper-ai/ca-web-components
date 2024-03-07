@@ -9,8 +9,11 @@ import { ChatService } from "../../service-layer/chat-service.service";
 import { DummyChatDataService } from "../../data-layer/dummy-chat-service.data-service";
 import { ChatDataService } from "../../data-layer/chat-service.data-service";
 import { RESULT } from "../../models/result.model";
-import { ChatUIActionData } from "../../models/chat-message.model";
+import { ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
+import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
+import { FileService } from "../../service-layer/file-service.service";
 
+@UntilDestroy()
 @Component({
     selector: 'ca-ai-chat-popup-container',
     templateUrl: './ca-chat-popup-container.component.html',
@@ -24,7 +27,7 @@ import { ChatUIActionData } from "../../models/chat-message.model";
 export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
     private chatDataService?: IChatService;
     private chatService?: ChatService;
-    constructor() {
+    constructor(private fileService: FileService) {
         this.chatDataService = new DummyChatDataService();
         this.chatService = new ChatService(this.chatDataService!)
 
@@ -75,6 +78,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
             if (this.identifier && this.identifier.trim().length > 0
                 && this.instanceurl && this.instanceurl.trim()) {
                 this.chatDataService = new ChatDataService(this.instanceurl.trim(), this.identifier.trim(), this.knowledgebaseid ? this.knowledgebaseid.trim() : '');
+                this.fileService.updateEndpoint(this.instanceurl.trim(), this.identifier.trim())
             } else {
                 this.chatDataService = new DummyChatDataService();
             }
@@ -301,7 +305,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
 
                 this.subscription = undefined
             });
-            this.subscription = observable.pipe(takeWhile(() => { return !ended; })).subscribe({
+            this.subscription = observable.pipe(takeWhile(() => { return !ended; }), untilDestroyed(this)).subscribe({
                 next: (result: RESULT<{
                     message: string;
                     action?: ChatUIActionData
@@ -327,6 +331,13 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                 }
             })
         }
+    }
+
+    protected onSubmitFileMessage(file: File) {
+        this.fileService.uploadfile(file).pipe(untilDestroyed(this)).subscribe({
+            next: (url) => { if (this.chatBox) { this.chatBox.addFileResponseFromUser(url, file) } },
+            error: (reason) => { if (this.chatBox) { this.chatBox.uploadFileFailed(reason); } }
+        })
     }
 
     protected onCancelUserRequest() {
@@ -370,6 +381,22 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                     }
 
                     this.chatBox.addReplyFromBot(uuidv4(), message, this.suggestionmessages)
+                    // this.chatBox?.addActionReplyFromBot(uuidv4(), message, <ChatUIActionData>{
+                    //     ActionType: EnumChatActionTypes.ChooseOptions,
+                    //     ActionChoiceAttributes: {
+                    //         Choices: 'Sr. Software Engineer; Sr. Angular Devloper'
+                    //     }
+                    //     // ActionType: EnumChatActionTypes.CreateSchedule,
+                    //     // ActionScheduleAttributes: {
+                    //     //     ScheduleEventLink: 'https://calendly.com/prithwi-biswas/30min',
+                    //     //     OnCompleteMessageFormat: 'I made a schedule with you. Please confirm.'
+                    //     // }
+                    //     // ActionType: EnumChatActionTypes.RecordVideo,
+                    //     // ActionAttachmentAttributes: {
+                    //     //     MaxFileSizeInMb: 500,
+                    //     //     DurationInSec: 300
+                    //     // }
+                    // });
                     this.chatService?.clearChatHistory();
                 }
 

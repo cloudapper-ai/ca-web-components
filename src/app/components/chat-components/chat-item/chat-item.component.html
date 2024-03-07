@@ -77,9 +77,12 @@
         {{message.message}}
     </div> -->
     <ng-container *ngIf="allowActionInteraction && message.action">
-        <chat-action [primaryColor]="botColorProfile.labelColor" [action]="message.action"
-            (scheduleRequest)="onRequestSearchSchedule($event)" (replyReceived)="onActionReplied($event)"
-            (recordVideoRequested)="onRecordVideoRequested($event)" (fileSelected)="onFileSelected($event)"
-            (openAppointmentWindow)="onOpenAppointmentWindowRequest($event)"></chat-action>
+        <div style="width: 100%; overflow: hidden;">
+            <chat-action [primaryColor]="botColorProfile.labelColor" [action]="message.action"
+                (scheduleRequest)="onRequestSearchSchedule($event)" (replyReceived)="onActionReplied($event)"
+                (recordVideoRequested)="onRecordVideoRequested($event)" (fileSelected)="onFileSelected($event)"
+                (openAppointmentWindow)="onOpenAppointmentWindowRequest($event)"></chat-action>
+        </div>
+
     </ng-container>
 </ng-template>

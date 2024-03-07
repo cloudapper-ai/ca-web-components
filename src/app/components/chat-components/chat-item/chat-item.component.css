@@ -165,7 +165,7 @@
     padding: 4px;
     background-color: #f4f4f4;
     max-width: fit-content;
-    margin: 8px;
+    margin-top: 8px;
 }
 
 ::ng-deep .chat-box-message .attachment-messages a {
@@ -212,6 +212,7 @@
     align-items: center;
     justify-content: center;
     background-color: black;
+    margin-top: 8px;
 }
 
 ::ng-deep .chat-box-message .video-attachment video {
@@ -236,6 +237,7 @@
     border-radius: 30px;
     background: white;
     overflow: hidden;
+    margin-top: 8px;
 }
 
 ::ng-deep .chat-box-message .audio-attachment audio {

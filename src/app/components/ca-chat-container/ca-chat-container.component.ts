@@ -34,23 +34,23 @@ export class CAChatContainer implements OnInit, AfterViewInit {
                 this.chatBox?.submitMessageWithoutShowing(this.initmsg)
             } else if (this.welcomemessages.length) {
                 const index = Math.round(Math.random() * (this.welcomemessages.length - 1));
-                // this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages)
-                this.chatBox?.addActionReplyFromBot(uuidv4(), this.welcomemessages[index], <ChatUIActionData>{
-                    // ActionType: EnumChatActionTypes.ChooseOptions,
-                    // ActionChoiceAttributes: {
-                    //     Choices: 'Sr. Software Engineer; Sr. Angular Devloper'
-                    // }
-                    // ActionType: EnumChatActionTypes.CreateSchedule,
-                    // ActionScheduleAttributes: {
-                    //     ScheduleEventLink: 'https://calendly.com/prithwi-biswas/30min',
-                    //     OnCompleteMessageFormat: 'I made a schedule with you. Please confirm.'
-                    // }
-                    ActionType: EnumChatActionTypes.UploadFile,
-                    ActionAttachmentAttributes: {
-                        MaxFileSizeInMb: 100,
-                        SupportedFileTypes: 'mp3, webm'
-                    }
-                });
+                this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages)
+                // this.chatBox?.addActionReplyFromBot(uuidv4(), this.welcomemessages[index], <ChatUIActionData>{
+                //     // ActionType: EnumChatActionTypes.ChooseOptions,
+                //     // ActionChoiceAttributes: {
+                //     //     Choices: 'Sr. Software Engineer; Sr. Angular Devloper'
+                //     // }
+                //     // ActionType: EnumChatActionTypes.CreateSchedule,
+                //     // ActionScheduleAttributes: {
+                //     //     ScheduleEventLink: 'https://calendly.com/prithwi-biswas/30min',
+                //     //     OnCompleteMessageFormat: 'I made a schedule with you. Please confirm.'
+                //     // }
+                //     // ActionType: EnumChatActionTypes.UploadFile,
+                //     // ActionAttachmentAttributes: {
+                //     //     MaxFileSizeInMb: 100,
+                //     //     SupportedFileTypes: 'mp3, webm'
+                //     // }
+                // });
             }
 
         })

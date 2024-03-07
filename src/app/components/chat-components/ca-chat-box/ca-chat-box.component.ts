@@ -48,8 +48,7 @@ export class CaChatBoxComponent {
     }
 
     addFileResponseFromUser(url: string, file: File) {
-        const chatMessage = new ChatMessage(uuidv4(), ChatConstants.UserId, `[${file.name}](${url})`);
-        return this.updateMessageQueue(chatMessage);
+        this.postUserReply(`[${file.name}](${url})`)
     }
 
     protected addLoadingMessage() {

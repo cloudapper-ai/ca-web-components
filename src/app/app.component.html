@@ -9,10 +9,10 @@
 
 
 <ca-ai-chat-popup-container #chatContainer [title]="'Talk to AI'" [botname]="'AI Assistant'" [username]="'User 0213'"
-  [cancelontouchoutside]="true" [addgloweffect]="true" hidden></ca-ai-chat-popup-container>
+  [cancelontouchoutside]="true" [addgloweffect]="true" [instanceurl]="'https://dev-api.cloudapper.com'"
+  [identifier]="'Y2JkMDU0MTgtNDJlOS00YzQ4LWIxZDUtNmQzYjAxNWFhZjMw'"></ca-ai-chat-popup-container>
 
 <div class="chat-container">
   <ca-chat-container #chatsimple [title]="'Talk to AI'" [botname]="'AI Assistant'" [username]="'Participants'"
-    [instanceurl]="'https://dev-api.cloudapper.com'"
-    [identifier]="'Y2JkMDU0MTgtNDJlOS00YzQ4LWIxZDUtNmQzYjAxNWFhZjMw'"></ca-chat-container>
+    hidden></ca-chat-container>
 </div>

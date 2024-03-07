@@ -67,7 +67,7 @@ export class ChatItemComponent implements OnInit {
                         </div>
                     `;
                     } else if (isAVideo(extension)) {
-                        if (extension === 'mp4' || extension === 'webm') {
+                        if (extension === 'mp4') {
                             return `
                             <div class="video-attachment">
                                 <video controls>
@@ -93,7 +93,7 @@ export class ChatItemComponent implements OnInit {
                         }
 
                     } else if (isAnAudio(extension)) {
-                        if (extension === 'mp3' || extension === 'webm') {
+                        if (extension === 'mp3') {
                             return `
                                 <div class="audio-attachment">
                                     <audio controls>
