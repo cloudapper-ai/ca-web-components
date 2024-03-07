@@ -1,0 +1,19 @@
+<div class="choice-container" [style.--choice-color]="choiceColor"
+    [style.--choice-background-color]="choiceBackgroundColor" [style.--choice-selected-color]="choiceSelectedColor"
+    [style.--choice-selected-background-color]="choiceSelectedBackgroundColor"
+    [style.--choice-hover-color]="choiceHoverColor"
+    [style.--choice-hover-background-color]="choiceHoverBackgroundColor">
+    <div class="chat-choices">
+        <ng-container *ngFor="let choice of choices; trackBy:trackChoice.bind(this)">
+            <div (click)="selected$.next(choice)"
+                [classList]="isSelected(choice) ? 'item-center chat-choice-selected': 'item-center chat-choice'">
+                {{choice}}</div>
+        </ng-container>
+    </div>
+    <ng-container *ngIf="isMultiChoice && selectedMap.size">
+        <div class="button horizontal-contents" style="margin-top: 8px;" (click)="onSubmitMultiChoice()">
+            <img src="assets/images/submit.png" alt="submit audio record">
+            <span style="color: #237558;">Submit</span>
+        </div>
+    </ng-container>
+</div>

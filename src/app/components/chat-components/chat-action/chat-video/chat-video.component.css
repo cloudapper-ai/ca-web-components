@@ -1,0 +1,105 @@
+.button-containers {
+    box-sizing: border-box;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    align-items: center;
+    width: 400px;
+    max-width: 100%;
+}
+
+.buttons-left {
+    justify-content: flex-start;
+}
+
+.buttons-middle {
+    justify-content: center;
+}
+
+.button {
+    user-select: none;
+    cursor: pointer;
+    width: fit-content;
+    padding: 16px 16px 16px 8px;
+    height: 40px;
+    border-radius: 6px;
+    background-color: white;
+    z-index: 5;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px 1px;
+    box-sizing: border-box;
+}
+
+.button:hover {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 1px;
+}
+
+.horizontal-contents {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.horizontal-contents img {
+    height: 28px;
+}
+
+.button span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.video-preview {
+    width: 400px;
+    height: 600px;
+    max-width: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 1px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px;
+}
+
+.video-preview video {
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+    background-color: black;
+}
+
+.error-section {
+    display: flex;
+    width: 400px;
+    height: 600px;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 8px;
+    text-align: center;
+}
+
+.error-section span {
+    font-size: 14px;
+    font-weight: 300;
+    color: red;
+}
+
+.upload-section {
+    width: 400px;
+    height: 160px;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.upload-section span {
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+}

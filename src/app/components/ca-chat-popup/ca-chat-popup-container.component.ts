@@ -1,14 +1,15 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
-import { ChatConstants } from "src/app/models/chat-constants.model";
-import { ChatBoxInputs, ChatColorProfile, ChatWindowColorProfile, EnumBubbleStyle, EnumWindowPosition } from "src/app/models/chat-ui.model";
-import { CaChatBoxComponent } from "../ca-chat-box/ca-chat-box.component";
-import { uuidv4 } from "src/app/service-layer/utils";
+import { AfterViewInit, Component, HostListener, Input, OnChanges, SimpleChanges, ViewChild, ViewEncapsulation } from "@angular/core";
+import { ChatConstants } from "../../models/chat-constants.model";
+import { ChatBoxInputs, ChatColorProfile, ChatWindowColorProfile, EnumBubbleStyle, EnumWindowPosition } from "../../models/chat-ui.model";
+import { CaChatBoxComponent } from "../chat-components/ca-chat-box/ca-chat-box.component";
+import { uuidv4 } from "../../helpers/utils";
 import { Subscription, takeWhile } from "rxjs";
-import { IChatService } from "src/app/data-layer/interfaces/chat-service.interface";
-import { ChatService } from "src/app/service-layer/chat-service.service";
-import { DummyChatDataService } from "src/app/data-layer/dummy-chat-service.data-service";
-import { ChatDataService } from "src/app/data-layer/chat-service.data-service";
-import { RESULT } from "src/app/models/result.model";
+import { IChatService } from "../../data-layer/interfaces/chat-service.interface";
+import { ChatService } from "../../service-layer/chat-service.service";
+import { DummyChatDataService } from "../../data-layer/dummy-chat-service.data-service";
+import { ChatDataService } from "../../data-layer/chat-service.data-service";
+import { RESULT } from "../../models/result.model";
+import { ChatUIActionData } from "../../models/chat-message.model";
 
 @Component({
     selector: 'ca-ai-chat-popup-container',
@@ -301,7 +302,10 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                 this.subscription = undefined
             });
             this.subscription = observable.pipe(takeWhile(() => { return !ended; })).subscribe({
-                next: (result: RESULT<string>) => {
+                next: (result: RESULT<{
+                    message: string;
+                    action?: ChatUIActionData
+                }>) => {
                     switch (result.isError) {
                         case true:
                             if (this.chatBox) {
@@ -310,9 +314,13 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
 
                             break;
                         case false:
-                            if (this.chatBox) {
-                                this.replyMessage = result.result
-                                this.chatBox.addReplyFromBot(replyId, result.result!)
+                            if (this.chatBox && result.result) {
+                                this.replyMessage = result.result.message
+                                if (result.result.action) {
+                                    this.chatBox.addActionReplyFromBot(replyId, result.result.message, result.result.action);
+                                } else {
+                                    this.chatBox.addReplyFromBot(replyId, result.result.message);
+                                }
                             }
                             break;
                     }

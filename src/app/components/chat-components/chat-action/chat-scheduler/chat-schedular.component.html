@@ -1,0 +1,13 @@
+<div style="padding: 16px;">
+    <ng-container *ngIf="error; else buttonview">
+        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
+            <span style="color: red; text-align: center; max-width: 80%;">{{error}}</span>
+        </div>
+    </ng-container>
+    <ng-template #buttonview>
+        <div class="button horizontal-contents" (click)="onRequestOpenAppointment()">
+            <img src="assets/images/scheduler-white.png" alt="Create Schedule">
+            <span>Make an Appointment</span>
+        </div>
+    </ng-template>
+</div>

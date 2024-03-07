@@ -1,0 +1,63 @@
+<div class="action-container">
+    <ng-container [ngSwitch]="action.ActionType">
+        <ng-container *ngSwitchCase="ChatActionTypes.ChooseOption" [ngTemplateOutlet]="choiceview"
+            [ngTemplateOutletContext]="{$implicit: false}"></ng-container>
+        <ng-container *ngSwitchCase="ChatActionTypes.ChooseOptions" [ngTemplateOutlet]="choiceview"
+            [ngTemplateOutletContext]="{$implicit: true}"></ng-container>
+        <ng-container *ngSwitchCase="ChatActionTypes.ShowRecord" [ngTemplateOutlet]="recordview">
+        </ng-container>
+        <ng-container *ngSwitchCase="ChatActionTypes.ShowRecords" [ngTemplateOutlet]="recordview">
+        </ng-container>
+        <ng-container *ngSwitchCase="ChatActionTypes.UploadFile" [ngTemplateOutlet]="uploadfile"
+            [ngTemplateOutletContext]="{$implicit: action.ActionAttachmentAttributes || {
+            MaxFileSizeInMb: 200
+        }}"></ng-container>
+        <ng-container *ngSwitchCase="ChatActionTypes.RecordAudio" [ngTemplateOutlet]="recordaudio"
+            [ngTemplateOutletContext]="{$implicit: action.ActionAttachmentAttributes || {
+            MaxFileSizeInMb: 200,
+            DurationInSec: 60
+        }}"></ng-container>
+        <ng-container *ngSwitchCase="ChatActionTypes.RecordVideo" [ngTemplateOutlet]="recordVideo"
+            [ngTemplateOutletContext]="{$implicit: action.ActionAttachmentAttributes || {
+            MaxFileSizeInMb: 200,
+            DurationInSec: 60
+        }}"></ng-container>
+
+        <ng-container *ngSwitchCase="ChatActionTypes.CreateSchedule" [ngTemplateOutlet]="makeAppointment"
+            [ngTemplateOutletContext]="{$implicit: action.ActionScheduleAttributes || {
+            ScheduleEventLink: '',
+            ScheduleCompleteRedirectionLink: '',
+            OnCompleteMessageFormat: ''
+        }}"></ng-container>
+    </ng-container>
+</div>
+
+<ng-template #choiceview let-data>
+    <ng-container *ngIf="action.ActionChoiceAttributes && action.ActionChoiceAttributes.Choices">
+        <chat-choice [primaryColor]="primaryColor" [choices]="action.ActionChoiceAttributes.Choices|choices"
+            [isMultiChoice]="data" (choiceSelected)="onSubmitReply($event)"></chat-choice>
+    </ng-container>
+</ng-template>
+
+<ng-template #recordview>
+    <chat-record [records]="action.ActionViewRecordsAttributes || []"></chat-record>
+</ng-template>
+<ng-template #uploadfile let-data>
+    <chat-upload [data]="data" [primaryColor]="primaryColor" (fileSelected)="onFileSelected($event)"></chat-upload>
+</ng-template>
+
+<ng-template #recordaudio let-data>
+    <chat-audio-recorder [primaryColor]="primaryColor" [maxFileSizeInMb]="data.MaxFileSizeInMb"
+        [maxRecordingDurationInSec]="data.DurationInSec" (fileSelected)="onFileSelected($event)"></chat-audio-recorder>
+</ng-template>
+
+<ng-template #recordVideo let-data>
+    <chat-video-recorder [primaryColor]="primaryColor" [maximumFileSizeInMb]="data.MaxFileSizeInMb"
+        [durationInSec]="data.DurationInSec" (readyToRecordVideo)="startRecordingVideo($event)"
+        (fileSelected)="onFileSelected($event)"></chat-video-recorder>
+</ng-template>
+
+<ng-template #makeAppointment let-data>
+    <chat-schedular-view [attribute]="data" (requestOpenAppointment)="onOpenAppointmentWindowRequest($event)"
+        (submitReply)="onReceiveScheduleRequest($event)"></chat-schedular-view>
+</ng-template>

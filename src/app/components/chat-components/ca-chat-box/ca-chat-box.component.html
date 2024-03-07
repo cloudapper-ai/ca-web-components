@@ -1,0 +1,86 @@
+<div class="chat-area">
+    <div class="chat-box-title">
+        <div style="width: 100%;">
+            <div class="chat-box-title-medium">{{initialParameters.title}}</div>
+            <div class="chat-box-title-small">Powered by CloudApper AI</div>
+        </div>
+
+        <!-- <ng-container *ngIf="allowExit">
+            <div class="chat-exit" (click)="requestChatExit()">
+                <img  width="40px"
+                    src="data:image/png;base64,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" 
+                    alt="cancel-icon" 
+                    srcset="">
+            </div>
+        </ng-container> -->
+        <ng-container *ngIf="allowMinimize">
+            <div class="chat-minimize" (click)="minimizeChatWindow()">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAN1JREFUeF7tlcENQlEMw9qVmIIB2Iczw3BmA9Z6DGEkUGLuEb+u87pT/tvy+UcAGlBOwAqUC+AjaAWsQDkBK1AugFfACliBcgJWoFwAr4AVsALlBKxAuQBeAStgBcoJ4Aqccy4zc/8Rx8fuvsl/fwPAdWZe5CNA9ra7T5DnV+CcIwANKK9A9yNIHqB/yOIr8A9DkG8QAKGXkNWAhC2SGTSA0EvIakDCFskMGkDoJWQ1IGGLZAYNIPQSshqQsEUygwYQeglZDUjYIplBAwi9hKwGJGyRzKABhF5Ctt6ADzywHkEQYk5nAAAAAElFTkSuQmCC"
+                    alt="minimize window">
+            </div>
+        </ng-container>
+
+    </div>
+    <div #chatbody class="chat-box-body"
+        [ngStyle]="{'background-color': initialParameters.windowColors.secondaryColor}">
+        <ng-container *ngFor="let message of messages; let i=index; trackBy:trackBy">
+            <chat-item [id]="message.id" [user]="initialParameters.userName" [bot]="initialParameters.botName"
+                [colorProfiles]="initialParameters.userColors" [allowActionInteraction]="i===messages.length - 1"
+                [message]=message (suggestionSelected)="onSuggsetionSelected($event)"
+                (actionReplyReceived)="onSuggsetionSelected($event)"
+                (recordVideoRequested)="onRecordVideoRequested($event)" (fileSelected)="onFileMessageReceived($event)"
+                (openAppointmentWindow)="onMakeAppointmentRequested($event)"
+                (searchScheduleRequest)="onScheduleSearchRequested($event)"></chat-item>
+        </ng-container>
+    </div>
+    <ng-container *ngIf="!action">
+        <div class="chat-box-input">
+            <textarea #chatUserInput class="text" placeholder="Type here to search" (input)="onInputChange($event)"
+                (keydown.enter)="$event.preventDefault()" (keyup.enter)="onSubmitReplyEvent()"
+                spellcheck="true"></textarea>
+            <img [hidden]="isLoading" (click)="onSubmitReplyEvent()"
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAAAXNSR0IArs4c6QAAAddJREFUaEPtV0tKA0EQfT1JzE8HElCXbvQC3kMQPIAH8BSiYCC6caur4ErFhVvBS4iiOxeC+CGdGZJMEk2XRFGjZDH9GbWxZ931qt571T1VDJZ/zPL64Qj8toPOAeeApgKuhTQF1A53DmhLqAngHNAUUDtcwYHJceChqZ3ZEIA0gWyhfMSIrjo5VMB5CIAM1aIEI00gXygdE7AAoAuwM+FhudesXyhlNxCkQ+A9vQBwScB2t813AfQN1BUbwgSBoWR0x8AOSNBWp9O4jl2FxkHDBIa5YI88Vuu26qdJupIcgQ8u7J4RVqIcnYDzQEPskaE/QOBL3o1sRlSDIGiYer2kCeSKpX0QlgB4imo+AWgwYvNRVL9RxPj0VxWgWJyaFqI/A4gxIkrB8+YAWgPgA8gDsfbtc8ZQi1q8quqItANxCfu+X+49pxcBShOQ9hgmiDAgmBrh3uAp3vGQWm23H2/j5hic+78ERrTQLEDrf76FrL/EQ7OQTKu+nSVUxjL9ahiGXPXSfk8qfQfkCdj6IyMrR4nXYe6QBG3aNMxZO07budBYv1ICli/18o9/shHS/4Fky5FHdwTkNTMb4Rwwq6c8mnNAXjOzEc4Bs3rKozkH5DUzG2G9Ay+zitkxUTv04QAAAABJRU5ErkJggg=="
+                alt="Send Button">
+            <img [hidden]="!isLoading" (click)="onCancelUserRequest()"
+                src="data:image/png;base64,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"
+                alt="Send Button">
+        </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="isRecordingVideo && videoRecordAttributes">
+        <div class="video-record-window">
+            <div class="video-record-body">
+                <div class="video-record-title">
+                    <span>Recording Video</span>
+                    <img (click)="cancelRecording()" style="width: 32px;"
+                        src="data:image/png;base64,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"
+                        alt="cancel-icon" srcset="">
+                </div>
+                <div class="video-record-section">
+                    <video-recorder [duration]="videoRecordAttributes.DurationInSec"
+                        [maxSize]="videoRecordAttributes.MaxFileSizeInMb"
+                        (recordCompleted)="onRecordCompleted($event)"></video-recorder>
+                </div>
+            </div>
+
+        </div>
+    </ng-container>
+    <ng-container *ngIf="isOpenAppointment && scheduleAttributes">
+        <div class="video-record-window">
+            <div class="video-record-body">
+                <div class="video-record-title">
+                    <span>Make An Appointment</span>
+                    <img (click)="closeAppointment()" style="width: 32px;"
+                        src="data:image/png;base64,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"
+                        alt="cancel-icon" srcset="">
+                </div>
+                <div class="video-record-section">
+                    <iframe-preview [openingLink]="scheduleAttributes.ScheduleEventLink"
+                        (errorReceived)="onErrorfromIframe($event)"></iframe-preview>
+                </div>
+            </div>
+
+        </div>
+    </ng-container>
+</div>

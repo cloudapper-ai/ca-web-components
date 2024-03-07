@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
-import { ChatHistory, ChatResponseStream } from "src/app/models/chat-message.model";
-import { RESULT } from "src/app/models/result.model";
+import { ChatHistory, ChatResponseStream } from "../../models/chat-message.model";
 
 export interface IChatService {
     /**

@@ -1,0 +1,16 @@
+<div class="iframe-container">
+    <iframe #iframeElement id="iframe-preview" [src]="trustedurl" frameborder="0"
+        (loadstart)="isLoading$.next(true); error$.next(null);" (load)="onLoad()"
+        (error)="isLoading$.next(false); error$.next($event.message);"></iframe>
+    <ng-container *ngIf="isLoading$ | async">
+        <div class="overlay">
+            <img src="assets/gifs/ca_loader.gif" alt="loading">
+        </div>
+    </ng-container>
+    <ng-container *ngIf="error$ | async as error">
+        <div class="overlay">
+            <img src="assets/images/warning.png" alt="">
+            <span>{{error}}</span>
+        </div>
+    </ng-container>
+</div>

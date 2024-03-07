@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
-import { ChatHistory, ChatResponseStream, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
-import { RESULT } from "../models/result.model";
+import { ChatHistory, ChatResponseStream, ChatUIActionData, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
 import { IChatService } from "./interfaces/chat-service.interface";
 
 export class ChatDataService implements IChatService {
@@ -12,8 +11,6 @@ export class ChatDataService implements IChatService {
             this.url = `${url}/api/v2.0/ai/llm-chat`
         }
     }
-
-    private readonly MAX_TOKEN_LIMIT = 2000;
 
     submitUserReply(query: string, sessionId: string, history: ChatHistory[]): Observable<ChatResponseStream> {
         return new Observable<ChatResponseStream>(observer => {
@@ -51,7 +48,6 @@ export class ChatDataService implements IChatService {
                         const decoder = new TextDecoder('utf-8');
                         const bodyStream = response.body;
                         if (bodyStream) {
-                            console.log('--------------')
                             const reader = bodyStream.getReader();
                             this.readStream(decoder, reader, (content) => {
                                 if (observer.closed) { return; }
@@ -84,6 +80,17 @@ export class ChatDataService implements IChatService {
                                                     });
                                                 }
                                             }
+                                            break;
+                                        case 'uiaction':
+                                            {
+                                                const data = this.parseUIActionContent(content.data);
+                                                if (data) {
+                                                    observer.next(<ChatResponseStream>{
+                                                        uiaction: data
+                                                    });
+                                                }
+                                            }
+
                                             break;
                                     }
                                 } else {
@@ -210,6 +217,13 @@ export class ChatDataService implements IChatService {
         else { return null; }
     }
 
+    private parseUIActionContent(string: string): ChatUIActionData[] | null {
+        const data: ChatUIActionData[] = JSON.parse(string)
+        if (data) { return data }
+        else { return null; }
+    }
+
+    private readonly MAX_TOKEN_LIMIT = 2000;
     dumpChatHistory(history: ChatHistory[]): ChatHistory[] {
         return history;
         // const newHistory: ChatHistory[] = [];

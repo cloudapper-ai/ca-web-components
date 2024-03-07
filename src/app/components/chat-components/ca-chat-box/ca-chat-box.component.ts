@@ -1,9 +1,10 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ChatConstants } from 'src/app/models/chat-constants.model';
-import { ChatMessage } from 'src/app/models/chat-message.model';
-import { ChatBoxInputs, ChatWindowColorProfile } from 'src/app/models/chat-ui.model';
-import { uuidv4 } from 'src/app/service-layer/utils';
+import { ChatConstants } from '../../../models/chat-constants.model';
+import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatUIActionData } from '../../../models/chat-message.model';
+import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
+import { RESULT } from '../../../models/result.model';
+import { uuidv4 } from '../../../helpers/utils';
 
 @Component({
     selector: 'ca-chat-box',
@@ -31,12 +32,23 @@ export class CaChatBoxComponent {
         this.updateMessageQueue(chatMessage);
     }
 
+    addActionReplyFromBot(id: string, message: string, action: ChatUIActionData) {
+        const chatMessage = new ChatMessage(id, ChatConstants.BotId, message);
+        chatMessage.action = action
+        this.updateMessageQueue(chatMessage);
+    }
+
     setReadyForUserReply(ready: boolean) {
         this.isLoading = !ready;
     }
 
     protected addReplyFromUser(message: string): boolean {
         const chatMessage = new ChatMessage(uuidv4(), ChatConstants.UserId, message);
+        return this.updateMessageQueue(chatMessage);
+    }
+
+    addFileResponseFromUser(url: string, file: File) {
+        const chatMessage = new ChatMessage(uuidv4(), ChatConstants.UserId, `[${file.name}](${url})`);
         return this.updateMessageQueue(chatMessage);
     }
 
@@ -52,6 +64,7 @@ export class CaChatBoxComponent {
 
     protected messages: ChatMessage[] = [];
     protected isLoading: boolean = false;
+    protected action?: ChatUIActionData;
 
     private updateMessageQueue(newMessage: ChatMessage): boolean {
         if (this.isLoading) {
@@ -73,10 +86,13 @@ export class CaChatBoxComponent {
                 messages[oldMessageIndex].updateCount += 1;
                 messages[oldMessageIndex].message = newMessage.message;
                 messages[oldMessageIndex].warning = newMessage.warning;
+                messages[oldMessageIndex].action = newMessage.action;
             } else {
                 messages.push(newMessage);
             }
         }
+
+        this.action = messages.length ? messages[messages.length - 1].action : undefined;
 
         this.messages = messages;
         setTimeout(() => {
@@ -95,7 +111,7 @@ export class CaChatBoxComponent {
     @ViewChild('chatbody') chatbody?: ElementRef;
 
 
-    applyInitialMessage(message: string) {
+    submitMessageWithoutShowing(message: string) {
         setTimeout(() => {
             this.addLoadingMessage();
             this.setReadyForUserReply(false);
@@ -137,6 +153,8 @@ export class CaChatBoxComponent {
         }
     }
 
+    @Output() submitFileMessage: EventEmitter<File> = new EventEmitter();
+
     @Output()
     cancelUserRequest: EventEmitter<void> = new EventEmitter();
 
@@ -171,4 +189,76 @@ export class CaChatBoxComponent {
     }
 
     @Input() allowMinimize: boolean = true;
+
+    protected onScheduleSearchRequested(message: string) {
+        if (this.isLoading) { return; }
+        this.submitMessageWithoutShowing(message)
+    }
+
+    // #region video record control
+    protected isRecordingVideo: boolean = false;
+    protected videoRecordAttributes?: ActionAttachmentAttributes;
+    protected videoRecordObserver?: BehaviorSubject<File | null>;
+    protected onRecordVideoRequested(param: {
+        attribute: ActionAttachmentAttributes,
+        subject: BehaviorSubject<File | null>
+    }) {
+        this.videoRecordAttributes = param.attribute;
+        this.videoRecordObserver = param.subject;
+        this.isRecordingVideo = true;
+    }
+
+    protected cancelRecording() {
+        this.isRecordingVideo = false;
+        this.videoRecordObserver?.next(null);
+    }
+
+    protected onRecordCompleted(file: File) {
+        this.isRecordingVideo = false;
+        this.videoRecordObserver?.next(file);
+    }
+
+    // #endregion
+
+    // #region make appointment controls
+    protected isOpenAppointment: boolean = false;
+    protected scheduleAttributes?: ActionScheduleAttributes;
+    protected scheduleObserver?: BehaviorSubject<RESULT<boolean>>;
+    protected onMakeAppointmentRequested(param: {
+        attribute: ActionScheduleAttributes,
+        subject: BehaviorSubject<RESULT<boolean>>
+    }) {
+        this.scheduleAttributes = param.attribute;
+        this.scheduleObserver = param.subject;
+        this.isOpenAppointment = true;
+    }
+
+    protected closeAppointment() {
+        this.isOpenAppointment = false;
+        this.scheduleAttributes = undefined;
+        this.scheduleObserver?.next(RESULT.ok(true));
+    }
+
+    protected onErrorfromIframe(error: string) {
+        this.scheduleObserver?.next(RESULT.error(new Error(error)));
+        this.isOpenAppointment = false;
+        this.scheduleAttributes = undefined;
+    }
+    // #endregion
+
+    private fileUploadObserver?: BehaviorSubject<string | undefined> = undefined;
+    protected onFileMessageReceived(param: {
+        file: File,
+        subscriber: BehaviorSubject<string | undefined>
+    }) {
+        if (!this.isLoading) {
+            this.fileUploadObserver = param.subscriber;
+            this.submitFileMessage.next(param.file);
+        }
+    }
+
+    uploadFileFailed(reason: string) {
+        this.fileUploadObserver?.next(reason);
+        this.fileUploadObserver = undefined;
+    }
 }

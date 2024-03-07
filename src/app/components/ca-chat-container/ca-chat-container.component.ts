@@ -1,14 +1,16 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
-import { CaChatBoxComponent } from "../ca-chat-box/ca-chat-box.component";
+import { CaChatBoxComponent } from "../chat-components/ca-chat-box/ca-chat-box.component";
 import { BehaviorSubject, Subscription, debounceTime, distinctUntilChanged, takeWhile } from "rxjs";
-import { ChatDataService } from "src/app/data-layer/chat-service.data-service";
-import { DummyChatDataService } from "src/app/data-layer/dummy-chat-service.data-service";
-import { ChatConstants } from "src/app/models/chat-constants.model";
-import { ChatBoxInputs, ChatWindowColorProfile, ChatColorProfile } from "src/app/models/chat-ui.model";
-import { RESULT } from "src/app/models/result.model";
-import { ChatService } from "src/app/service-layer/chat-service.service";
-import { uuidv4 } from "src/app/service-layer/utils";
+import { ChatDataService } from "../../data-layer/chat-service.data-service";
+import { DummyChatDataService } from "../../data-layer/dummy-chat-service.data-service";
+import { ChatConstants } from "../../models/chat-constants.model";
+import { ChatBoxInputs, ChatWindowColorProfile, ChatColorProfile } from "../../models/chat-ui.model";
+import { RESULT } from "../../models/result.model";
+import { ChatService } from "../../service-layer/chat-service.service";
+import { uuidv4 } from "../../helpers/utils";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
+import { ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
+import { FileService } from "../../service-layer/file-service.service";
 
 @UntilDestroy()
 @Component({
@@ -19,8 +21,9 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 })
 export class CAChatContainer implements OnInit, AfterViewInit {
     private chatService?: ChatService;
-    constructor() {
+    constructor(private fileService: FileService) {
         this.chatService = new ChatService(new DummyChatDataService())
+
         this.updateUserColorProfile()
         this.updateBotColorProfile()
     }
@@ -28,10 +31,26 @@ export class CAChatContainer implements OnInit, AfterViewInit {
         this.initateRequest.pipe(untilDestroyed(this), debounceTime(100), distinctUntilChanged()).subscribe(() => {
             this.chatBox?.reset();
             if (this.initmsg && this.initmsg.length) {
-                this.chatBox?.applyInitialMessage(this.initmsg)
+                this.chatBox?.submitMessageWithoutShowing(this.initmsg)
             } else if (this.welcomemessages.length) {
                 const index = Math.round(Math.random() * (this.welcomemessages.length - 1));
-                this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages)
+                // this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages)
+                this.chatBox?.addActionReplyFromBot(uuidv4(), this.welcomemessages[index], <ChatUIActionData>{
+                    // ActionType: EnumChatActionTypes.ChooseOptions,
+                    // ActionChoiceAttributes: {
+                    //     Choices: 'Sr. Software Engineer; Sr. Angular Devloper'
+                    // }
+                    // ActionType: EnumChatActionTypes.CreateSchedule,
+                    // ActionScheduleAttributes: {
+                    //     ScheduleEventLink: 'https://calendly.com/prithwi-biswas/30min',
+                    //     OnCompleteMessageFormat: 'I made a schedule with you. Please confirm.'
+                    // }
+                    ActionType: EnumChatActionTypes.UploadFile,
+                    ActionAttachmentAttributes: {
+                        MaxFileSizeInMb: 100,
+                        SupportedFileTypes: 'mp3, webm'
+                    }
+                });
             }
 
         })
@@ -44,6 +63,7 @@ export class CAChatContainer implements OnInit, AfterViewInit {
         if (this.instanceurl.trim().length > 0
             && this.identifier.trim().length > 0) {
             this.chatService = new ChatService(new ChatDataService(this.instanceurl, this.identifier, this.knowledgebaseid));
+            this.fileService.updateEndpoint(this.instanceurl, this.identifier)
         } else {
             this.chatService = new ChatService(new DummyChatDataService());
         }
@@ -156,7 +176,10 @@ export class CAChatContainer implements OnInit, AfterViewInit {
                 this.subscription = undefined;
             });
             this.subscription = observable.pipe(takeWhile(() => { return !ended; })).subscribe({
-                next: (result: RESULT<string>) => {
+                next: (result: RESULT<{
+                    message: string;
+                    action?: ChatUIActionData
+                }>) => {
                     switch (result.isError) {
                         case true:
                             if (this.chatBox) {
@@ -165,15 +188,27 @@ export class CAChatContainer implements OnInit, AfterViewInit {
 
                             break;
                         case false:
-                            if (this.chatBox) {
-                                this.replyMessage = result.result
-                                this.chatBox.addReplyFromBot(replyId, result.result!)
+                            if (this.chatBox && result.result) {
+                                this.replyMessage = result.result.message
+                                if (result.result.action) {
+                                    this.chatBox.addActionReplyFromBot(replyId, result.result.message, result.result.action);
+                                } else {
+                                    this.chatBox.addReplyFromBot(replyId, result.result.message);
+
+                                }
                             }
                             break;
                     }
                 }
             })
         }
+    }
+
+    protected onSubmitFileMessage(file: File) {
+        this.fileService.uploadfile(file).pipe(untilDestroyed(this)).subscribe({
+            next: (url) => { if (this.chatBox) { this.chatBox.addFileResponseFromUser(url, file) } },
+            error: (reason) => { if (this.chatBox) { this.chatBox.uploadFileFailed(reason); } }
+        })
     }
 
     protected onCancelUserRequest() {

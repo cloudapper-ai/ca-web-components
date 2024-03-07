@@ -1,0 +1,91 @@
+.choice-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    --choice-color: #255db8;
+    --choice-background-color: #a6c8ff;
+    --choice-selected-color: #a6c8ff;
+    --choice-selected-background-color: #255db8;
+    --choice-hover-color: #255db8;
+    --choice-hover-background-color: #629eff;
+    padding: 8px;
+}
+
+.chat-choices {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+}
+
+.item-center {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    user-select: none;
+}
+
+.chat-choice {
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    border-radius: 6px;
+    background-color: rgb(249, 249, 255);
+    color: var(--default-text-color);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 1px;
+}
+
+.chat-choice:hover {
+    box-shadow: var(--choice-selected-background-color) 0px 1px 0px 0px;
+}
+
+.chat-choice-selected {
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--choice-selected-color);
+    background-color: var(--choice-selected-background-color);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 1px;
+    border-radius: 6px;
+    font-weight: 400;
+}
+
+.button {
+    user-select: none;
+    cursor: pointer;
+    width: fit-content;
+    padding: 16px 16px 16px 8px;
+    height: 40px;
+    border-radius: 6px;
+    background-color: white;
+    z-index: 5;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 3px 1px;
+    box-sizing: border-box;
+}
+
+.button:hover {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 1px 1px;
+}
+
+.horizontal-contents {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.horizontal-contents img {
+    height: 28px;
+}
+
+.button span {
+    font-size: 14px;
+    font-weight: 500;
+}
