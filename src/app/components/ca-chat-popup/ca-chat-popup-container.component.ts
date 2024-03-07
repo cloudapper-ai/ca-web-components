@@ -381,22 +381,6 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                     }
 
                     this.chatBox.addReplyFromBot(uuidv4(), message, this.suggestionmessages)
-                    // this.chatBox?.addActionReplyFromBot(uuidv4(), message, <ChatUIActionData>{
-                    //     ActionType: EnumChatActionTypes.ChooseOptions,
-                    //     ActionChoiceAttributes: {
-                    //         Choices: 'Sr. Software Engineer; Sr. Angular Devloper'
-                    //     }
-                    //     // ActionType: EnumChatActionTypes.CreateSchedule,
-                    //     // ActionScheduleAttributes: {
-                    //     //     ScheduleEventLink: 'https://calendly.com/prithwi-biswas/30min',
-                    //     //     OnCompleteMessageFormat: 'I made a schedule with you. Please confirm.'
-                    //     // }
-                    //     // ActionType: EnumChatActionTypes.RecordVideo,
-                    //     // ActionAttachmentAttributes: {
-                    //     //     MaxFileSizeInMb: 500,
-                    //     //     DurationInSec: 300
-                    //     // }
-                    // });
                     this.chatService?.clearChatHistory();
                 }
 
