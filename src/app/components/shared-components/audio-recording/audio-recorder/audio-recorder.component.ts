@@ -3,6 +3,7 @@ import { Component, ViewChild, ElementRef, Output, EventEmitter, NgZone, Input, 
 import { AudioRecordingService } from '../audio-service/audio-recording.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { distinctUntilChanged } from 'rxjs';
+import { Assets } from '../../../../models/assets.model';
 
 @UntilDestroy()
 @Component({
@@ -11,6 +12,8 @@ import { distinctUntilChanged } from 'rxjs';
     styleUrls: ['./audio-recorder.component.css']
 })
 export class AudioRecorderComponent implements OnDestroy {
+    protected Assets = Assets;
+
     @ViewChild('soundWaveCanvas') soundWaveCanvas!: ElementRef<HTMLCanvasElement>;
     protected isRecording: boolean = false;
     protected isPaused: boolean = false;

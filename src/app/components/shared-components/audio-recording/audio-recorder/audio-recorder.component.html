@@ -6,24 +6,24 @@
 
         <ng-container *ngIf="isRecording">
             <ng-container *ngIf="!isPaused;">
-                <img class="button" src="assets/mic/pause.png" alt="Pause Recording button" srcset=""
+                <img class="button" [src]="Assets.Images.Pause" alt="Pause Recording button" srcset=""
                     (click)="pauseRecording()">
             </ng-container>
             <ng-container *ngIf="isPaused">
-                <img class="button" src="assets/mic/resume.png" alt="Resume recording button" srcset=""
+                <img class="button" [src]="Assets.Images.Resume" alt="Resume recording button" srcset=""
                     (click)="resumeRecording()">
             </ng-container>
         </ng-container>
 
         <ng-container *ngIf="isRecording">
-            <img class="button-big" src="assets/mic/disabled-start.png" alt="" srcset="">
+            <img class="button-big" [src]="Assets.Images.DisabledStart" alt="Start Button Disabled" srcset="">
         </ng-container>
         <ng-container *ngIf="!isRecording">
-            <img class="button-big" src="assets/mic/start.png" alt="start button" srcset="" (click)="startRecording()">
+            <img class="button-big" [src]="Assets.Images.Start" alt="Start button" srcset="" (click)="startRecording()">
         </ng-container>
 
         <ng-container *ngIf="isRecording">
-            <img class="button" src="assets/mic/stop.png" alt="Stop recoding button" srcset=""
+            <img class="button" [src]="Assets.Images.Stop" alt="Stop recoding button" srcset=""
                 (click)="stopRecording()">
         </ng-container>
         <ng-container *ngIf="!isRecording">

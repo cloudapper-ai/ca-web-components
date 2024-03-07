@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
 import { AudioRecordingModule } from '../../../shared-components/audio-recording/audio-recording.module';
+import { Assets } from "../../../../models/assets.model";
 
 @UntilDestroy()
 @Component({
@@ -14,6 +15,7 @@ import { AudioRecordingModule } from '../../../shared-components/audio-recording
     imports: [CommonModule, AudioRecordingModule]
 })
 export class ChatAudioComponent implements OnInit {
+    protected Assets = Assets
     ngOnInit(): void {
         this.error$.pipe(untilDestroyed(this)).subscribe(error => {
             if (error) {

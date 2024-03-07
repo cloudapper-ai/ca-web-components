@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit, Output, EventEmitter, NgZone, Input } from '@angular/core';
 import { RecordingService } from '../service/video-recorder.service';
+import { Assets } from '../../../../models/assets.model';
 
 @Component({
     selector: 'video-recorder',
@@ -8,6 +9,7 @@ import { RecordingService } from '../service/video-recorder.service';
     styleUrls: ['./video-recorder.component.css']
 })
 export class VideoRecorderComponent implements OnInit, AfterViewInit, OnDestroy {
+    protected Assets = Assets;
     @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
     recordingService?: RecordingService;
     @Input() duration: number = 300;

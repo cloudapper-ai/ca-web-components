@@ -12,7 +12,7 @@
     </div>
     <ng-container *ngIf="isMultiChoice && selectedMap.size">
         <div class="button horizontal-contents" style="margin-top: 8px;" (click)="onSubmitMultiChoice()">
-            <img src="assets/images/submit.png" alt="submit audio record">
+            <img [src]="Assets.Images.Sumbit" alt="submit audio record">
             <span style="color: #237558;">Submit</span>
         </div>
     </ng-container>

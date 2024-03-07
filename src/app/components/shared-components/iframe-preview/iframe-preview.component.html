@@ -4,12 +4,13 @@
         (error)="isLoading$.next(false); error$.next($event.message);"></iframe>
     <ng-container *ngIf="isLoading$ | async">
         <div class="overlay">
-            <img src="assets/gifs/ca_loader.gif" alt="loading">
+            <img [src]="Assets.Gifs.Loading" alt="Loading">
+            <span>Please Wait</span>
         </div>
     </ng-container>
     <ng-container *ngIf="error$ | async as error">
         <div class="overlay">
-            <img src="assets/images/warning.png" alt="">
+            <img [src]="Assets.Images.Warning" alt="Warning sign">
             <span>{{error}}</span>
         </div>
     </ng-container>

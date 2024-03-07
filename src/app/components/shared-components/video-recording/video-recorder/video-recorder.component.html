@@ -21,7 +21,7 @@
                             </div>
                         </ng-container>
                         <ng-container *ngIf="!isPaused">
-                            <img style="width: 24px;" src="assets/video/video-pause.png" alt="" srcset=""
+                            <img style="width: 24px;" [src]="Assets.Images.VideoPause" alt="Pause Video" srcset=""
                                 (click)="pauseRecording();">
                         </ng-container>
                     </div>

@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
+import { Assets } from "../../../../models/assets.model";
 
 @UntilDestroy()
 @Component({
@@ -13,6 +14,7 @@ import { BehaviorSubject } from "rxjs";
     imports: [CommonModule]
 })
 export class ChatVideoComponent implements OnInit {
+    protected Assets = Assets;
     @Input() primaryColor: string = '#ddd'
     @Input() durationInSec: number = 300;
     @Input() maximumFileSizeInMb: number = 200;

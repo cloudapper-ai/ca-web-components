@@ -5,6 +5,7 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
 import { ActionScheduleAttributes } from "../../../../models/chat-message.model";
 import { RESULT } from "../../../../models/result.model";
+import { Assets } from "../../../../models/assets.model";
 
 @UntilDestroy()
 @Component({
@@ -15,6 +16,8 @@ import { RESULT } from "../../../../models/result.model";
     imports: [CommonModule]
 })
 export class ChatSchedularComponent {
+    protected Assets = Assets
+
     @Input() primaryColor: string = '#dda'
     @Input() attribute: ActionScheduleAttributes = <ActionScheduleAttributes>{}
     @Output() requestOpenAppointment = new EventEmitter<{

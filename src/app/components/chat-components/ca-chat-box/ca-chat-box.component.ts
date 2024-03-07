@@ -5,6 +5,7 @@ import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, Chat
 import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
 import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
+import { Assets } from 'src/app/models/assets.model';
 
 @Component({
     selector: 'ca-chat-box',
@@ -260,4 +261,6 @@ export class CaChatBoxComponent {
         this.fileUploadObserver?.next(reason);
         this.fileUploadObserver = undefined;
     }
+
+    protected Assets = Assets;
 }

@@ -7,6 +7,7 @@ import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage } fro
 import { ChatColorProfile } from "../../../models/chat-ui.model";
 import { isVimeoLink, isYouTubeLink, getFileExtension, isAnImage, isAVideo, VideoFile, isAnAudio, AudioFile, isAPDF, PdfFile, isADocument, DocFile, isAnHtml, HtmlFile, getVimeoEmbedUrl, getYoutubeEmbedUrl, isValidYouTubeLink } from "../../../helpers/attachment-helpers.helper";
 import { RESULT } from "../../../models/result.model";
+import { Assets } from "../../../models/assets.model";
 
 @Component({
     selector: 'chat-item',
@@ -26,7 +27,7 @@ import { RESULT } from "../../../models/result.model";
     ]
 })
 export class ChatItemComponent implements OnInit {
-
+    protected Assets = Assets;
     constructor(private mdService: MarkdownService) { }
 
     ngOnInit(): void {

@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject, debounceTime, distinctUntilChanged } from "rxjs";
 import { darkenColor, lightenColor } from "../../../../helpers/helper-functions.helper";
+import { Assets } from "../../../../models/assets.model";
 
 @UntilDestroy()
 @Component({
@@ -14,6 +15,7 @@ import { darkenColor, lightenColor } from "../../../../helpers/helper-functions.
     imports: [CommonModule]
 })
 export class ChatChoiceComponent implements OnInit {
+    protected Assets = Assets;
     ngOnInit(): void {
         this.selected$.pipe(untilDestroyed(this), debounceTime(25)).subscribe(value => {
             if (value) {

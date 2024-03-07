@@ -34,7 +34,7 @@ export class CAChatContainer implements OnInit, AfterViewInit {
                 this.chatBox?.submitMessageWithoutShowing(this.initmsg)
             } else if (this.welcomemessages.length) {
                 const index = Math.round(Math.random() * (this.welcomemessages.length - 1));
-                this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages)
+                this.chatBox?.addReplyFromBot(uuidv4(), this.welcomemessages[index], this.suggestionmessages);
             }
 
         })

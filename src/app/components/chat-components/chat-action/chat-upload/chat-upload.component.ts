@@ -7,6 +7,7 @@ import { FileToImageDirective } from "../../../directives/file-to-image.directiv
 import { IsNullOrUndefinedOrEmptyString } from "../../../../helpers/helper-functions.helper";
 import { ActionAttachmentAttributes } from "../../../../models/chat-message.model";
 import { FileSizePipe } from "../../../../pipes/filesize.pipe";
+import { Assets } from "../../../../models/assets.model";
 
 @UntilDestroy()
 @Component({
@@ -17,6 +18,7 @@ import { FileSizePipe } from "../../../../pipes/filesize.pipe";
     imports: [CommonModule, FileToImageDirective, FileSizePipe]
 })
 export class ChatUploadComponent implements OnInit {
+    protected Assets = Assets
     ngOnInit(): void {
         this.data$.pipe(untilDestroyed(this)).subscribe(value => {
             if (value.SupportedFileTypes && value.SupportedFileTypes.length) {

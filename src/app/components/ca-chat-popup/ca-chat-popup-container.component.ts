@@ -12,6 +12,7 @@ import { RESULT } from "../../models/result.model";
 import { ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { FileService } from "../../service-layer/file-service.service";
+import { Assets } from "src/app/models/assets.model";
 
 @UntilDestroy()
 @Component({
@@ -404,4 +405,6 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
             this.changeScrollState(true)
         }
     }
+
+    protected Assets = Assets
 }

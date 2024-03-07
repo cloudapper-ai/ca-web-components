@@ -4,6 +4,7 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BehaviorSubject } from 'rxjs';
+import { Assets } from '../../../models/assets.model';
 
 @UntilDestroy()
 @Component({
@@ -14,6 +15,8 @@ import { BehaviorSubject } from 'rxjs';
     imports: [CommonModule]
 })
 export class IframePreviewComponent implements OnInit {
+    protected Assets = Assets;
+
     @ViewChild('iframeElement') iframeRef?: ElementRef<HTMLIFrameElement>;
     private _openingLink: string = 'https://www.cloudapper.com';
     @Input()

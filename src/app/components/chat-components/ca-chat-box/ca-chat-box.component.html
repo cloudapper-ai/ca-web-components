@@ -15,8 +15,7 @@
         </ng-container> -->
         <ng-container *ngIf="allowMinimize">
             <div class="chat-minimize" (click)="minimizeChatWindow()">
-                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAN1JREFUeF7tlcENQlEMw9qVmIIB2Iczw3BmA9Z6DGEkUGLuEb+u87pT/tvy+UcAGlBOwAqUC+AjaAWsQDkBK1AugFfACliBcgJWoFwAr4AVsALlBKxAuQBeAStgBcoJ4Aqccy4zc/8Rx8fuvsl/fwPAdWZe5CNA9ra7T5DnV+CcIwANKK9A9yNIHqB/yOIr8A9DkG8QAKGXkNWAhC2SGTSA0EvIakDCFskMGkDoJWQ1IGGLZAYNIPQSshqQsEUygwYQeglZDUjYIplBAwi9hKwGJGyRzKABhF5Ctt6ADzywHkEQYk5nAAAAAElFTkSuQmCC"
-                    alt="minimize window">
+                <img [src]="Assets.Images.Minimize" alt="minimize window">
             </div>
         </ng-container>
 
