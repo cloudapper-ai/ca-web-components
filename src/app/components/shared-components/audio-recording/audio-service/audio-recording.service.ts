@@ -46,7 +46,7 @@ export class AudioRecordingService {
 
     private filename(mimeType: string): string {
         const extension = this.getFileExtensionFromMimeType(mimeType);
-        return 'Recording-' + Date.now() + extension;
+        return 'Recording-' + Date.now() + '.mp3';
     }
 
     async startRecording(soundWaveCanvas: HTMLCanvasElement): Promise<void> {

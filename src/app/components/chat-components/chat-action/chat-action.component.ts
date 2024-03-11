@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
@@ -7,10 +8,10 @@ import { ChatRecordComponent } from "./chat-record/chat-record.component";
 import { ChatUploadComponent } from "./chat-upload/chat-upload.component";
 import { BehaviorSubject } from "rxjs";
 import { ChatSchedularComponent } from "./chat-scheduler/chat-schedular.component";
-import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatUIActionData, EnumChatActionTypes } from "../../../models/chat-message.model";
-import { RESULT } from "../../../models/result.model";
 import { ChatAudioComponent } from "./chat-audio/chat-audio.component";
 import { ChatVideoComponent } from "./chat-video/chat-video.component";
+import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes } from "../../../models/chat-message.model";
+import { RESULT } from "src/app/models/result.model";
 
 @Component({
     selector: 'chat-action',

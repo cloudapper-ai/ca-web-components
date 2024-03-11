@@ -1,9 +1,10 @@
 .chat-audio-container {
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     height: fit-content;
-    max-width: 100%;
     padding: 8px 0;
     --primarycolor: #ddd;
+    box-sizing: border-box;
 }
 
 .button-containers {
@@ -12,8 +13,8 @@
     gap: 8px;
     padding: 8px;
     align-items: center;
-    width: 400px;
-    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .buttons-left {

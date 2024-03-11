@@ -1,9 +1,10 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
-import { AudioRecordingModule } from '../../../shared-components/audio-recording/audio-recording.module';
+import { AudioRecordingModule } from "../../../../components/shared-components/audio-recording/audio-recording.module";
 import { Assets } from "../../../../models/assets.model";
 
 @UntilDestroy()

@@ -9,7 +9,7 @@ import { ChatService } from "../../service-layer/chat-service.service";
 import { DummyChatDataService } from "../../data-layer/dummy-chat-service.data-service";
 import { ChatDataService } from "../../data-layer/chat-service.data-service";
 import { RESULT } from "../../models/result.model";
-import { ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
+import { ActionAttachmentAttributes, ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { FileService } from "../../service-layer/file-service.service";
 import { Assets } from "src/app/models/assets.model";
@@ -381,7 +381,14 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                         message = 'Hello, how can I help you today?';
                     }
 
-                    this.chatBox.addReplyFromBot(uuidv4(), message, this.suggestionmessages)
+                    // this.chatBox.addReplyFromBot(uuidv4(), message, this.suggestionmessages)
+                    this.chatBox.addActionReplyFromBot(uuidv4(), message, <ChatUIActionData>{
+                        ActionType: EnumChatActionTypes.RecordAudio,
+                        ActionAttachmentAttributes: <ActionAttachmentAttributes>{
+                            MaxFileSizeInMb: 200,
+                            DurationInSec: 300
+                        }
+                    })
                     this.chatService?.clearChatHistory();
                 }
 

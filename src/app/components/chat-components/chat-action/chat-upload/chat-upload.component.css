@@ -1,6 +1,7 @@
 .upload-file-container {
     padding: 8px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 300px;
     overflow: hidden;
     box-sizing: border-box;
     --primarycolor: #434;
@@ -9,7 +10,6 @@
 }
 
 .file-section {
-    max-width: 300px;
     aspect-ratio: 1 / 1;
     width: 100%;
     background-color: white;
@@ -31,6 +31,8 @@
     gap: 10px;
     font-weight: 300;
     animation: fade-in ease-in 0.3s;
+    box-sizing: border-box;
+    padding: 8px;
 }
 
 .upload-files div {

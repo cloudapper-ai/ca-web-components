@@ -1,11 +1,13 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
+import { Assets } from "../../../../models/assets.model";
 import { ActionScheduleAttributes } from "../../../../models/chat-message.model";
 import { RESULT } from "../../../../models/result.model";
-import { Assets } from "../../../../models/assets.model";
+
 
 @UntilDestroy()
 @Component({

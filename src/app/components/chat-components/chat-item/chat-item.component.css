@@ -200,9 +200,8 @@
 }
 
 ::ng-deep .chat-box-message .video-attachment {
-    width: 400px;
-    height: 600px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 300px;
     padding: 8px;
     box-shadow: #0002 0px 1px 2px 1px;
     border-radius: 4px;
@@ -228,7 +227,8 @@
 }
 
 ::ng-deep .chat-box-message .audio-attachment {
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     height: 60px;
     display: flex;
     align-items: center;

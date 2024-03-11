@@ -1,13 +1,15 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
-import { FileToImageDirective } from "../../../directives/file-to-image.directive";
+import { FileToImageDirective } from "../../../../components/directives/file-to-image.directive";
 import { IsNullOrUndefinedOrEmptyString } from "../../../../helpers/helper-functions.helper";
+import { Assets } from "../../../../models/assets.model";
 import { ActionAttachmentAttributes } from "../../../../models/chat-message.model";
 import { FileSizePipe } from "../../../../pipes/filesize.pipe";
-import { Assets } from "../../../../models/assets.model";
+
 
 @UntilDestroy()
 @Component({

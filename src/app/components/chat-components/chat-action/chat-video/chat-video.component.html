@@ -1,6 +1,6 @@
 <ng-container *ngIf="error" [ngTemplateOutlet]="errorSection"
     [ngTemplateOutletContext]="{ $implicit: error}"></ng-container>
-<ng-container *ngIf="contentUrl && !isUploading" [ngTemplateOutlet]="recordPreview"
+<ng-container *ngIf="contentUrl && !isUploading && !error" [ngTemplateOutlet]="recordPreview"
     [ngTemplateOutletContext]="{ $implicit: contentUrl}"></ng-container>
 <ng-container *ngIf="contentUrl && isUploading" [ngTemplateOutlet]="uploadingFile"></ng-container>
 <ng-container *ngIf="!contentUrl && !error && !isUploading" [ngTemplateOutlet]="recordStartSection"></ng-container>
