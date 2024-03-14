@@ -49,6 +49,7 @@ export class ChatDataService implements IChatService {
                         const bodyStream = response.body;
                         if (bodyStream) {
                             const reader = bodyStream.getReader();
+                            let receivedKnownElements: boolean = false;
                             this.readStream(decoder, reader, (content) => {
                                 if (observer.closed) { return; }
                                 if (content) {
@@ -69,6 +70,7 @@ export class ChatDataService implements IChatService {
 
                                                     observer.complete();
                                                 }
+                                                receivedKnownElements = true;
                                             }
                                             break;
                                         case 'data':
@@ -79,6 +81,7 @@ export class ChatDataService implements IChatService {
                                                         cache: cache
                                                     });
                                                 }
+                                                receivedKnownElements = true;
                                             }
                                             break;
                                         case 'uiaction':
@@ -89,18 +92,25 @@ export class ChatDataService implements IChatService {
                                                         uiaction: data
                                                     });
                                                 }
+                                                receivedKnownElements = true;
                                             }
 
                                             break;
                                     }
                                 } else {
-                                    observer.next(<ChatResponseStream>{});
+                                    if (!receivedKnownElements) {
+                                        observer.next(<ChatResponseStream>{
+                                            message: new StreamChatMessageData("We didn't receive a response that we can work with.", null, {})
+                                        });
+                                    } else {
+                                        observer.next(<ChatResponseStream>{});
+                                    }
                                     observer.complete();
                                 }
                             });
 
                         } else {
-                            observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, 'We have encountered a problem. Please try again later.') });
+                            observer.next(<ChatResponseStream>{ message: new StreamChatMessageData('We have encountered a problem. Please try again later.', null, {}) });
                             observer.complete();
                         }
                     } else {
@@ -108,9 +118,9 @@ export class ChatDataService implements IChatService {
                     }
                 } else {
                     if (response.statusText && response.statusText.trim().length > 0) {
-                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, `We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`) });
+                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(`We have encountered a problem. Please try again later.\n${response.status}: **${response.statusText}**`, null, {}) });
                     } else {
-                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, `${response.status} - We have encountered a problem. Please try again later.`) });
+                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(`${response.status} - We have encountered a problem. Please try again later.`, null, {}) });
                     }
 
                     observer.complete();
@@ -129,7 +139,7 @@ export class ChatDataService implements IChatService {
                             errorMessage = `${code} - We have encountered a problem. Please try again later.`;
                         }
 
-                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, errorMessage) });
+                        observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(errorMessage, null, {}) });
                     } else {
                         const result = value['Result'];
                         if (result) {
@@ -139,7 +149,7 @@ export class ChatDataService implements IChatService {
                                 observer.next(<ChatResponseStream>{ message: new StreamChatMessageData('', null, null) });
                             }
                         } else {
-                            observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, 'We have encountered a problem. Please try again later.') });
+                            observer.next(<ChatResponseStream>{ message: new StreamChatMessageData('We have encountered a problem. Please try again later.', null, {}) });
                         }
                     }
 
@@ -148,7 +158,7 @@ export class ChatDataService implements IChatService {
                     // we received an stream and its being handled.
                 }
             }).catch(reason => {
-                observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(null, null, `We have encountered a problem. Please try again later.\n${reason}`) });
+                observer.next(<ChatResponseStream>{ message: new StreamChatMessageData(`We have encountered a problem. Please try again later.\n${reason}`, null, {}) });
                 observer.complete();
             })
 

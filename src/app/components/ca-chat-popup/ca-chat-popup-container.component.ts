@@ -381,14 +381,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                         message = 'Hello, how can I help you today?';
                     }
 
-                    // this.chatBox.addReplyFromBot(uuidv4(), message, this.suggestionmessages)
-                    this.chatBox.addActionReplyFromBot(uuidv4(), message, <ChatUIActionData>{
-                        ActionType: EnumChatActionTypes.RecordAudio,
-                        ActionAttachmentAttributes: <ActionAttachmentAttributes>{
-                            MaxFileSizeInMb: 200,
-                            DurationInSec: 300
-                        }
-                    })
+                    this.chatBox.addReplyFromBot(uuidv4(), message, this.suggestionmessages)
                     this.chatService?.clearChatHistory();
                 }
 
