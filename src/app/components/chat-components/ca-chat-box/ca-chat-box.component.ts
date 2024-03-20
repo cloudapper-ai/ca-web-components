@@ -82,7 +82,7 @@ export class CaChatBoxComponent {
             // look for message that has the same id
             const oldMessageIndex = messages.findIndex(entry => entry.id === newMessage.id);
             if (oldMessageIndex !== -1) {
-                if (messages[oldMessageIndex].message === newMessage.message) { return false; }
+                // if (messages[oldMessageIndex].message === newMessage.message) { return false; }
                 messages[oldMessageIndex].updateCount += 1;
                 messages[oldMessageIndex].message = newMessage.message;
                 messages[oldMessageIndex].warning = newMessage.warning;
