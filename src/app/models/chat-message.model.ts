@@ -25,6 +25,10 @@ export class StreamChatCacheData {
     constructor(public content?: any | null, public finish_reason?: string | null, public error?: string | null) { }
 }
 
+export class StreamChatActionData {
+    constructor(public content?: ChatUIActions | null, public finish_reason?: string | null, public error?: string | null) { }
+}
+
 export class ChatResponse {
     constructor(public query_result?: string | null, public generated_question?: string | null, public query_time?: number) { }
 }
@@ -72,7 +76,9 @@ export interface ActionViewRecordsAttributes {
     AppId: string;
     ClientId: number;
 }
-
+export interface ChatUIActions {
+    actions: ChatUIActionData[];
+}
 export interface ChatUIActionData {
     ActionType: EnumChatActionTypes;
     ActionAttachmentAttributes?: ActionAttachmentAttributes;
@@ -84,5 +90,5 @@ export interface ChatUIActionData {
 export interface ChatResponseStream {
     message: StreamChatMessageData
     cache: StreamChatCacheData
-    uiaction: ChatUIActionData[]
+    uiaction: StreamChatActionData
 }

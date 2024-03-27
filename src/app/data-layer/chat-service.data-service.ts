@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { ChatHistory, ChatResponseStream, ChatUIActionData, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
+import { ChatHistory, ChatResponseStream, ChatUIActionData, ChatUIActions, StreamChatActionData, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
 import { IChatService } from "./interfaces/chat-service.interface";
 
 export class ChatDataService implements IChatService {
@@ -227,8 +227,8 @@ export class ChatDataService implements IChatService {
         else { return null; }
     }
 
-    private parseUIActionContent(string: string): ChatUIActionData[] | null {
-        const data: ChatUIActionData[] = JSON.parse(string)
+    private parseUIActionContent(string: string): StreamChatActionData | null {
+        const data: StreamChatActionData = JSON.parse(string)
         if (data) { return data }
         else { return null; }
     }

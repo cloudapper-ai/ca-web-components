@@ -41,8 +41,8 @@ export class ChatService {
                                 observer.next(RESULT.ok({ message: replyFromBot, action: action }));
                             }
                         }
-                    } else if (value.uiaction && value.uiaction && value.uiaction.length) {
-                        action = value.uiaction[0];
+                    } else if (value.uiaction && value.uiaction && value.uiaction && value.uiaction.content && value.uiaction.content.actions && value.uiaction.content.actions.length) {
+                        action = value.uiaction.content.actions[0];
                         observer.next(RESULT.ok({ message: replyFromBot, action: action }));
                     }
                 },
