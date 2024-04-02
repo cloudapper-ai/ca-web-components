@@ -1,6 +1,8 @@
 import { Observable } from "rxjs";
-import { ChatHistory, ChatResponseStream, ChatUIActionData, ChatUIActions, StreamChatActionData, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
+import { ChatHistory, ChatResponseStream, StreamChatActionData, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
 import { IChatService } from "./interfaces/chat-service.interface";
+import { QueueClass, QueueManager } from "../helpers/queue.helper";
+import { IsNullOrUndefinedOrEmptyString } from "../helpers/helper-functions.helper";
 
 export class ChatDataService implements IChatService {
     private url: string
@@ -165,44 +167,66 @@ export class ChatDataService implements IChatService {
         })
     }
 
-
     private readStream(decoder: TextDecoder, reader: ReadableStreamDefaultReader, callback: (content: { event: string, data: string } | undefined) => void) {
-
-        const processChunk = (chunk: ReadableStreamReadResult<Uint8Array>) => {
-            if (chunk.done) {
-                // Stream is completed, close the reader and invoke the callback
-                reader.releaseLock();
+        let ended = false;
+        const queueManager = new QueueManager<Uint8Array>();
+        queueManager.onQueueEmpty.subscribe(() => {
+            if (ended) {
                 callback(undefined);
-            } else {
-                const data = decoder.decode(chunk.value, { stream: true });
+            }
+        });
+
+        let eventName: string | undefined = undefined;
+        let message: string | undefined = undefined;
+
+        const notify = () => {
+            if (eventName && message && eventName.length && message.length && message.endsWith("}")) {
+                // console.log('Notifying')
+                callback({ event: eventName, data: message });
+                eventName = undefined;
+                message = undefined;
+            }
+        }
+
+        const processBuffer: (buffer: Uint8Array) => Promise<void> = (buffer) => {
+            return new Promise(resolve => {
+                // console.log('===BlockStart===')
+                const data = decoder.decode(buffer, { stream: true });
                 if (data) {
-                    const lines = data.trim().split('\n');
-                    let eventName: string | undefined = undefined;
-                    let message: string | undefined = undefined;
-                    for (const line of lines) {
+                    const lines = data.split('\n').filter(x => !IsNullOrUndefinedOrEmptyString(x));
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const line = lines[i];
+                        // console.log('Line: ' + line);
                         if (line.startsWith('event:')) {
+                            notify();
                             eventName = line.substring(6).trim();
                         } else if (line.startsWith('data:')) {
-                            message = line.substring(5).trim();
-                        }
-                        if (eventName && message && eventName.length && message.length) {
-                            callback({ event: eventName, data: message });
-                            eventName = undefined;
-                            message = undefined;
+                            message = line.substring(5);
+                        } else {
+                            message += line;
                         }
                     }
-                }
 
-                // Continue reading recursively
-                reader.read().then(processChunk).catch(handleError);
-            }
-        };
+                    notify();
+                }
+                // console.log('===BlockEnd===')
+                resolve();
+            })
+        }
 
         const handleError = (error: any) => {
             // Handle errors during reading
             // callback({ event: 'message', data: `{ "error": "${error.message}" }` });
 
-            console.log(`We encountered an error while reading stream. Error: ${error.message}`)
+            callback({
+                event: 'message', data: JSON.stringify({
+                    content: error.message,
+                    finish_reason: null,
+                    error: error
+                })
+            })
+            console.error(`We encountered an error while reading stream. Error: ${error.message}`)
 
             // Close the reader in case of error
             setTimeout(() => {
@@ -211,8 +235,28 @@ export class ChatDataService implements IChatService {
             }, 10);
         };
 
-        // Start the initial read
-        reader.read().then(processChunk).catch(handleError);
+        const processChunk = (chunk: ReadableStreamReadResult<Uint8Array>, readAgain: () => void) => {
+            if (chunk.done) {
+                // Stream is completed, close the reader and invoke the callback
+                reader.releaseLock();
+                ended = true;
+                queueManager.execute();
+            } else {
+                queueManager.addInQueue(new QueueClass(processBuffer, chunk.value));
+                queueManager.execute();
+                // continuously read buffer
+                readAgain();
+            }
+        }
+
+        const readFn = () => {
+            reader.read().then((chunk) => {
+                processChunk(chunk, () => { readFn(); })
+            }).catch(handleError)
+        }
+
+        // initiate reading buffer
+        readFn();
     }
 
     private parseMessageContent(string: string): StreamChatMessageData | null {
@@ -228,9 +272,14 @@ export class ChatDataService implements IChatService {
     }
 
     private parseUIActionContent(string: string): StreamChatActionData | null {
-        const data: StreamChatActionData = JSON.parse(string)
-        if (data) { return data }
-        else { return null; }
+        try {
+            const data: StreamChatActionData = JSON.parse(string)
+            if (data) { return data }
+            else { return null; }
+        } catch (_error) {
+            return null;
+        }
+
     }
 
     private readonly MAX_TOKEN_LIMIT = 2000;

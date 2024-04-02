@@ -24,7 +24,8 @@
         [ngStyle]="{'background-color': initialParameters.windowColors.secondaryColor}">
         <ng-container *ngFor="let message of messages; let i=index; trackBy:trackBy">
             <chat-item [id]="message.id" [user]="initialParameters.userName" [bot]="initialParameters.botName"
-                [colorProfiles]="initialParameters.userColors" [allowActionInteraction]="i===messages.length - 1"
+                [colorProfiles]="initialParameters.userColors"
+                [allowActionInteraction]="(i===messages.length - 1) || (message.action !== undefined && (message.action.ActionType === ChatActionTypes.ShowRecord || message.action.ActionType === ChatActionTypes.ShowRecords))"
                 [message]=message (suggestionSelected)="onSuggsetionSelected($event)"
                 (actionReplyReceived)="onSuggsetionSelected($event)"
                 (recordVideoRequested)="onRecordVideoRequested($event)" (fileSelected)="onFileMessageReceived($event)"
@@ -32,7 +33,7 @@
                 (searchScheduleRequest)="onScheduleSearchRequested($event)"></chat-item>
         </ng-container>
     </div>
-    <ng-container *ngIf="!action">
+    <ng-container *ngIf="allowChatInput">
         <div class="chat-box-input">
             <textarea #chatUserInput class="text" placeholder="Type here to search" (input)="onInputChange($event)"
                 (keydown.enter)="$event.preventDefault()" (keyup.enter)="onSubmitReplyEvent()"

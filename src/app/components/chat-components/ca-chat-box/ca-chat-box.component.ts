@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ChatConstants } from '../../../models/chat-constants.model';
-import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatUIActionData } from '../../../models/chat-message.model';
+import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatUIActionData, EnumChatActionTypes } from '../../../models/chat-message.model';
 import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
 import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
@@ -65,7 +65,8 @@ export class CaChatBoxComponent {
     protected messages: ChatMessage[] = [];
     protected isLoading: boolean = false;
     protected action?: ChatUIActionData;
-
+    protected allowChatInput: boolean = true;
+    protected ChatActionTypes = EnumChatActionTypes;
     private updateMessageQueue(newMessage: ChatMessage): boolean {
         if (this.isLoading) {
             if (newMessage.userId !== ChatConstants.BotId) {
@@ -92,7 +93,12 @@ export class CaChatBoxComponent {
             }
         }
 
-        this.action = messages.length ? messages[messages.length - 1].action : undefined;
+        this.action = messages.length ? messages[messages.length - 1].action : undefined;;
+        if (this.action) {
+            this.allowChatInput = this.action.ActionType === EnumChatActionTypes.ShowRecord || this.action.ActionType === EnumChatActionTypes.ShowRecords
+        } else {
+            this.allowChatInput = true;
+        }
 
         this.messages = messages;
         setTimeout(() => {

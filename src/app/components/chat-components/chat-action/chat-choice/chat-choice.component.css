@@ -34,8 +34,8 @@
 }
 
 .chat-choice {
-    font-size: 14px;
-    font-weight: 400;
+    font-size: 13px;
+    font-weight: 300;
     cursor: pointer;
     border-radius: 6px;
     background-color: rgb(249, 249, 255);

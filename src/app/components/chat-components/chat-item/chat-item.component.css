@@ -1,4 +1,5 @@
 .chat-box {
+    box-sizing: border-box;
     padding: 16px 48px;
     --codeblockcolor: #e4f9ff;
     --highlightedtextcolor: #090d1a;
@@ -233,7 +234,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 100%;
     border-radius: 30px;
     background: white;
     overflow: hidden;

@@ -1,4 +1,4 @@
-<div>
+<div style="width: 100%;">
     <ng-container *ngIf="!isBotReply">
         <div @item class="chat-box" [ngStyle]="{'background-color': userColorProfile.backgroundColor }">
             <div style="display: flex; flex-direction: row; flex-wrap: wrap; align-items: center;">
@@ -70,7 +70,7 @@
         {{message.message}}
     </div> -->
     <ng-container *ngIf="allowActionInteraction && message.action">
-        <div style="width: 100%; overflow: hidden;">
+        <div style="width: 100%;">
             <chat-action [primaryColor]="botColorProfile.labelColor" [action]="message.action"
                 (scheduleRequest)="onRequestSearchSchedule($event)" (replyReceived)="onActionReplied($event)"
                 (recordVideoRequested)="onRecordVideoRequested($event)" (fileSelected)="onFileSelected($event)"
