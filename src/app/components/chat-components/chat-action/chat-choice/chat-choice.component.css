@@ -28,23 +28,25 @@
     height: 36px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     padding: 0 16px;
     user-select: none;
 }
 
 .chat-choice {
-    font-size: 13px;
-    font-weight: 300;
+    font-size: 14px;
+    font-weight: 400;
     cursor: pointer;
     border-radius: 6px;
     background-color: rgb(249, 249, 255);
-    color: var(--default-text-color);
+    color: var(--default-text-color-light);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 1px;
 }
 
 .chat-choice:hover {
-    box-shadow: var(--choice-selected-background-color) 0px 1px 0px 0px;
+    color: var(--default-text-color);
+    border-left: 0.5px solid var(--choice-selected-color);
+    border-right: 0.5px solid var(--choice-selected-color);
 }
 
 .chat-choice-selected {

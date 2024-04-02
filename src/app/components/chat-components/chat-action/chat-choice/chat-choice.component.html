@@ -3,11 +3,13 @@
     [style.--choice-selected-background-color]="choiceSelectedBackgroundColor"
     [style.--choice-hover-color]="choiceHoverColor"
     [style.--choice-hover-background-color]="choiceHoverBackgroundColor">
-    <div class="chat-choices">
-        <ng-container *ngFor="let choice of choices; trackBy:trackChoice.bind(this)">
+    <div class="chat-choices" [style.flex-direction]="choices.length > 10 ? 'row' : 'column'"
+        [style.align-items]="choices.length > 10 ? 'center' : 'flex-start'">
+        <ng-container *ngFor="let choice of choices; let i=index; trackBy:trackChoice.bind(this)">
             <div (click)="selected$.next(choice)"
                 [classList]="isSelected(choice) ? 'item-center chat-choice-selected': 'item-center chat-choice'">
                 {{choice}}</div>
+
         </ng-container>
     </div>
     <ng-container *ngIf="isMultiChoice && selectedMap.size">
