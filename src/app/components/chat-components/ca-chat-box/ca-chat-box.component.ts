@@ -214,9 +214,13 @@ export class CaChatBoxComponent {
         this.isRecordingVideo = true;
     }
 
-    protected cancelRecording() {
+    protected cancelRecording(message?: string) {
         this.isRecordingVideo = false;
-        this.videoRecordObserver?.next(null);
+        if (message) {
+            this.videoRecordObserver?.error(message)
+        } else {
+            this.videoRecordObserver?.next(null);
+        }
     }
 
     protected onRecordCompleted(file: File) {

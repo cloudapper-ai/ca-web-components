@@ -59,8 +59,8 @@
                 </div>
                 <div class="video-record-section">
                     <video-recorder [duration]="videoRecordAttributes.DurationInSec"
-                        [maxSize]="videoRecordAttributes.MaxFileSizeInMb"
-                        (recordCompleted)="onRecordCompleted($event)"></video-recorder>
+                        [maxSize]="videoRecordAttributes.MaxFileSizeInMb" (recordCompleted)="onRecordCompleted($event)"
+                        (cancel)="cancelRecording($event)"></video-recorder>
                 </div>
             </div>
 

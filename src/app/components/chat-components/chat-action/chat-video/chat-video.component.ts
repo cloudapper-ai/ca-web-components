@@ -19,16 +19,6 @@ export class ChatVideoComponent implements OnInit {
     @Input() primaryColor: string = '#ddd'
     @Input() durationInSec: number = 300;
     @Input() maximumFileSizeInMb: number = 200;
-    private _uploadError: string | null = null;
-    @Input()
-    get uploadError(): string | null { return this._uploadError; }
-    set uploadError(value: string | null) {
-        this.isUploading = false;
-        this._uploadError = value; this.error = value;
-        setTimeout(() => {
-            this.error = null;
-        }, 3000);
-    }
 
     @Output() readyToRecordVideo = new EventEmitter<BehaviorSubject<File | null>>();
 
@@ -77,26 +67,33 @@ export class ChatVideoComponent implements OnInit {
     protected error: string | null = null;
 
     ngOnInit(): void {
-        this.videoFile$.pipe(untilDestroyed(this)).subscribe(file => {
-            this.isRecording = false;
-            this.isUploading = false;
+        this.videoFile$.pipe(untilDestroyed(this)).subscribe({
+            next: file => {
+                this.isRecording = false;
+                this.isUploading = false;
 
-            if (file) {
-                this.readFileAsUrl(file)
-                    .then(url => {
-                        this.contentUrl = url;
-                        this.error = null;
-                    })
-                    .catch(reason => {
-                        this.contentUrl = null;
-                        this.error = reason;
-                        setTimeout(() => {
+                if (file) {
+                    this.readFileAsUrl(file)
+                        .then(url => {
+                            this.contentUrl = url;
                             this.error = null;
-                        }, 3000);
-                    })
-            } else {
+                        })
+                        .catch(reason => {
+                            this.contentUrl = null;
+                            this.error = reason;
+                            setTimeout(() => {
+                                this.error = null;
+                            }, 3000);
+                        })
+                } else {
+                    this.contentUrl = null;
+                    this.error = null;
+                }
+            },
+            error: error => {
+                this.error = error;
                 this.contentUrl = null;
-                this.error = null;
+                setTimeout(() => { this.error = null; }, 3000)
             }
         })
     }

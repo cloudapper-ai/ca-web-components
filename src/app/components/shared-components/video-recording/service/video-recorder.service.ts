@@ -30,20 +30,36 @@ export class RecordingService {
 
     constructor() { }
 
+
+    private getSupportedMimeType(): string | null {
+        if (MediaRecorder.isTypeSupported('video/webm')) {
+            return 'video/webm'
+        } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+            return 'video/mp4'
+        } else {
+            return null
+        }
+    }
+
     /**
      * Starts recording video stream with given duration and maximum size.
      * @param duration The duration of the recording (in seconds).
      * @param maxSize The maximum size of the recording (in megabytes).
      */
     async startRecording(duration: number, maxSize: number) {
+        const supportedMimeType = this.getSupportedMimeType();
+        if (supportedMimeType === null) {
+            throw new Error('Recording video is not supported');
+        }
         // Initialize recording parameters
         this.duration = duration;
         this.maxSize = maxSize * 1024 * 1024;
         // Get video stream from user's media devices
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
         // Initialize MediaRecorder with video stream
         this.mediaRecorder = new MediaRecorder(stream, {
-            mimeType: 'video/webm'
+            mimeType: supportedMimeType
         });
         // Event listener for data available during recording
         this.mediaRecorder.ondataavailable = (event) => {
@@ -54,7 +70,7 @@ export class RecordingService {
         // Event listener for when recording stops
         this.mediaRecorder.onstop = (event) => {
             // Create a file from recorded blobs
-            const mimeType = 'video/webm';
+            const mimeType = supportedMimeType;
             const audioBlob = new Blob(this.recordedBlobs, { type: mimeType });
             const file = new File([audioBlob], this.filename(mimeType), {
                 type: mimeType,

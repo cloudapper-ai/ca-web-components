@@ -15,6 +15,7 @@ export class VideoRecorderComponent implements OnInit, AfterViewInit, OnDestroy 
     @Input() duration: number = 300;
     @Input() maxSize: number = 200;
     @Output() recordCompleted: EventEmitter<File> = new EventEmitter();
+    @Output() cancel: EventEmitter<string | undefined> = new EventEmitter();
 
     protected elapsedTime: number = 0;
     private timerInterval: any;
@@ -52,12 +53,17 @@ export class VideoRecorderComponent implements OnInit, AfterViewInit, OnDestroy 
 
         })
         this.elapsedTime = 0;
-        await this.recordingService?.startRecording(this.duration, this.maxSize);
-        this.isRecording = true;
-        this.isPaused = false;
-        this.displayVideoPreview();
-        this.playVideo();
-        this.startTimer();
+        try {
+            await this.recordingService?.startRecording(this.duration, this.maxSize);
+            this.isRecording = true;
+            this.isPaused = false;
+            this.displayVideoPreview();
+            this.playVideo();
+            this.startTimer();
+        } catch (error: any) {
+            this.cancel.next(error.message)
+        }
+
     }
 
     protected stopRecording() {
