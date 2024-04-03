@@ -35,7 +35,7 @@
 <ng-template #choiceview let-data>
     <ng-container *ngIf="action.ActionChoiceAttributes && action.ActionChoiceAttributes.Choices">
         <chat-choice [primaryColor]="primaryColor" [choices]="action.ActionChoiceAttributes.Choices|choices"
-            [isMultiChoice]="data" (choiceSelected)="onSubmitReply($event)"></chat-choice>
+            [isMultiChoice]="data" (choiceSelected)="onSubmitReply($event, PreviewTypes.Pill)"></chat-choice>
     </ng-container>
 </ng-template>
 

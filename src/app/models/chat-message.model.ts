@@ -5,6 +5,13 @@ export class ChatMessage {
     public suggestions?: string[];
     public action?: ChatUIActionData;
     constructor(public id: string, public userId: string, public message: string) { }
+
+    public style: EnumChatMessagePreviewType = EnumChatMessagePreviewType.Default;
+}
+
+export enum EnumChatMessagePreviewType {
+    Default = 1,
+    Pill = 2
 }
 
 export enum EnumChatUserRoles {

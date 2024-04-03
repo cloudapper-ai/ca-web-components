@@ -15,7 +15,7 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    /* margin-top: 8px; */
+    margin-top: 8px;
 }
 
 .chat-box-message-section img {
@@ -243,4 +243,33 @@
 ::ng-deep .chat-box-message .audio-attachment audio {
     width: calc(100% - 16px);
     height: calc(100% - 16px);
+}
+
+.chat-choices {
+    flex: 1;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+}
+
+.item-center {
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 16px;
+    user-select: none;
+}
+
+.chat-choice {
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--default-text-color);
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 1px;
+    border-radius: 6px;
+    font-weight: 400;
 }

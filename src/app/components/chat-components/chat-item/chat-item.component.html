@@ -7,14 +7,20 @@
             </div>
 
             <div class="chat-box-message-section">
-                <!-- <div markdown ngPreserveWhitespaces class="chat-box-message"  [ngStyle]="{ 'color': userColorProfile.textColor }">
-                    {{message.message}}
-                </div> -->
+                <ng-container *ngIf="message.style === MessagePreviewTypes.Default">
+                    <div class="chat-box-message">
+                        <markdown [data]="message.message" ngPreserveWhitespaces></markdown>
+                    </div>
+                </ng-container>
 
-                <div class="chat-box-message">
-                    <markdown [data]="message.message" ngPreserveWhitespaces
-                        [ngStyle]="{ 'color': userColorProfile.textColor }"></markdown>
-                </div>
+                <ng-container
+                    *ngIf="message.style === MessagePreviewTypes.Pill && (message.message | choices) as chioces">
+                    <div class="chat-choices">
+                        <ng-container *ngFor="let choice of chioces; let i=index; trackBy:trackChoice.bind(this)">
+                            <div class="item-center chat-choice">{{choice}}</div>
+                        </ng-container>
+                    </div>
+                </ng-container>
             </div>
         </div>
     </ng-container>
@@ -63,9 +69,20 @@
 </ng-template>
 
 <ng-template #botMessage>
-    <div class="chat-box-message">
-        <markdown [data]="message.message" ngPreserveWhitespaces></markdown>
-    </div>
+    <ng-container *ngIf="message.style === MessagePreviewTypes.Default">
+        <div class="chat-box-message">
+            <markdown [data]="message.message" ngPreserveWhitespaces></markdown>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="message.style === MessagePreviewTypes.Pill && (message.message | choices) as chioces">
+        <div class="chat-choices">
+            <ng-container *ngFor="let choice of chioces; let i=index; trackBy:trackChoice.bind(this)">
+                <div class="item-center chat-choice">{{choice}}</div>
+            </ng-container>
+        </div>
+    </ng-container>
+
     <!-- <div markdown ngPreserveWhitespaces class="chat-box-message"  [ngStyle]="{ 'color': botColorProfile.textColor }">
         {{message.message}}
     </div> -->

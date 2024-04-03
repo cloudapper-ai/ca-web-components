@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ChatConstants } from '../../../models/chat-constants.model';
-import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatUIActionData, EnumChatActionTypes } from '../../../models/chat-message.model';
+import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatUIActionData, EnumChatActionTypes, EnumChatMessagePreviewType } from '../../../models/chat-message.model';
 import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
 import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
@@ -43,8 +43,9 @@ export class CaChatBoxComponent {
         this.isLoading = !ready;
     }
 
-    protected addReplyFromUser(message: string): boolean {
+    protected addReplyFromUser(message: string, style: EnumChatMessagePreviewType): boolean {
         const chatMessage = new ChatMessage(uuidv4(), ChatConstants.UserId, message);
+        chatMessage.style = style;
         return this.updateMessageQueue(chatMessage);
     }
 
@@ -128,7 +129,7 @@ export class CaChatBoxComponent {
         }
     }
 
-    private postUserReply(message: string) {
+    private postUserReply(message: string, style: EnumChatMessagePreviewType = EnumChatMessagePreviewType.Default) {
         let newMessage = message;
 
         const lines = newMessage.split('\n').map(x => x.trim()).filter(x => x.length);
@@ -136,7 +137,7 @@ export class CaChatBoxComponent {
             newMessage = lines.join('<br>')
         }
 
-        if (this.addReplyFromUser(newMessage)) {
+        if (this.addReplyFromUser(newMessage, style)) {
 
             setTimeout(() => {
                 this.addLoadingMessage();
@@ -175,6 +176,15 @@ export class CaChatBoxComponent {
         if (message && message.length > 0) {
             this.postUserReply(message);
         }
+    }
+    protected onActionSelected(param: {
+        reply: string,
+        type: EnumChatMessagePreviewType
+    }) {
+        // if (message && message.length > 0) {
+        //     this.postUserReply(message);
+        // }
+        this.postUserReply(param.reply, param.type)
     }
 
     @Output() chatMinimizeRequestReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

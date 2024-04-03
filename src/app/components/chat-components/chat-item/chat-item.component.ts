@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MarkdownService } from "ngx-markdown";
 import { BehaviorSubject } from "rxjs";
 import { ChatConstants } from "../../../models/chat-constants.model";
-import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage } from "../../../models/chat-message.model";
+import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
 import { ChatColorProfile } from "../../../models/chat-ui.model";
 import { isVimeoLink, isYouTubeLink, getFileExtension, isAnImage, isAVideo, VideoFile, isAnAudio, AudioFile, isAPDF, PdfFile, isADocument, DocFile, isAnHtml, HtmlFile, getVimeoEmbedUrl, getYoutubeEmbedUrl, isValidYouTubeLink } from "../../../helpers/attachment-helpers.helper";
 import { RESULT } from "../../../models/result.model";
@@ -158,6 +158,12 @@ export class ChatItemComponent implements OnInit {
         }
     }
 
+    protected trackChoice(index: number, choice: string) {
+        return `${index}-${choice}`;
+    }
+
+    protected MessagePreviewTypes = EnumChatMessagePreviewType;
+
     protected userColorProfile: ChatColorProfile = new ChatColorProfile('#38383b', '#0e1221', '#c7c7c9')
     protected botColorProfile: ChatColorProfile = new ChatColorProfile('#1a1a9c', '#0e1221', '#FFFFFF')
 
@@ -183,6 +189,7 @@ export class ChatItemComponent implements OnInit {
     set message(value: ChatMessage) {
         this._message = value;
         this.isBotReply = value.userId === ChatConstants.BotId;
+        console.log(value)
     }
 
     get message(): ChatMessage {
@@ -190,7 +197,10 @@ export class ChatItemComponent implements OnInit {
     }
 
     @Output() suggestionSelected: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
-    @Output() actionReplyReceived: EventEmitter<string> = new EventEmitter();
+    @Output() actionReplyReceived: EventEmitter<{
+        reply: string,
+        type: EnumChatMessagePreviewType
+    }> = new EventEmitter();
     @Output() searchScheduleRequest: EventEmitter<string> = new EventEmitter();
     @Output() fileSelected: EventEmitter<{
         file: File,
@@ -211,8 +221,8 @@ export class ChatItemComponent implements OnInit {
         }
     }
 
-    protected onActionReplied(string: string) {
-        this.actionReplyReceived.next(string)
+    protected onActionReplied(param: { reply: string, type: EnumChatMessagePreviewType }) {
+        this.actionReplyReceived.next(param)
     }
 
     protected onRequestSearchSchedule(string: string) {

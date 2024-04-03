@@ -1,8 +1,4 @@
-<div class="choice-container" [style.--choice-color]="choiceColor"
-    [style.--choice-background-color]="choiceBackgroundColor" [style.--choice-selected-color]="choiceSelectedColor"
-    [style.--choice-selected-background-color]="choiceSelectedBackgroundColor"
-    [style.--choice-hover-color]="choiceHoverColor"
-    [style.--choice-hover-background-color]="choiceHoverBackgroundColor">
+<div class="choice-container" [style.--primary-color]="primaryColor">
     <div class="chat-choices" [style.flex-direction]="choices.length > 10 ? 'row' : 'column'"
         [style.align-items]="choices.length > 10 ? 'center' : 'flex-start'">
         <ng-container *ngFor="let choice of choices; let i=index; trackBy:trackChoice.bind(this)">

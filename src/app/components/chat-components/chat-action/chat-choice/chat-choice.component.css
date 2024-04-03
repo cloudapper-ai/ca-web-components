@@ -5,13 +5,8 @@
     align-items: flex-start;
     justify-content: center;
     gap: 8px;
-    --choice-color: #255db8;
-    --choice-background-color: #a6c8ff;
-    --choice-selected-color: #a6c8ff;
-    --choice-selected-background-color: #255db8;
-    --choice-hover-color: #255db8;
-    --choice-hover-background-color: #629eff;
     padding: 8px;
+    --primary-color: #36109d;
 }
 
 .chat-choices {
@@ -38,22 +33,25 @@
     font-weight: 400;
     cursor: pointer;
     border-radius: 6px;
-    background-color: rgb(249, 249, 255);
+    background-color: #f9f9ff;
     color: var(--default-text-color-light);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 1px;
 }
 
 .chat-choice:hover {
+    background-color: white;
     color: var(--default-text-color);
-    border-left: 0.5px solid var(--choice-selected-color);
-    border-right: 0.5px solid var(--choice-selected-color);
+    border-left: 0.5px solid var(--primary-color);
+    border-right: 0.5px solid var(--primary-color);
 }
 
 .chat-choice-selected {
     font-size: 14px;
     cursor: pointer;
-    color: var(--choice-selected-color);
-    background-color: var(--choice-selected-background-color);
+    color: var(--default-text-color);
+    background-color: white;
+    border-left: 0.5px solid var(--primary-color);
+    border-right: 0.5px solid var(--primary-color);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 1px;
     border-radius: 6px;
     font-weight: 400;

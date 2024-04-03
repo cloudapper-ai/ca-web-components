@@ -27,8 +27,8 @@
                 [colorProfiles]="initialParameters.userColors"
                 [allowActionInteraction]="(i===messages.length - 1) || (message.action !== undefined && (message.action.ActionType === ChatActionTypes.ShowRecord || message.action.ActionType === ChatActionTypes.ShowRecords))"
                 [message]=message (suggestionSelected)="onSuggsetionSelected($event)"
-                (actionReplyReceived)="onSuggsetionSelected($event)"
-                (recordVideoRequested)="onRecordVideoRequested($event)" (fileSelected)="onFileMessageReceived($event)"
+                (actionReplyReceived)="onActionSelected($event)" (recordVideoRequested)="onRecordVideoRequested($event)"
+                (fileSelected)="onFileMessageReceived($event)"
                 (openAppointmentWindow)="onMakeAppointmentRequested($event)"
                 (searchScheduleRequest)="onScheduleSearchRequested($event)"></chat-item>
         </ng-container>

@@ -10,7 +10,7 @@ import { BehaviorSubject } from "rxjs";
 import { ChatSchedularComponent } from "./chat-scheduler/chat-schedular.component";
 import { ChatAudioComponent } from "./chat-audio/chat-audio.component";
 import { ChatVideoComponent } from "./chat-video/chat-video.component";
-import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes } from "../../../models/chat-message.model";
+import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
 import { RESULT } from "src/app/models/result.model";
 
 @Component({
@@ -32,9 +32,16 @@ export class ChatActionComponent {
         return `${index}-${choice}`;
     }
 
-    @Output() replyReceived: EventEmitter<string> = new EventEmitter();
-    protected onSubmitReply(reply: string) {
-        this.replyReceived.next(reply)
+    protected PreviewTypes = EnumChatMessagePreviewType;
+    @Output() replyReceived: EventEmitter<{
+        reply: string,
+        type: EnumChatMessagePreviewType
+    }> = new EventEmitter();
+    protected onSubmitReply(reply: string, type?: EnumChatMessagePreviewType) {
+        this.replyReceived.next({
+            reply: reply,
+            type: type ? type : EnumChatMessagePreviewType.Default
+        })
     }
 
     @Output() fileSelected: EventEmitter<{
