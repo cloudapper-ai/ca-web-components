@@ -38,8 +38,7 @@ import { FileDataService } from './data-layer/file-service.data-service';
   ],
   providers: [
     { provide: TOKEN_FILE_SERVICE, useClass: FileDataService }
-  ],
-  bootstrap: [AppComponent]
+  ]
 })
 export class AppModule implements DoBootstrap {
   constructor(injector: Injector) {
