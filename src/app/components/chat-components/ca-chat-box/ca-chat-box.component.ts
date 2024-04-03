@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ChatConstants } from '../../../models/chat-constants.model';
-import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatUIActionData, EnumChatActionTypes, EnumChatMessagePreviewType } from '../../../models/chat-message.model';
+import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatSuggestion, ChatUIActionData, EnumChatActionTypes, EnumChatMessagePreviewType } from '../../../models/chat-message.model';
 import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
 import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
@@ -27,9 +27,10 @@ export class CaChatBoxComponent {
         this.setReadyForUserReply(true);
     }
 
-    addReplyFromBot(id: string, message: string, suggestions?: string[]) {
+    addReplyFromBot(id: string, message: string, suggestions?: string[], suggestionObjects?: ChatSuggestion[]) {
         const chatMessage = new ChatMessage(id, ChatConstants.BotId, message);
         chatMessage.suggestions = suggestions;
+        chatMessage.suggestionObjects = suggestionObjects;
         this.updateMessageQueue(chatMessage);
     }
 
@@ -43,10 +44,15 @@ export class CaChatBoxComponent {
         this.isLoading = !ready;
     }
 
-    protected addReplyFromUser(message: string, style: EnumChatMessagePreviewType): boolean {
+    protected addReplyFromUser(message: string, queryText?: string, style?: EnumChatMessagePreviewType): ChatMessage | undefined {
         const chatMessage = new ChatMessage(uuidv4(), ChatConstants.UserId, message);
-        chatMessage.style = style;
-        return this.updateMessageQueue(chatMessage);
+        chatMessage.QueryText = queryText
+        chatMessage.style = style ? style : EnumChatMessagePreviewType.Default;
+        if (this.updateMessageQueue(chatMessage)) {
+            return chatMessage
+        } else {
+            return undefined;
+        }
     }
 
     addFileResponseFromUser(url: string, file: File) {
@@ -89,6 +95,8 @@ export class CaChatBoxComponent {
                 messages[oldMessageIndex].message = newMessage.message;
                 messages[oldMessageIndex].warning = newMessage.warning;
                 messages[oldMessageIndex].action = newMessage.action;
+                messages[oldMessageIndex].suggestionObjects = newMessage.suggestionObjects;
+                messages[oldMessageIndex].suggestions = newMessage.suggestions;
             } else {
                 messages.push(newMessage);
             }
@@ -129,7 +137,7 @@ export class CaChatBoxComponent {
         }
     }
 
-    private postUserReply(message: string, style: EnumChatMessagePreviewType = EnumChatMessagePreviewType.Default) {
+    private postUserReply(message: string, queryText?: string, style: EnumChatMessagePreviewType = EnumChatMessagePreviewType.Default) {
         let newMessage = message;
 
         const lines = newMessage.split('\n').map(x => x.trim()).filter(x => x.length);
@@ -137,12 +145,13 @@ export class CaChatBoxComponent {
             newMessage = lines.join('<br>')
         }
 
-        if (this.addReplyFromUser(newMessage, style)) {
+        const chatMessage = this.addReplyFromUser(newMessage, queryText, style);
+        if (chatMessage) {
 
             setTimeout(() => {
                 this.addLoadingMessage();
                 this.setReadyForUserReply(false);
-                this.userReplySubmitted.next(message);
+                this.userReplySubmitted.next(chatMessage.QueryText);
             }, 500);
             if (this.chatUserInput) {
                 this.chatUserInput.nativeElement.value = '';
@@ -172,9 +181,12 @@ export class CaChatBoxComponent {
     @Output()
     userReplySubmitted: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
 
-    protected onSuggsetionSelected(message: string | undefined) {
-        if (message && message.length > 0) {
-            this.postUserReply(message);
+    protected onSuggsetionSelected(param: {
+        message: string,
+        queryText: string
+    } | undefined) {
+        if (param && param.message.length > 0) {
+            this.postUserReply(param.message, param.queryText);
         }
     }
     protected onActionSelected(param: {
@@ -184,7 +196,7 @@ export class CaChatBoxComponent {
         // if (message && message.length > 0) {
         //     this.postUserReply(message);
         // }
-        this.postUserReply(param.reply, param.type)
+        this.postUserReply(param.reply, undefined, param.type)
     }
 
     @Output() chatMinimizeRequestReceived: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

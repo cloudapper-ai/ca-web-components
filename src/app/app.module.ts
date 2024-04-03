@@ -16,6 +16,7 @@ import { IframePreviewComponent } from './components/shared-components/iframe-pr
 import { HttpClientModule } from '@angular/common/http';
 import { TOKEN_FILE_SERVICE } from './data-layer/interfaces/injectable-token.token';
 import { FileDataService } from './data-layer/file-service.data-service';
+import { ChoiceAttributePipe } from './components/chat-components/chat-action/chat-action.pipes';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { FileDataService } from './data-layer/file-service.data-service';
     ChatActionComponent,
     VideoRecordingModule,
     IframePreviewComponent,
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    ChoiceAttributePipe
   ],
   providers: [
     { provide: TOKEN_FILE_SERVICE, useClass: FileDataService }

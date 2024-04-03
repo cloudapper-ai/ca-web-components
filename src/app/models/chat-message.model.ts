@@ -3,8 +3,13 @@ export class ChatMessage {
     public warning: boolean = false;
     public updateCount: number = 0;
     public suggestions?: string[];
+    public suggestionObjects?: ChatSuggestion[];
     public action?: ChatUIActionData;
     constructor(public id: string, public userId: string, public message: string) { }
+
+    private _queryText: string | undefined = undefined;
+    public get QueryText(): string { return this._queryText ? this._queryText : this.message; }
+    public set QueryText(value: string | undefined) { this._queryText = value; }
 
     public style: EnumChatMessagePreviewType = EnumChatMessagePreviewType.Default;
 }
@@ -36,8 +41,20 @@ export class StreamChatActionData {
     constructor(public content?: ChatUIActions | null, public finish_reason?: string | null, public error?: string | null) { }
 }
 
+export class StreamChatSuggestionData {
+    constructor(public content?: ChatSuggestion[] | null, public finish_reason?: string | null, public error?: string | null) { }
+}
+
 export class ChatResponse {
     constructor(public query_result?: string | null, public generated_question?: string | null, public query_time?: number) { }
+}
+
+export interface ChatSuggestion {
+    identifier: string;
+    parent_id: string;
+    display_text: string;
+    query_text: string;
+
 }
 
 export enum EnumChatActionTypes {
@@ -98,4 +115,5 @@ export interface ChatResponseStream {
     message: StreamChatMessageData
     cache: StreamChatCacheData
     uiaction: StreamChatActionData
+    suggestions: ChatSuggestion[]
 }

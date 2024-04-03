@@ -9,7 +9,7 @@ import { RESULT } from "../../models/result.model";
 import { ChatService } from "../../service-layer/chat-service.service";
 import { uuidv4 } from "../../helpers/utils";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
-import { ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
+import { ChatSuggestion, ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
 import { FileService } from "../../service-layer/file-service.service";
 
 @UntilDestroy()
@@ -162,7 +162,8 @@ export class CAChatContainer implements OnInit, AfterViewInit {
             this.subscription = observable.pipe(takeWhile(() => { return !ended; })).subscribe({
                 next: (result: RESULT<{
                     message: string;
-                    action?: ChatUIActionData
+                    action?: ChatUIActionData,
+                    suggestions?: ChatSuggestion[]
                 }>) => {
                     switch (result.isError) {
                         case true:
@@ -177,7 +178,7 @@ export class CAChatContainer implements OnInit, AfterViewInit {
                                 if (result.result.action) {
                                     this.chatBox.addActionReplyFromBot(replyId, result.result.message, result.result.action);
                                 } else {
-                                    this.chatBox.addReplyFromBot(replyId, result.result.message);
+                                    this.chatBox.addReplyFromBot(replyId, result.result.message, undefined, result.result.suggestions);
 
                                 }
                             }

@@ -1,6 +1,6 @@
 import { Observable, takeWhile } from "rxjs";
 import { IChatService } from "../data-layer/interfaces/chat-service.interface";
-import { ChatHistory, ChatResponseStream, ChatUIActionData, EnumChatUserRoles } from "../models/chat-message.model";
+import { ChatHistory, ChatResponseStream, ChatSuggestion, ChatUIActionData, EnumChatUserRoles } from "../models/chat-message.model";
 import { RESULT } from "../models/result.model";
 import { uuidv4 } from "../helpers/utils";
 
@@ -16,11 +16,12 @@ export class ChatService {
         this.history = [];
     }
 
-    submitUserReplyToBOT(query: string, onComplete: () => void): Observable<RESULT<{ message: string; action?: ChatUIActionData }>> {
+    submitUserReplyToBOT(query: string, onComplete: () => void): Observable<RESULT<{ message: string; action?: ChatUIActionData, suggestions?: ChatSuggestion[] }>> {
         let replyFromBot: string = '';
         let encountedError: boolean = false;
         return new Observable<RESULT<{ message: string; action?: ChatUIActionData }>>((observer) => {
             let action: ChatUIActionData | undefined;
+            let suggestions: ChatSuggestion[] | undefined;
             this.history = this.dataService.dumpChatHistory(this.history)
             const observable = this.dataService.submitUserReply(query, this.sessionid, this.history)
             observable.subscribe({
@@ -35,15 +36,18 @@ export class ChatService {
                         } else if (!encountedError) {
                             if (value.message.content && value.message.content.length > 0) {
                                 replyFromBot += value.message.content
-                                observer.next(RESULT.ok({ message: replyFromBot, action: action }));
+                                observer.next(RESULT.ok({ message: replyFromBot, action: action, suggestions: suggestions }));
                             } else {
                                 replyFromBot += ''
-                                observer.next(RESULT.ok({ message: replyFromBot, action: action }));
+                                observer.next(RESULT.ok({ message: replyFromBot, action: action, suggestions: suggestions }));
                             }
                         }
                     } else if (value.uiaction && value.uiaction && value.uiaction && value.uiaction.content && value.uiaction.content.actions && value.uiaction.content.actions.length) {
                         action = value.uiaction.content.actions[0];
-                        observer.next(RESULT.ok({ message: replyFromBot, action: action }));
+                        observer.next(RESULT.ok({ message: replyFromBot, action: action, suggestions: suggestions }));
+                    } else if (value.suggestions && value.suggestions) {
+                        suggestions = value.suggestions;
+                        observer.next(RESULT.ok({ message: replyFromBot, action: action, suggestions: suggestions }));
                     }
                 },
                 complete: () => {

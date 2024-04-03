@@ -8,9 +8,21 @@ import { BehaviorSubject } from "rxjs";
 })
 export class SuggestionItemComponent {
     @Input() message: string = ''
-    @Output() onMessageSelected = new BehaviorSubject<string | undefined>(undefined);
+
+    private _queryText: string | undefined = undefined;
+    @Input()
+    get queryText(): string { return this._queryText ? this._queryText : this.message; }
+    set queryText(value: string) { this._queryText = value; }
+
+    @Output() onMessageSelected = new BehaviorSubject<{
+        message: string,
+        queryText: string
+    } | undefined>(undefined);
 
     protected onSelection() {
-        this.onMessageSelected.next(this.message);
+        this.onMessageSelected.next({
+            message: this.message,
+            queryText: this.queryText
+        });
     }
 }

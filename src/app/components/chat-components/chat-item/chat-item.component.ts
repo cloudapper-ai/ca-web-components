@@ -196,7 +196,13 @@ export class ChatItemComponent implements OnInit {
         return this._message;
     }
 
-    @Output() suggestionSelected: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
+    @Output() suggestionSelected: BehaviorSubject<{
+        message: string,
+        queryText: string
+    } | undefined> = new BehaviorSubject<{
+        message: string,
+        queryText: string
+    } | undefined>(undefined);
     @Output() actionReplyReceived: EventEmitter<{
         reply: string,
         type: EnumChatMessagePreviewType
@@ -215,10 +221,11 @@ export class ChatItemComponent implements OnInit {
         subject: BehaviorSubject<RESULT<boolean>>
     }>()
 
-    protected onSuggestionSelected(message: string | undefined) {
-        if (message) {
-            this.suggestionSelected.next(message);
-        }
+    protected onSuggestionSelected(param: {
+        message: string,
+        queryText: string
+    } | undefined) {
+        this.suggestionSelected.next(param);
     }
 
     protected onActionReplied(param: { reply: string, type: EnumChatMessagePreviewType }) {

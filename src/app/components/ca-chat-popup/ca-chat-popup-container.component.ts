@@ -9,7 +9,7 @@ import { ChatService } from "../../service-layer/chat-service.service";
 import { DummyChatDataService } from "../../data-layer/dummy-chat-service.data-service";
 import { ChatDataService } from "../../data-layer/chat-service.data-service";
 import { RESULT } from "../../models/result.model";
-import { ActionAttachmentAttributes, ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
+import { ActionAttachmentAttributes, ChatSuggestion, ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { FileService } from "../../service-layer/file-service.service";
 import { Assets } from "src/app/models/assets.model";
@@ -309,7 +309,8 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
             this.subscription = observable.pipe(takeWhile(() => { return !ended; }), untilDestroyed(this)).subscribe({
                 next: (result: RESULT<{
                     message: string;
-                    action?: ChatUIActionData
+                    action?: ChatUIActionData,
+                    suggestions?: ChatSuggestion[]
                 }>) => {
                     switch (result.isError) {
                         case true:
@@ -324,7 +325,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                                 if (result.result.action) {
                                     this.chatBox.addActionReplyFromBot(replyId, result.result.message, result.result.action);
                                 } else {
-                                    this.chatBox.addReplyFromBot(replyId, result.result.message);
+                                    this.chatBox.addReplyFromBot(replyId, result.result.message, undefined, result.result.suggestions);
                                 }
                             }
                             break;

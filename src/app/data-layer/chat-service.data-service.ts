@@ -1,5 +1,5 @@
 import { Observable } from "rxjs";
-import { ChatHistory, ChatResponseStream, StreamChatActionData, StreamChatCacheData, StreamChatMessageData } from "../models/chat-message.model";
+import { ChatHistory, ChatResponseStream, StreamChatActionData, StreamChatCacheData, StreamChatMessageData, StreamChatSuggestionData } from "../models/chat-message.model";
 import { IChatService } from "./interfaces/chat-service.interface";
 import { QueueClass, QueueManager } from "../helpers/queue.helper";
 import { IsNullOrUndefinedOrEmptyString } from "../helpers/helper-functions.helper";
@@ -85,6 +85,18 @@ export class ChatDataService implements IChatService {
                                                 }
                                                 receivedKnownElements = true;
                                             }
+                                            break;
+                                        case 'suggestions':
+                                            {
+                                                const data = this.parseChatSuggestionContent(content.data);
+                                                if (data) {
+                                                    observer.next(<ChatResponseStream>{
+                                                        suggestions: data.content
+                                                    });
+                                                }
+                                                receivedKnownElements = true;
+                                            }
+
                                             break;
                                         case 'uiaction':
                                             {
@@ -269,6 +281,17 @@ export class ChatDataService implements IChatService {
         const data: StreamChatCacheData = JSON.parse(string)
         if (data) { return data }
         else { return null; }
+    }
+
+    private parseChatSuggestionContent(string: string): StreamChatSuggestionData | null {
+        try {
+            const data: StreamChatSuggestionData = JSON.parse(string)
+            if (data) { return data }
+            else { return null; }
+        } catch (_error) {
+            return null;
+        }
+
     }
 
     private parseUIActionContent(string: string): StreamChatActionData | null {
