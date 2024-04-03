@@ -12,10 +12,38 @@ body {
     --default-text-color-light: #090910cc;
 }
 
-::ng-global {
-    * {
-        font-family: var(--font-family) !important;
-        -webkit-font-smoothing: antialiased !important;
-        font-variation-settings: normal !important;
-    }
+* {
+    font-family: var(--font-family) !important;
+    -webkit-font-smoothing: antialiased !important;
+    font-variation-settings: normal !important;
+}
+
+h1 {
+    font-size: 20px !important;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
+
+h4 {
+    font-size: 14px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
+
+h5 {
+    font-size: 12px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
 }

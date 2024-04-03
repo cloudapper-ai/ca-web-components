@@ -9,6 +9,7 @@ import { IsNullOrUndefinedOrEmptyString } from "../../../../helpers/helper-funct
 import { Assets } from "../../../../models/assets.model";
 import { ActionAttachmentAttributes } from "../../../../models/chat-message.model";
 import { FileSizePipe } from "../../../../pipes/filesize.pipe";
+import { getFileExtension } from "src/app/helpers/attachment-helpers.helper";
 
 
 @UntilDestroy()
@@ -67,8 +68,15 @@ export class ChatUploadComponent implements OnInit {
         if (file.size / 1024 / 1024 > this.maxFileSize) {
             this.setErrorMessage('File size limit exceeded.')
         } else {
-            this.selectedFile = file;
-            this.currentStatus = ChatUploadStatus.FileReceived;
+            const ext = getFileExtension(file.name);
+            const invalidFileformat = this.supportedFiles && this.supportedFiles !== '*/*' && ext && !this.supportedFiles.includes(ext);
+            if (invalidFileformat) {
+                this.setErrorMessage('The supported formats does not include this file format.')
+            } else {
+                this.selectedFile = file;
+                this.currentStatus = ChatUploadStatus.FileReceived;
+            }
+
         }
     }
 

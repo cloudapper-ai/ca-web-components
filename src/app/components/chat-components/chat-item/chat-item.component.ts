@@ -189,7 +189,6 @@ export class ChatItemComponent implements OnInit {
     set message(value: ChatMessage) {
         this._message = value;
         this.isBotReply = value.userId === ChatConstants.BotId;
-        console.log(value)
     }
 
     get message(): ChatMessage {

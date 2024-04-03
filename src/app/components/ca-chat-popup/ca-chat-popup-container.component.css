@@ -1,4 +1,4 @@
-.container { 
+.container {
     all: initial;
     --bubble-background-color: '#edefef';
     --bubble-foreground-color: '#414042';
@@ -8,16 +8,56 @@
     --suggestion-foreground-color: black;
     --suggestion-border-color-hover: blue;
     --suggestion-foreground-color-hover: black;
-    font-family: 'Be Vietnam Pro', sans-serif !important;
+    --font-family: 'Be Vietnam Pro', sans-serif;
+    --default-text-color: #0a0a11;
+    --default-text-color-light: #090910cc;
     font-size: 14px;
     line-height: 22px;
 }
 
-.chat-container-background { 
-    position: fixed; 
-    top: 0; 
+::ng-global {
+    * {
+        font-family: var(--font-family) !important;
+        -webkit-font-smoothing: antialiased !important;
+        font-variation-settings: normal !important;
+    }
+
+    h1 {
+        font-size: 20px !important;
+        font-weight: 400 !important;
+        color: var(--default-text-color) !important;
+    }
+
+    h2 {
+        font-size: 18px;
+        font-weight: 400 !important;
+        color: var(--default-text-color) !important;
+    }
+
+    h3 {
+        font-size: 16px;
+        font-weight: 400 !important;
+        color: var(--default-text-color) !important;
+    }
+
+    h4 {
+        font-size: 14px;
+        font-weight: 400 !important;
+        color: var(--default-text-color) !important;
+    }
+
+    h5 {
+        font-size: 12px;
+        font-weight: 400 !important;
+        color: var(--default-text-color) !important;
+    }
+}
+
+.chat-container-background {
+    position: fixed;
+    top: 0;
     left: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
     background: #fff1;
     z-index: 18000;
