@@ -26,9 +26,10 @@ export class ChatUploadComponent implements OnInit {
         this.data$.pipe(untilDestroyed(this)).subscribe(value => {
             if (value.SupportedFileTypes && value.SupportedFileTypes.length) {
                 let fileTypes = ''
-                value.SupportedFileTypes.split(',').map(x => x.trim()).filter(x => !IsNullOrUndefinedOrEmptyString(x)).forEach(x => {
+                value.SupportedFileTypes.split(new RegExp('[,;]', 'gi')).map(x => x.trim()).filter(x => !IsNullOrUndefinedOrEmptyString(x)).forEach(x => {
                     if (fileTypes.length > 0) { fileTypes += ','; }
-                    fileTypes += `.${x}`;
+                    if (x.startsWith('.')) { fileTypes += x; }
+                    else { fileTypes += `.${x}`; }
                 })
                 this.supportedFiles = fileTypes;
             } else {
