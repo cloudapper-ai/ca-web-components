@@ -40,6 +40,11 @@
     flex-direction: row;
     background: white;
     border-top: 1px solid #f0f0f0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
 }
 
 .chat-box-input textarea {
@@ -50,8 +55,7 @@
     min-height: 36px !important;
     max-height: 160px !important;
     padding: 0 16px !important;
-    font-size: 1rem;
-    !important;
+    font-size: 1rem !important;
     font-weight: 300 !important;
     margin: 0 !important;
     resize: vertical;
@@ -160,7 +164,6 @@
 
 @media screen and (max-width: 480px) {
     .chat-box-input textarea {
-        font-size: 1.2rem;
-        !important;
+        font-size: 1.2rem !important;
     }
 }
