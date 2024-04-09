@@ -47,7 +47,8 @@
 }
 
 .button span {
-    font-size: 14px;
+    font-size: 1rem;
+
     font-weight: 500;
 }
 
@@ -83,7 +84,8 @@
 }
 
 .error-section span {
-    font-size: 14px;
+    font-size: 1rem;
+
     font-weight: 300;
     color: red;
 }
@@ -103,21 +105,25 @@
 }
 
 .upload-section span {
-    font-size: 14px;
+    font-size: 1rem;
+
     font-weight: 400;
     text-align: center;
 }
 
 @media screen and (max-width: 768px) {
     .upload-section span {
-        font-size: 16px;
+        font-size: 1.2rem;
+
     }
 
     .error-section span {
-        font-size: 16px;
+        font-size: 1.2rem;
+
     }
 
     .button span {
-        font-size: 16px;
+        font-size: 1.2rem;
+
     }
 }

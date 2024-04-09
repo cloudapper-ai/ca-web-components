@@ -25,7 +25,8 @@
 
 
 .record-card span {
-    font-size: 13px;
+    font-size: 1rem;
+
     color: var(--default-text-color);
     font-weight: 300;
 

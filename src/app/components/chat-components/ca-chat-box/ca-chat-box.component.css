@@ -16,11 +16,13 @@
 }
 
 .chat-box-title-medium {
-    font-size: 16px;
+    font-size: 1.2rem;
+
 }
 
 .chat-box-title-small {
-    font-size: 10px;
+    font-size: 0.8rem;
+
     opacity: 0.75;
 }
 
@@ -48,7 +50,8 @@
     min-height: 36px !important;
     max-height: 160px !important;
     padding: 0 16px !important;
-    font-size: 14px !important;
+    font-size: 1rem;
+    !important;
     font-weight: 300 !important;
     margin: 0 !important;
     resize: vertical;
@@ -138,7 +141,8 @@
 }
 
 .video-record-title span {
-    font-size: 14px;
+    font-size: 1rem;
+
     font-weight: 400;
     color: var(--chat-box-on-primary-color)
 }
@@ -156,6 +160,7 @@
 
 @media screen and (max-width: 480px) {
     .chat-box-input textarea {
-        font-size: 16px !important;
+        font-size: 1.2rem;
+        !important;
     }
 }

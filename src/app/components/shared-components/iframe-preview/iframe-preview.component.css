@@ -29,7 +29,8 @@
 }
 
 .overlay span {
-    font-size: 16px;
+    font-size: 1.2rem;
+
     font-weight: 400;
     text-align: center;
     color: #c71927
