@@ -13,7 +13,7 @@
     --default-text-color-light: #090910cc;
     font-size: 14px;
 
-    line-height: 22px;
+    line-height: 24px;
 }
 
 ::ng-global {
@@ -67,6 +67,6 @@
 @media screen and (max-width: 480px) {
     .container {
         font-size: 1.2rem;
-        line-height: 20px !important;
+        line-height: 22px !important;
     }
 }
