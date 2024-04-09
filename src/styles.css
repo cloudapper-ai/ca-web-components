@@ -21,34 +21,31 @@ body {
 }
 
 h1 {
-    font-size: 20px !important;
+    font-size: 26px !important;
     font-weight: 400 !important;
     color: var(--default-text-color) !important;
 }
 
 h2 {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 400 !important;
     color: var(--default-text-color) !important;
 }
 
 h3 {
-    font-size: 1.2rem;
-
+    font-size: 22px;
     font-weight: 400 !important;
     color: var(--default-text-color) !important;
 }
 
 h4 {
-    font-size: 1rem;
-
+    font-size: 20px;
     font-weight: 400 !important;
     color: var(--default-text-color) !important;
 }
 
 h5 {
-    font-size: 0.9rem;
-
+    font-size: 18px;
     font-weight: 400 !important;
     color: var(--default-text-color) !important;
 }
