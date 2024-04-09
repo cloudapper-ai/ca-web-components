@@ -39,7 +39,7 @@
     margin: 0 !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
-    line-height: 22px;
+    line-height: 26px;
 }
 
 .chat-suggestion {
@@ -288,13 +288,5 @@
     .chat-choice {
         font-size: 1.2rem;
 
-    }
-
-    ::ng-deep .chat-box-message p {
-        line-height: 26px;
-    }
-
-    .chat-box-user {
-        font-size: 0.9rem;
     }
 }
