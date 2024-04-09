@@ -7,7 +7,6 @@
 
 .chat-box-user {
     font-size: 0.8rem;
-
     font-weight: 400;
 }
 
@@ -289,5 +288,13 @@
     .chat-choice {
         font-size: 1.2rem;
 
+    }
+
+    ::ng-deep .chat-box-message p {
+        line-height: 26px;
+    }
+
+    .chat-box-user {
+        font-size: 0.9rem;
     }
 }
