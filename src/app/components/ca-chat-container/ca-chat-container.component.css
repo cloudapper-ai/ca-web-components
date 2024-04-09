@@ -59,3 +59,9 @@ h5 {
         border-radius: 0;
     }
 }
+
+@media screen and (max-width: 768px) {
+    .chat-box-container {
+        font-size: 16px;
+    }
+}

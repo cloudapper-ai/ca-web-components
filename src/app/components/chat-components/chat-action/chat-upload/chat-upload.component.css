@@ -162,3 +162,21 @@
     font-size: 14px;
     font-weight: 500;
 }
+
+@media screen and (max-width: 768px) {
+    .upload-file-container {
+        font-size: 16px;
+    }
+
+    .upload-files div {
+        font-size: 16px;
+    }
+
+    .upload-button {
+        font-size: 16px;
+    }
+
+    .button span {
+        font-size: 16px;
+    }
+}

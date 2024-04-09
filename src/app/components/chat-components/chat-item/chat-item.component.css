@@ -29,6 +29,7 @@
     font-weight: 300;
 }
 
+
 .chat-box-message-center {
     text-align: center;
 }
@@ -272,4 +273,14 @@
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 1px;
     border-radius: 6px;
     font-weight: 400;
+}
+
+@media screen and (max-width: 768px) {
+    .chat-box-message {
+        font-size: 16px;
+    }
+
+    .chat-choice {
+        font-size: 16px;
+    }
 }

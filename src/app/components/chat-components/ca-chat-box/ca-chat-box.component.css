@@ -153,3 +153,9 @@
     height: calc(100% - 48px);
     background-color: black;
 }
+
+@media screen and (max-width: 480px) {
+    .chat-box-input textarea {
+        font-size: 16px !important;
+    }
+}
