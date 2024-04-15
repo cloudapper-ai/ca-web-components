@@ -256,6 +256,7 @@
     justify-content: flex-start;
     box-sizing: border-box;
     flex-wrap: wrap;
+    margin-top: 8px;
 }
 
 .item-center {
@@ -278,14 +279,17 @@
 }
 
 @media screen and (max-width: 768px) {
+    .chat-box {
+        padding: 16px 24px;
+    }
 
     .chat-box-message {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 
     .chat-choice {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 }

@@ -63,9 +63,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 8px;
     padding: 8px;
-    box-sizing: border-box;
 }
 
 .video-preview video {
@@ -115,17 +113,17 @@
 
 @media screen and (max-width: 768px) {
     .upload-section span {
-        font-size: 1.2rem;
+        font-size: 1rem;
 
     }
 
     .error-section span {
-        font-size: 1.2rem;
+        font-size: 1rem;
 
     }
 
     .button span {
-        font-size: 1.2rem;
+        font-size: 1rem;
 
     }
 }

@@ -171,22 +171,22 @@
 
 @media screen and (max-width: 768px) {
     .upload-file-container {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 
     .upload-files div {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 
     .upload-button {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 
     .button span {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 }

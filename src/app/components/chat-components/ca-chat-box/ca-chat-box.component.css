@@ -157,6 +157,6 @@
 
 @media screen and (max-width: 480px) {
     .chat-box-input textarea {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
     }
 }

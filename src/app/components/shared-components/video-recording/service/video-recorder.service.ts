@@ -223,7 +223,7 @@ export class RecordingService {
         this.elapsedTime = 0;
         await this.recordRTC?.reset()
         await this.recordRTC?.destroy();
-        this.stream?.getTracks().forEach(x => x.stop())
+        this.stream?.getTracks().forEach(x => x.stop());
         this.stream = undefined;
     }
 

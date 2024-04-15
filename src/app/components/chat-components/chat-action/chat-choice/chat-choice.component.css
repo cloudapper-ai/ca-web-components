@@ -95,17 +95,17 @@
 
 @media screen and (max-width: 768px) {
     .chat-choice {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 
     .chat-choice-selected {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 
     .button span {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
 
     }
 }
