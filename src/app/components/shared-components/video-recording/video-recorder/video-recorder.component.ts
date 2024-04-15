@@ -8,7 +8,7 @@ import { Assets } from '../../../../models/assets.model';
     templateUrl: './video-recorder.component.html',
     styleUrls: ['./video-recorder.component.css']
 })
-export class VideoRecorderComponent implements OnInit, AfterViewInit, OnDestroy {
+export class VideoRecorderComponent implements AfterViewInit, OnDestroy {
     protected Assets = Assets;
     @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
     recordingService?: RecordingService;
@@ -27,11 +27,6 @@ export class VideoRecorderComponent implements OnInit, AfterViewInit, OnDestroy 
         setTimeout(() => { this.startRecording() }, 10);
     }
 
-    ngOnInit() {
-        this.recordingService = new RecordingService();
-
-    }
-
     ngOnDestroy() {
         this.recordingService?.clearRecording();
     }
@@ -39,17 +34,18 @@ export class VideoRecorderComponent implements OnInit, AfterViewInit, OnDestroy 
     protected isRecording: boolean = false;
     protected isPaused: boolean = false;
 
-    protected async startRecording() {
-        this.recordingService?.clearRecording();
-        this.recordingService?.onVideoReady.subscribe(file => {
-            this.zone.run(() => {
-                this.recordCompleted.next(file)
-            })
 
-            setTimeout(() => {
-                this.recordingService?.clearRecording()
-                this.recordingService = undefined;
-            }, 10)
+    protected async onFileReady(file: File) {
+        this.recordingService = undefined;
+        this.zone.run(() => {
+            this.recordCompleted.next(file)
+        })
+    }
+
+    protected async startRecording() {
+        this.recordingService = new RecordingService();
+        this.recordingService.onVideoReady.subscribe(file => {
+            this.onFileReady(file);
 
         })
         this.elapsedTime = 0;
@@ -92,6 +88,7 @@ export class VideoRecorderComponent implements OnInit, AfterViewInit, OnDestroy 
 
     protected displayVideoPreview() {
         const videoElement: HTMLVideoElement = this.videoElement.nativeElement;
+        videoElement.muted = true;
         const stream = this.recordingService?.getStream()
         if (stream) {
             videoElement.srcObject = stream;

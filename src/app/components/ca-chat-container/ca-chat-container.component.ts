@@ -100,7 +100,7 @@ export class CAChatContainer implements OnInit, AfterViewInit {
     get userlabelcolor(): string { return this._userLabelColor; }
     set userlabelcolor(value: string) { this._userLabelColor = value; this.updateUserColorProfile(); }
 
-    private _botLabelColor: string = '#00aaff';
+    private _botLabelColor: string = '#0393db';
     @Input()
     get botlabelcolor(): string { return this._botLabelColor }
     set botlabelcolor(value: string) { this._botLabelColor = value; this.updateBotColorProfile(); }
@@ -125,7 +125,7 @@ export class CAChatContainer implements OnInit, AfterViewInit {
         'CloudApper AI',
         'user0123',
         'AI Assistant',
-        new ChatWindowColorProfile('#00aaff', '#ffffff', '#FFFFFF'),
+        new ChatWindowColorProfile('#0393db', '#ffffff', '#FFFFFF'),
         {},
         false
     );

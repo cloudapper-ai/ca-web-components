@@ -16,14 +16,12 @@
 }
 
 .chat-box-title-medium {
-    font-size: 1.1rem;
+    font-size: 1rem;
 
 }
 
 .chat-box-title-small {
     font-size: 0.7rem;
-
-    opacity: 0.75;
 }
 
 .chat-box-body {

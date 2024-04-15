@@ -2,14 +2,18 @@
 // recording.service.ts
 
 import { EventEmitter } from "@angular/core";
+import { RecordRTCPromisesHandler } from 'recordrtc';
 /**
  * This service manages recording video streams using the MediaRecorder API.
  * It allows starting, stopping, pausing, resuming, and clearing recordings,
  * and provides events when the recording is ready.
  */
 export class RecordingService {
+    private recordRTC?: RecordRTCPromisesHandler; // RecordRTC instance for recording video
+
     // MediaRecorder instance for recording video
-    private mediaRecorder?: MediaRecorder;
+    // private mediaRecorder?: MediaRecorder;
+
     // Array to store recorded video blobs
     private recordedBlobs: Blob[] = [];
     // Duration of recording (in seconds)
@@ -25,99 +29,168 @@ export class RecordingService {
     // Interval reference for updating recording duration
     private timerInterval: any;
 
+    private stream?: MediaStream;
+
     // Event emitter for notifying when the video recording is ready
     onVideoReady: EventEmitter<File> = new EventEmitter();
 
     constructor() { }
 
-
-    private getSupportedMimeType(): string | null {
-        if (MediaRecorder.isTypeSupported('video/webm')) {
-            return 'video/webm'
-        } else if (MediaRecorder.isTypeSupported('video/mp4')) {
-            return 'video/mp4'
-        } else {
-            return null
-        }
-    }
-
-    /**
-     * Starts recording video stream with given duration and maximum size.
-     * @param duration The duration of the recording (in seconds).
-     * @param maxSize The maximum size of the recording (in megabytes).
-     */
     async startRecording(duration: number, maxSize: number) {
-        const supportedMimeType = this.getSupportedMimeType();
-        if (supportedMimeType === null) {
-            throw new Error('Recording video is not supported');
-        }
-        // Initialize recording parameters
         this.duration = duration;
         this.maxSize = maxSize * 1024 * 1024;
-        // Get video stream from user's media devices
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        this.elapsedTime = 0
+        this.stream = undefined;
 
-        // Initialize MediaRecorder with video stream
-        this.mediaRecorder = new MediaRecorder(stream, {
-            mimeType: supportedMimeType
-        });
-        // Event listener for data available during recording
-        this.mediaRecorder.ondataavailable = (event) => {
-            if (event.data && event.data.size > 0) {
-                this.recordedBlobs.push(event.data);
-            }
-        };
-        // Event listener for when recording stops
-        this.mediaRecorder.onstop = (event) => {
-            // Create a file from recorded blobs
-            const mimeType = supportedMimeType;
-            const audioBlob = new Blob(this.recordedBlobs, { type: mimeType });
-            const file = new File([audioBlob], this.filename(mimeType), {
-                type: mimeType,
-                lastModified: Date.now()
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: {
+                    echoCancellation: true
+                }
             });
-            // Emit event with the recorded video file
-            this.onVideoReady.next(file)
-        }
 
-        // Start recording
-        this.mediaRecorder.start();
-        this.isRecording = true;
-        this.startTime = Date.now();
 
-        // Update elapsed time periodically
-        this.timerInterval = setInterval(() => {
-            this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
-            // Check recording size periodically and stop if exceeds maximum size
-            if (this.recordedBlobs.length > 0 && this.getBlobSize() >= this.maxSize) {
+            this.recordRTC = new RecordRTCPromisesHandler(stream, {
+                type: 'video',
+                disableLogs: true,
+                timeSlice: 1000,
+                ondataavailable: (data) => {
+                    this.recordedBlobs.push(data);
+                }
+            });
+            await this.recordRTC.startRecording();
+            this.stream = stream;
+
+            this.isRecording = true;
+            this.startTime = Date.now();
+
+            this.timerInterval = setInterval(() => {
+                // Update elapsed time periodically
+                this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
+                // Check recording size periodically and stop if exceeds maximum size
+                if (this.recordedBlobs.length > 0 && this.getBlobSize() >= this.maxSize) {
+                    this.stopRecording();
+                }
+            }, 1000);
+
+            setTimeout(() => {
                 this.stopRecording();
-            }
-        }, 1000);
-
-        // Stop recording after specified duration
-        setTimeout(() => {
-            this.stopRecording();
-        }, (this.duration - this.elapsedTime) * 1000);
+            }, this.duration * 1000);
+        } catch (error) {
+            console.error('Error accessing media devices:', error);
+        }
     }
 
-    /**
-     * Stops the current recording.
-     */
     async stopRecording() {
         if (this.isRecording) {
-            this.mediaRecorder?.stop();
-            this.isRecording = false;
+            this.recordedBlobs = [];
             clearInterval(this.timerInterval);
+            await this.recordRTC?.stopRecording();
+            const videoBlob = await this.recordRTC?.getBlob();
+            let file: File | undefined = undefined;
+            if (videoBlob) {
+                file = new File([videoBlob], this.filename(videoBlob.type), {
+                    type: videoBlob.type,
+                    lastModified: Date.now()
+                });
+            }
+
+            await this.clearRecording();
+
+            setTimeout(() => {
+                if (file) {
+                    this.onVideoReady.next(file);
+                }
+            }, 500);
+
+            this.isRecording = false;
         }
     }
+
+    // /**
+    //  * Starts recording video stream with given duration and maximum size.
+    //  * @param duration The duration of the recording (in seconds).
+    //  * @param maxSize The maximum size of the recording (in megabytes).
+    //  */
+    // async startRecording(duration: number, maxSize: number) {
+    //     try {
+    //         // Initialize recording parameters
+    //         this.duration = duration;
+    //         this.maxSize = maxSize * 1024 * 1024;
+    //         // Get video stream from user's media devices
+    //         const stream = await navigator.mediaDevices.getUserMedia({
+    //             video: true, audio: {
+    //                 echoCancellation: true
+    //             }
+    //         });
+    //         // Initialize MediaRecorder with video stream
+    //         this.mediaRecorder = new MediaRecorder(stream);
+    //         // Event listener for data available during recording
+    //         this.mediaRecorder.ondataavailable = (event) => {
+    //             if (event.data && event.data.size > 0) {
+    //                 this.recordedBlobs.push(event.data);
+    //             }
+    //         };
+    //         // Event listener for when recording stops
+    //         this.mediaRecorder.onstop = (event) => {
+    //             // Create a file from recorded blobs
+    //             const videoBlob = new Blob(this.recordedBlobs);
+    //             const file = new File([videoBlob], this.filename(videoBlob.type), {
+    //                 type: videoBlob.type,
+    //                 lastModified: Date.now()
+    //             });
+    //             // Emit event with the recorded video file
+    //             this.onVideoReady.next(file)
+    //         }
+
+    //         this.mediaRecorder.onerror = (event: any) => {
+    //             console.log('Media recording error: ', event.error)
+    //         }
+
+    //         // Start recording
+    //         this.mediaRecorder.start();
+    //         this.isRecording = true;
+    //         this.startTime = Date.now();
+
+    //         this.timerInterval = setInterval(() => {
+    //             // Update elapsed time periodically
+    //             this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
+    //             // Check recording size periodically and stop if exceeds maximum size
+    //             if (this.recordedBlobs.length > 0 && this.getBlobSize() >= this.maxSize) {
+    //                 this.stopRecording();
+    //             }
+    //         }, 1000);
+
+    //         // Stop recording after specified duration
+    //         setTimeout(() => {
+    //             this.stopRecording();
+    //         }, (this.duration - this.elapsedTime) * 1000);
+    //     } catch (error) {
+    //         throw error;
+    //     }
+
+    // }
+
+    // /**
+    //  * Stops the current recording.
+    //  */
+    // async stopRecording() {
+    //     if (this.isRecording) {
+    //         this.mediaRecorder?.stop();
+    //         this.isRecording = false;
+    //         clearInterval(this.timerInterval);
+    //     }
+    // }
 
     /**
      * Pauses the current recording.
      */
-    pauseRecording() {
+    async pauseRecording() {
         if (this.isRecording) {
-            this.mediaRecorder?.pause();
+            await this.recordRTC?.pauseRecording()
             this.isPaused = true;
+            // stop elapsed time count down.
             clearInterval(this.timerInterval);
         }
     }
@@ -125,9 +198,9 @@ export class RecordingService {
     /**
      * Resumes the paused recording.
      */
-    resumeRecording() {
+    async resumeRecording() {
         if (this.isPaused) {
-            this.mediaRecorder?.resume();
+            await this.recordRTC?.resumeRecording()
             this.isPaused = false;
             this.startTime = Date.now() - (this.elapsedTime * 1000);
             // Resume updating elapsed time periodically
@@ -144,12 +217,14 @@ export class RecordingService {
     /**
      * Clears the current recording.
      */
-    clearRecording() {
+    async clearRecording() {
         // Clear recorded blobs and reset elapsed time
         this.recordedBlobs = [];
         this.elapsedTime = 0;
-        // Stop all media tracks in the stream
-        this.mediaRecorder?.stream.getTracks().forEach(x => x.stop());
+        await this.recordRTC?.reset()
+        await this.recordRTC?.destroy();
+        this.stream?.getTracks().forEach(x => x.stop())
+        this.stream = undefined;
     }
 
     /**
@@ -157,7 +232,7 @@ export class RecordingService {
      * @returns The current media stream, if available.
      */
     getStream(): MediaStream | undefined {
-        return this.mediaRecorder?.stream;
+        return this.stream;
     }
 
     /**
@@ -183,6 +258,8 @@ export class RecordingService {
             return '.mkv';
         } else if (mimeType.startsWith('video/3gp')) {
             return '.3gp';
+        } else if (mimeType.startsWith('video/quicktime')) {
+            return '.mov';
         } else {
             return '';
         }
@@ -195,6 +272,6 @@ export class RecordingService {
      */
     private filename(mimeType: string): string {
         const extension = this.getFileExtensionFromMimeType(mimeType);
-        return 'Recording-' + Date.now() + '.mp4';
+        return 'Recording-' + Date.now() + extension;
     }
 }

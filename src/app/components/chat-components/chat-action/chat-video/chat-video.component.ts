@@ -57,8 +57,9 @@ export class ChatVideoComponent implements OnInit {
     }
 
     protected startRecording() {
-        this.readyToRecordVideo.next(this.videoFile$);
+        this.videoFile$.next(null);
         this.isRecording = true;
+        this.readyToRecordVideo.next(this.videoFile$);
     }
 
     protected isUploading: boolean = false;
