@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { CommonModule } from "@angular/common";
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
 import { Assets } from "../../../../models/assets.model";
@@ -15,7 +15,12 @@ import { VideoFile, getFileExtension } from "src/app/helpers/attachment-helpers.
     standalone: true,
     imports: [CommonModule]
 })
-export class ChatVideoComponent implements OnInit {
+export class ChatVideoComponent implements OnInit, OnDestroy {
+    ngOnDestroy(): void {
+        if (this.contentUrl) {
+            URL.revokeObjectURL(this.contentUrl)
+        }
+    }
     protected Assets = Assets;
     @Input() primaryColor: string = '#ddd'
     @Input() durationInSec: number = 300;
@@ -74,7 +79,9 @@ export class ChatVideoComponent implements OnInit {
     ngOnInit(): void {
         this.videoFile$.pipe(untilDestroyed(this)).subscribe({
             next: file => {
-
+                if (this.contentUrl) {
+                    URL.revokeObjectURL(this.contentUrl);
+                }
                 this.isRecording = false;
                 this.isUploading = false;
                 this.showImagepreview = false;
@@ -86,13 +93,6 @@ export class ChatVideoComponent implements OnInit {
                         .then(url => {
                             this.contentUrl = url;
                             this.error = null;
-                        })
-                        .catch(reason => {
-                            this.contentUrl = null;
-                            this.error = reason;
-                            setTimeout(() => {
-                                this.error = null;
-                            }, 3000);
                         })
                 } else {
                     this.contentUrl = null;
@@ -109,18 +109,19 @@ export class ChatVideoComponent implements OnInit {
     }
 
     private readFileAsUrl(file: File): Promise<string> {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
+        return new Promise((resolve) => {
+            // const reader = new FileReader();
 
-            reader.onload = () => {
-                resolve(reader.result as string);
-            }
+            // reader.onload = () => {
+            //     resolve(reader.result as string);
+            // }
 
-            reader.onerror = () => {
-                reject("We were unable read contents of the recording.");
-            }
+            // reader.onerror = () => {
+            //     reject("We were unable read contents of the recording.");
+            // }
 
-            reader.readAsDataURL(file);
+            // reader.readAsDataURL(file);
+            resolve(URL.createObjectURL(file))
         });
     }
 
