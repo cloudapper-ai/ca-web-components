@@ -75,40 +75,40 @@
     margin: 0 !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
-    font-size: 26px !important;
-    font-weight: 400 !important;
+    font-size: 1.6rem !important;
+    font-weight: 600 !important;
 }
 
 ::ng-deep .chat-box-message h2 {
     margin: 0 !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
-    font-size: 24px !important;
-    font-weight: 400 !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
 }
 
 ::ng-deep .chat-box-message h3 {
     margin: 0 !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
-    font-size: 22px !important;
-    font-weight: 400 !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
 }
 
 ::ng-deep .chat-box-message h4 {
     margin: 0 !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
-    font-size: 20px !important;
-    font-weight: 400 !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
 }
 
 ::ng-deep .chat-box-message h5 {
     margin: 0 !important;
     overflow-wrap: break-word !important;
     word-break: break-word !important;
-    font-size: 18px !important;
-    font-weight: 400 !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
 }
 
 ::ng-deep .chat-box-message strong {
@@ -116,7 +116,7 @@
     overflow-wrap: break-word !important;
     word-break: break-word !important;
     font-size: 1.1rem !important;
-    font-weight: 400 !important;
+    font-weight: 600 !important;
 }
 
 ::ng-deep .chat-box-message b {
@@ -124,12 +124,13 @@
     overflow-wrap: break-word !important;
     word-break: break-word !important;
     font-size: 1.1rem !important;
-    font-weight: 400 !important;
+    font-weight: 600 !important;
 }
 
 ::ng-deep .chat-box-message em {
     margin: 0 !important;
-    padding: 2px;
+    padding: 4px;
+    box-sizing: border-box;
     border: 1px solid lightgray;
     border-radius: 4px;
     background-color: var(--codeblockcolor);
@@ -137,7 +138,7 @@
     overflow-wrap: break-word !important;
     word-break: break-word !important;
     font-size: 1.1rem !important;
-    font-weight: 300 !important;
+    font-weight: 400 !important;
 }
 
 ::ng-deep .chat-box-message table {

@@ -89,23 +89,18 @@ export class RecordingService {
             clearInterval(this.timerInterval);
             await this.recordRTC?.stopRecording();
             const videoBlob = await this.recordRTC?.getBlob();
-            let file: File | undefined = undefined;
             if (videoBlob) {
-                file = new File([videoBlob], this.filename(videoBlob.type), {
+                const file = new File([videoBlob], this.filename(videoBlob.type), {
                     type: videoBlob.type,
                     lastModified: Date.now()
                 });
+                this.onVideoReady.next(file);
             }
 
-            await this.clearRecording();
-
-            setTimeout(() => {
-                if (file) {
-                    this.onVideoReady.next(file);
-                }
-            }, 500);
-
             this.isRecording = false;
+            this.clearRecording();
+
+
         }
     }
 
@@ -145,12 +140,15 @@ export class RecordingService {
      */
     async clearRecording() {
         // Clear recorded blobs and reset elapsed time
-        this.recordedBlobs = [];
-        this.elapsedTime = 0;
-        await this.recordRTC?.reset()
-        await this.recordRTC?.destroy();
-        this.stream?.getTracks().forEach(x => x.stop());
-        this.stream = undefined;
+        try {
+            this.recordedBlobs = [];
+            this.elapsedTime = 0;
+            this.stream?.getTracks().forEach(x => x.stop());
+            await this.recordRTC?.reset()
+            await this.recordRTC?.destroy();
+            this.stream = undefined;
+        } catch (_error) { }
+
     }
 
     /**
