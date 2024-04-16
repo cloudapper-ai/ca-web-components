@@ -1,3 +1,4 @@
+<video #videoElement [style.display]="'none'" [style.width.px]="0" [style.height.px]="0"></video>
 <ng-container *ngIf="error" [ngTemplateOutlet]="errorSection"
     [ngTemplateOutletContext]="{ $implicit: error}"></ng-container>
 <ng-container *ngIf="contentUrl && !isUploading && !error" [ngTemplateOutlet]="recordPreview"
@@ -24,11 +25,17 @@
 
 <ng-template #recordPreview let-data>
     <div style="width: 100%; box-sizing: border-box; padding: 8px; overflow : hidden;">
-        <div class="video-preview">
+
+        <div class="video-preview" [style.display]="showImagepreview ? 'none': 'block'">
             <video controls>
                 <source [src]="data">
+                Unfortunately your browser doesn't playing this video format.
             </video>
         </div>
+        <div class="attachment-messages" [style.display]="showImagepreview ? 'flex': 'none'">
+            <img [src]="VideoFileIcon" alt="uploaded video file">
+        </div>
+
         <div class="button-containers buttons-middle">
             <div class="button horizontal-contents" (click)="startRecording()">
                 <img [src]="Assets.Images.Edit" alt="change">

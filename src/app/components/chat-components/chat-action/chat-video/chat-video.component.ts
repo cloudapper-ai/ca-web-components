@@ -1,10 +1,11 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { CommonModule } from "@angular/common";
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
 import { Assets } from "../../../../models/assets.model";
+import { VideoFile, getFileExtension } from "src/app/helpers/attachment-helpers.helper";
 
 @UntilDestroy()
 @Component({
@@ -65,15 +66,22 @@ export class ChatVideoComponent implements OnInit {
     protected isUploading: boolean = false;
     protected isRecording: boolean = false;
     protected contentUrl: string | null = null;
+    protected showImagepreview: boolean = false;
     protected error: string | null = null;
+
+    @ViewChild('videoElement') element?: ElementRef;
 
     ngOnInit(): void {
         this.videoFile$.pipe(untilDestroyed(this)).subscribe({
             next: file => {
+
                 this.isRecording = false;
                 this.isUploading = false;
-
+                this.showImagepreview = false;
                 if (file) {
+                    if (this.element) {
+                        this.showImagepreview = !(this.element.nativeElement as HTMLVideoElement).canPlayType(file.type)
+                    }
                     this.readFileAsUrl(file)
                         .then(url => {
                             this.contentUrl = url;
@@ -90,6 +98,7 @@ export class ChatVideoComponent implements OnInit {
                     this.contentUrl = null;
                     this.error = null;
                 }
+
             },
             error: error => {
                 this.error = error;
@@ -114,4 +123,6 @@ export class ChatVideoComponent implements OnInit {
             reader.readAsDataURL(file);
         });
     }
+
+    protected VideoFileIcon = VideoFile;
 }
