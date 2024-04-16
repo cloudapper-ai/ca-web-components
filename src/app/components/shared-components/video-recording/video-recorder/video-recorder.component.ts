@@ -11,12 +11,15 @@ import { Assets } from '../../../../models/assets.model';
 export class VideoRecorderComponent implements AfterViewInit, OnDestroy {
     protected Assets = Assets;
     @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
+    @ViewChild('videoCanvas') canvasElement!: ElementRef<HTMLCanvasElement>;
+
     recordingService?: RecordingService;
     @Input() duration: number = 300;
     @Input() maxSize: number = 200;
     @Output() recordCompleted: EventEmitter<File> = new EventEmitter();
     @Output() cancel: EventEmitter<string | undefined> = new EventEmitter();
 
+    protected stopCanvasRendering = false;
     protected elapsedTime: number = 0;
     private timerInterval: any;
 
@@ -63,6 +66,7 @@ export class VideoRecorderComponent implements AfterViewInit, OnDestroy {
     }
 
     protected stopRecording() {
+        this.stopCanvasRendering = true;
         this.recordingService?.stopRecording();
         clearInterval(this.timerInterval);
         this.pauseVideo();
@@ -92,7 +96,26 @@ export class VideoRecorderComponent implements AfterViewInit, OnDestroy {
         const stream = this.recordingService?.getStream()
         if (stream) {
             videoElement.srcObject = stream;
+            this.stopCanvasRendering = false;
+            this.processVideoFrames(videoElement, this.canvasElement.nativeElement)
         }
+    }
+
+    private processVideoFrames(videoElement: HTMLVideoElement, canvasElement: HTMLCanvasElement) {
+        const context = canvasElement.getContext('2d');
+        const processFrame = () => {
+            if (context && !videoElement.paused && !videoElement.ended) {
+                canvasElement.width = videoElement.videoWidth;
+                canvasElement.height = videoElement.videoHeight;
+                context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+                // Perform processing or analysis on the canvas image data
+                // For example, you can use libraries like TensorFlow.js for machine learning tasks
+            }
+            if (!this.stopCanvasRendering)
+                requestAnimationFrame(processFrame);
+        };
+        if (!this.stopCanvasRendering)
+            requestAnimationFrame(processFrame);
     }
 
     protected playVideo() {
