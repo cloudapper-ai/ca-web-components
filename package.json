@@ -1,6 +1,6 @@
 {
   "name": "ca-web-components",
-  "version": "1.4.10",
+  "version": "1.4.12",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
