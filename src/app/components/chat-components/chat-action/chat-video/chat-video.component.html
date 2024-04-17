@@ -7,12 +7,10 @@
 <ng-container *ngIf="!contentUrl && !error && !isUploading" [ngTemplateOutlet]="recordStartSection"></ng-container>
 
 <ng-template #uploadingFile>
-    <div
-        style="margin-top: 16px; width: 100%; height: 100%; max-width: 300px;display: flex; align-items: center; justify-content: center; flex-direction: column;">
+    <div class="upload-section">
         <img [src]="Assets.Gifs.Loading" alt="loading" srcset="" style="height: 48px;">
-        <h5 style="text-align: center; max-width: 80%; margin: 16px 0 0 0; font-weight: 400; font-size: 14px;"
-            [ngStyle]="{color: primaryColor}">We are uploading your file. This may take some time. Please be
-            patient</h5>
+        <span [ngStyle]="{color: primaryColor}">We are uploading your file. This may take some time. Please be
+            patient</span>
     </div>
 
 </ng-template>

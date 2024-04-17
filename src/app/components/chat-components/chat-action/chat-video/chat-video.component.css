@@ -91,24 +91,22 @@
 }
 
 .upload-section {
+    margin-top: 16px;
     width: 100%;
     height: 100%;
     max-width: 300px;
-    max-height: 500px;
-    box-sizing: border-box;
-    padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
     flex-direction: column;
 }
 
 .upload-section span {
-    font-size: 14px;
-
-    font-weight: 400;
     text-align: center;
+    max-width: 80%;
+    margin: 16px 0 0 0;
+    font-weight: 400;
+    font-size: 14px;
 }
 
 .attachment-messages {
@@ -130,17 +128,17 @@
 
 @media screen and (max-width: 768px) {
     .upload-section span {
-        font-size: 14px;
+        font-size: 16px;
 
     }
 
     .error-section span {
-        font-size: 14px;
+        font-size: 16px;
 
     }
 
     .button span {
-        font-size: 14px;
+        font-size: 16px;
 
     }
 }
