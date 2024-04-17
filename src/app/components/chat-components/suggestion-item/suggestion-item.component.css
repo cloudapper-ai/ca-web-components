@@ -1,4 +1,4 @@
-.chat-suggestion { 
+.chat-suggestion {
     border-radius: 16px;
     border: 1px solid;
     /* box-shadow: rgba(0, 0, 0, 0.35) 0px 1px 3px; */
@@ -7,10 +7,10 @@
     border-color: var(--suggestion-border-color);
     color: var(--suggestion-foreground-color);
     font-weight: 300;
-    font-size: 0.8rem;
+    font-size: 12px;
 }
 
-.chat-suggestion:hover { 
+.chat-suggestion:hover {
     border-color: var(--suggestion-border-color-hover);
     color: var(--suggestion-foreground-color-hover);
     font-weight: 400;

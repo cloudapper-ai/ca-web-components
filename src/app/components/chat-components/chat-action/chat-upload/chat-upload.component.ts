@@ -9,7 +9,7 @@ import { IsNullOrUndefinedOrEmptyString } from "../../../../helpers/helper-funct
 import { Assets } from "../../../../models/assets.model";
 import { ActionAttachmentAttributes } from "../../../../models/chat-message.model";
 import { FileSizePipe } from "../../../../pipes/filesize.pipe";
-import { getFileExtension } from "src/app/helpers/attachment-helpers.helper";
+import { getFileExtension } from "../../../../helpers/attachment-helpers.helper";
 
 
 @UntilDestroy()

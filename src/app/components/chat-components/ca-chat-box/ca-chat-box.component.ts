@@ -5,7 +5,7 @@ import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, Chat
 import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
 import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
-import { Assets } from 'src/app/models/assets.model';
+import { Assets } from '../../../models/assets.model';
 
 @Component({
     selector: 'ca-chat-box',

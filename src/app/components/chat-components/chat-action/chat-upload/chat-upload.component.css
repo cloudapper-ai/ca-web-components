@@ -5,7 +5,7 @@
     overflow: hidden;
     box-sizing: border-box;
     --primarycolor: #434;
-    font-size: 1rem;
+    font-size: 14px;
 
     background-color: white;
 }
@@ -41,12 +41,12 @@
 }
 
 .upload-files div {
-    font-size: 1rem;
+    font-size: 14px;
 
 }
 
 .upload-files span {
-    font-size: 0.8rem;
+    font-size: 12px;
 
     text-align: center;
 }
@@ -64,7 +64,7 @@
     justify-content: center;
     background-color: #FFF;
     font-weight: 400;
-    font-size: 1rem;
+    font-size: 14px;
 
     padding: 4px 12px;
     cursor: pointer;
@@ -108,7 +108,7 @@
 }
 
 .file-info span {
-    font-size: 0.8rem;
+    font-size: 12px;
 
     text-align: center;
 }
@@ -164,29 +164,29 @@
 }
 
 .button span {
-    font-size: 1rem;
+    font-size: 14px;
     color: var(--default-text-color);
     font-weight: 400;
 }
 
 @media screen and (max-width: 768px) {
     .upload-file-container {
-        font-size: 1.1rem;
+        font-size: 16px;
 
     }
 
     .upload-files div {
-        font-size: 1.1rem;
+        font-size: 16px;
 
     }
 
     .upload-button {
-        font-size: 1.1rem;
+        font-size: 16px;
 
     }
 
     .button span {
-        font-size: 1.1rem;
+        font-size: 16px;
 
     }
 }

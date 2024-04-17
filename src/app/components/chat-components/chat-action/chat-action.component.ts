@@ -11,7 +11,7 @@ import { ChatSchedularComponent } from "./chat-scheduler/chat-schedular.componen
 import { ChatAudioComponent } from "./chat-audio/chat-audio.component";
 import { ChatVideoComponent } from "./chat-video/chat-video.component";
 import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
-import { RESULT } from "src/app/models/result.model";
+import { RESULT } from "../../../models/result.model";
 
 @Component({
     selector: 'chat-action',

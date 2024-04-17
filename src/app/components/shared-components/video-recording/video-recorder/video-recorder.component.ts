@@ -52,26 +52,31 @@ export class VideoRecorderComponent implements AfterViewInit, OnDestroy {
 
         })
         this.elapsedTime = 0;
-        try {
-            await this.recordingService?.startRecording(this.duration, this.maxSize);
+        this.recordingService?.startRecording(this.duration, this.maxSize).then(() => {
             this.isRecording = true;
             this.isPaused = false;
             this.displayVideoPreview();
             this.playVideo();
             this.startTimer();
-        } catch (error: any) {
-            this.cancel.next(error.message)
-        }
+        }).catch(reason => {
+            this.cancel.next(reason)
+        })
 
     }
 
     protected stopRecording() {
         this.stopCanvasRendering = true;
-        this.recordingService?.stopRecording();
         clearInterval(this.timerInterval);
-        this.pauseVideo();
-        this.isRecording = false;
-        this.isPaused = false;
+        this.recordingService?.stopRecording()
+            .then(() => {
+                this.pauseVideo();
+                this.isRecording = false;
+                this.isPaused = false;
+            })
+            .catch(reason => {
+                this.cancel.next(reason)
+            });
+
     }
 
     protected pauseRecording() {

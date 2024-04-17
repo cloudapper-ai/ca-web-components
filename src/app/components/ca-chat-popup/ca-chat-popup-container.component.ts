@@ -9,10 +9,10 @@ import { ChatService } from "../../service-layer/chat-service.service";
 import { DummyChatDataService } from "../../data-layer/dummy-chat-service.data-service";
 import { ChatDataService } from "../../data-layer/chat-service.data-service";
 import { RESULT } from "../../models/result.model";
-import { ActionAttachmentAttributes, ChatSuggestion, ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
+import { ChatSuggestion, ChatUIActionData } from "../../models/chat-message.model";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { FileService } from "../../service-layer/file-service.service";
-import { Assets } from "src/app/models/assets.model";
+import { Assets } from "../../models/assets.model";
 
 @UntilDestroy()
 @Component({

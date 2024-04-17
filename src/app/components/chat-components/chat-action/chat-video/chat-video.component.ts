@@ -5,7 +5,7 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, 
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
 import { Assets } from "../../../../models/assets.model";
-import { VideoFile, getFileExtension } from "src/app/helpers/attachment-helpers.helper";
+import { VideoFile } from "../../../../helpers/attachment-helpers.helper";
 
 @UntilDestroy()
 @Component({
