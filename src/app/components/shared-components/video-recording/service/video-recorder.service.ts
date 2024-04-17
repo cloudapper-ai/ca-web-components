@@ -58,7 +58,8 @@ export class RecordingService {
                 }).then(stream => {
                     this.recordRTC = new RecordRTCPromisesHandler(stream, {
                         type: 'video',
-                        mimeType: 'video/webm;codecs=vp8',
+                        timeSlice: 1000,
+                        mimeType: 'video/webm',
                         disableLogs: true,
                         ondataavailable: (data) => {
                             this.recordedBlobs.push(data);
@@ -104,20 +105,40 @@ export class RecordingService {
         return new Promise((resolve, reject) => {
             if (this.isRecording) {
                 this.recordRTC?.stopRecording().then(() => {
-                    const videoBlob = new Blob(this.recordedBlobs);
-                    const file = new File([videoBlob], this.filename(videoBlob.type), {
-                        type: videoBlob.type,
-                        lastModified: Date.now()
-                    });
-                    this.onVideoReady.next(file);
-                    this.isRecording = false;
-                    if (this.timerInterval) {
-                        clearInterval(this.timerInterval);
-                    }
-                    setTimeout(() => {
-                        this.clearRecording();
-                    }, 250);
-                    resolve();
+                    // const videoBlob = new Blob(this.recordedBlobs);
+                    this.recordRTC?.getBlob().then(videoBlob => {
+                        const file = new File([videoBlob], this.filename(videoBlob.type), {
+                            type: videoBlob.type,
+                            lastModified: Date.now()
+                        });
+                        this.onVideoReady.next(file);
+                        this.isRecording = false;
+                        if (this.timerInterval) {
+                            clearInterval(this.timerInterval);
+                        }
+                        setTimeout(() => {
+                            this.clearRecording();
+                        }, 250);
+                        resolve();
+                    }).catch(error => {
+                        if (this.timerInterval) {
+                            clearInterval(this.timerInterval);
+                        }
+                        setTimeout(() => {
+                            this.clearRecording();
+                        }, 250);
+                        if (error) {
+                            if (error === 'Empty blob.') {
+                                reject('Your browser does not support this feature.');
+                            } else {
+                                reject(error);
+                            }
+                        } else {
+                            reject('Unfortunately we could not record anything.');
+                        }
+                        reject(error ? error : 'Unknown error');
+                    })
+
                 }).catch(error => {
                     if (this.timerInterval) {
                         clearInterval(this.timerInterval);
@@ -125,6 +146,15 @@ export class RecordingService {
                     setTimeout(() => {
                         this.clearRecording();
                     }, 250);
+                    if (error) {
+                        if (error === 'Empty blob.') {
+                            reject('Your browser does not support this feature.');
+                        } else {
+                            reject(error);
+                        }
+                    } else {
+                        reject('Unfortunately we could not record anything.');
+                    }
                     reject(error ? error : 'Unknown error');
                 })
             } else {
@@ -218,7 +248,7 @@ export class RecordingService {
         } else if (mimeType.startsWith('video/quicktime')) {
             return '.mov';
         } else {
-            return '.wav';
+            return '.wmv'; // this file type is not supported by browser.
         }
     }
 
