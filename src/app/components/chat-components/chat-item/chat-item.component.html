@@ -6,22 +6,41 @@
                     style="margin: auto 0;">{{user}}</span>
             </div>
 
-            <div class="chat-box-message-section">
-                <ng-container *ngIf="message.style === MessagePreviewTypes.Default">
-                    <div class="chat-box-message">
-                        <markdown [data]="message.message" ngPreserveWhitespaces></markdown>
-                    </div>
-                </ng-container>
+            <!-- <div class="chat-box-message-section">
+                
+            </div> -->
+            <ng-container *ngIf="message.style === MessagePreviewTypes.Default">
+                <div class="chat-box-message">
+                    <markdown [data]="message.message" ngPreserveWhitespaces></markdown>
+                </div>
+            </ng-container>
 
-                <ng-container
-                    *ngIf="message.style === MessagePreviewTypes.Pill && (message.message | choices) as chioces">
-                    <div class="chat-choices">
-                        <ng-container *ngFor="let choice of chioces; let i=index; trackBy:trackChoice.bind(this)">
-                            <div class="item-center chat-choice">{{choice}}</div>
-                        </ng-container>
-                    </div>
-                </ng-container>
-            </div>
+            <ng-container *ngIf="message.style === MessagePreviewTypes.Pill && (message.message | choices) as chioces">
+                <div class="chat-choices">
+                    <ng-container *ngFor="let choice of chioces; let i=index; trackBy:trackChoice.bind(this)">
+                        <div class="item-center chat-choice">{{choice}}</div>
+                    </ng-container>
+                </div>
+            </ng-container>
+
+            <ng-container
+                *ngIf="message.style === MessagePreviewTypes.Attachment && (message.message | attachments) as attachments">
+                <!-- <div class="chat-choices">
+                    <ng-container *ngFor="let choice of attachments; let i=index; trackBy:trackAttachment.bind(this)">
+                        <div class="item-center chat-choice">{{choice}}</div>
+                    </ng-container>
+                </div> -->
+
+                <span style="flex: 1; color: var(--default-text-color); font-size: 14px; font-weight: 300;">
+                    <ng-container *ngIf="attachments.length > 1; else singlefile">
+                        Submitted {{attachments.length}} file(s)
+                    </ng-container>
+
+                    <ng-template #singlefile>
+                        Submitted 1 file
+                    </ng-template>
+                </span>
+            </ng-container>
         </div>
     </ng-container>
     <ng-container *ngIf="isBotReply">
@@ -36,17 +55,19 @@
             </ng-container>
 
 
-            <div class="chat-box-message-section">
-                <ng-container *ngIf="message.warning; else botMessage">
+            <ng-container *ngIf="message.warning; else botMessage">
+                <div class="chat-box-error-section">
                     <img [src]="Assets.Images.Warning" alt="Warning sign">
-                    <div class="chat-box-message">
-                        <markdown [data]="message.message" ngPreserveWhitespaces
-                            [ngStyle]="{ 'color': userColorProfile.textColor }">
-                        </markdown>
+                    <div class="chat-box-message" [style.color]="'#cc0000'" [style.font-weight]="500">
+                        {{message.message}}
                     </div>
-                </ng-container>
+                </div>
+                <div class="reload-button mt-2" (click)="retryClicked()">
+                    <img [src]="Assets.Images.Refresh" alt="Refresh">
+                    <span>Retry</span>
+                </div>
+            </ng-container>
 
-            </div>
         </div>
         <ng-container *ngIf="message.suggestions && message.suggestions.length > 0">
             <div class="chat-suggestion" [ngStyle]="{'background-color': botColorProfile.backgroundColor}">
@@ -90,7 +111,8 @@
         <div style="width: 100%;">
             <chat-action [primaryColor]="botColorProfile.labelColor" [action]="message.action"
                 (scheduleRequest)="onRequestSearchSchedule($event)" (replyReceived)="onActionReplied($event)"
-                (recordVideoRequested)="onRecordVideoRequested($event)" (fileSelected)="onFileSelected($event)"
+                (recordVideoRequested)="onRecordVideoRequested($event)" (fileSubmitted)="onFileSelected($event)"
+                (capturePhotoRequested)="onCapturePhotoRequested($event)"
                 (openAppointmentWindow)="onOpenAppointmentWindowRequest($event)"></chat-action>
         </div>
 

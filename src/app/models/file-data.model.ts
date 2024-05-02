@@ -1,3 +1,6 @@
+
+import { uuidv4 } from "../helpers/utils";
+
 export class BaseModel {
     Id!: string;
     CreatedBy!: string;
@@ -74,4 +77,20 @@ export interface IFileResponseModel {
     CreatedBy: string;
     CreateDate: Date;
     LastModifiedDate: Date;
+}
+
+
+export class FileInformation {
+    public id: string = uuidv4()
+    public uploadError?: string;
+    public uploadStatus: EnumFileUploadStatus = EnumFileUploadStatus.None;
+    public url?: string;
+    constructor(public file: File) { }
+}
+
+export enum EnumFileUploadStatus {
+    None = 0,
+    Uploading = 1,
+    Uploaded = 2,
+    UploadFailed = 3
 }

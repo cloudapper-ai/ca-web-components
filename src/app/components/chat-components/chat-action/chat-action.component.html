@@ -29,6 +29,12 @@
             ScheduleCompleteRedirectionLink: '',
             OnCompleteMessageFormat: ''
         }}"></ng-container>
+
+        <ng-container *ngSwitchCase="ChatActionTypes.TakePicture" [ngTemplateOutlet]="takephoto"
+            [ngTemplateOutletContext]="{$implicit: action.CaptureImageDataAttributes || {
+                    DisableSwitchingCamera: false,
+                    IsDefaultToFrontCamera: true
+                }}"></ng-container>
     </ng-container>
 </div>
 
@@ -40,24 +46,29 @@
 </ng-template>
 
 <ng-template #recordview>
-    <chat-record [records]="action.ActionViewRecordsAttributes || []"></chat-record>
+    <chat-record [primaryColor]="primaryColor" [records]="action.ActionViewRecordsAttributes || []"></chat-record>
 </ng-template>
 <ng-template #uploadfile let-data>
-    <chat-upload [data]="data" [primaryColor]="primaryColor" (fileSelected)="onFileSelected($event)"></chat-upload>
+    <chat-upload [data]="data" [primaryColor]="primaryColor" (fileSubmitted)="onFileSelected($event)"></chat-upload>
 </ng-template>
 
 <ng-template #recordaudio let-data>
     <chat-audio-recorder [primaryColor]="primaryColor" [maxFileSizeInMb]="data.MaxFileSizeInMb"
-        [maxRecordingDurationInSec]="data.DurationInSec" (fileSelected)="onFileSelected($event)"></chat-audio-recorder>
+        [maxRecordingDurationInSec]="data.DurationInSec" (fileSubmitted)="onFileSelected($event)"></chat-audio-recorder>
 </ng-template>
 
 <ng-template #recordVideo let-data>
     <chat-video-recorder [primaryColor]="primaryColor" [maximumFileSizeInMb]="data.MaxFileSizeInMb"
         [durationInSec]="data.DurationInSec" (readyToRecordVideo)="startRecordingVideo($event)"
-        (fileSelected)="onFileSelected($event)"></chat-video-recorder>
+        (fileSubmitted)="onFileSelected($event)"></chat-video-recorder>
 </ng-template>
 
 <ng-template #makeAppointment let-data>
     <chat-schedular-view [attribute]="data" (requestOpenAppointment)="onOpenAppointmentWindowRequest($event)"
         (submitReply)="onReceiveScheduleRequest($event)"></chat-schedular-view>
+</ng-template>
+
+<ng-template #takephoto let-data>
+    <chat-photo [disableSwitchingCamera]="data.DisableSwitchingCamera"
+        (capturePhotoRequested)="onPhotoCaptureRequested($event)" (submitPhoto)="onFileSelected($event)"></chat-photo>
 </ng-template>

@@ -1,11 +1,12 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ChatConstants } from '../../../models/chat-constants.model';
-import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, ChatSuggestion, ChatUIActionData, EnumChatActionTypes, EnumChatMessagePreviewType } from '../../../models/chat-message.model';
+import { ActionAttachmentAttributes, ActionImageDataAttributes, ActionScheduleAttributes, ChatMessage, ChatSuggestion, ChatUIActionData, EnumChatActionTypes, EnumChatMessagePreviewType } from '../../../models/chat-message.model';
 import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
 import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
 import { Assets } from '../../../models/assets.model';
+import { FileInformation } from '../../../models/file-data.model';
 
 @Component({
     selector: 'ca-chat-box',
@@ -55,8 +56,21 @@ export class CaChatBoxComponent {
         }
     }
 
-    addFileResponseFromUser(url: string, file: File) {
-        this.postUserReply(`[${file.name}](${url})`)
+
+    addFileResponseFromUser(files: FileInformation[]) {
+        let response = ''
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            // if (i !== 0) { response += '\n'; }
+            response += `[${file.file.name}](${file.url})`
+        }
+        this.postUserReply(response, undefined, EnumChatMessagePreviewType.Attachment)
+    }
+
+    protected onRetryRequested() {
+        if (this._lastQuery) {
+            this.submitMessageWithoutShowing(this._lastQuery);
+        }
     }
 
     protected addLoadingMessage() {
@@ -125,11 +139,12 @@ export class CaChatBoxComponent {
     @ViewChild('chatUserInput') chatUserInput?: ElementRef;
     @ViewChild('chatbody') chatbody?: ElementRef;
 
-
+    private _lastQuery?: string;
     submitMessageWithoutShowing(message: string) {
         setTimeout(() => {
             this.addLoadingMessage();
             this.setReadyForUserReply(false);
+            this._lastQuery = message;
             this.userReplySubmitted.next(message);
         }, 250);
         if (this.chatUserInput) {
@@ -151,6 +166,7 @@ export class CaChatBoxComponent {
             setTimeout(() => {
                 this.addLoadingMessage();
                 this.setReadyForUserReply(false);
+                this._lastQuery = chatMessage.QueryText;
                 this.userReplySubmitted.next(chatMessage.QueryText);
             }, 500);
             if (this.chatUserInput) {
@@ -169,7 +185,7 @@ export class CaChatBoxComponent {
         }
     }
 
-    @Output() submitFileMessage: EventEmitter<File> = new EventEmitter();
+    @Output() submitFileMessage: EventEmitter<FileInformation[]> = new EventEmitter();
 
     @Output()
     cancelUserRequest: EventEmitter<void> = new EventEmitter();
@@ -278,21 +294,45 @@ export class CaChatBoxComponent {
     }
     // #endregion
 
-    private fileUploadObserver?: BehaviorSubject<string | undefined> = undefined;
+    private fileUploadObserver?: BehaviorSubject<FileInformation | undefined> = undefined;
     protected onFileMessageReceived(param: {
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
     }) {
         if (!this.isLoading) {
             this.fileUploadObserver = param.subscriber;
-            this.submitFileMessage.next(param.file);
+            this.submitFileMessage.next(param.files);
         }
     }
 
-    uploadFileFailed(reason: string) {
-        this.fileUploadObserver?.next(reason);
-        this.fileUploadObserver = undefined;
+    updateFileInformation(file: FileInformation) {
+        this.fileUploadObserver?.next(file);
     }
 
     protected Assets = Assets;
+
+
+    protected isPhotoCapturing: boolean = false;
+    protected photoAttributes?: ActionImageDataAttributes;
+    protected capturePhotoObserver?: BehaviorSubject<File | undefined> = undefined;
+    protected openCapturePhoto(param: {
+        attribute: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }) {
+        this.photoAttributes = param.attribute;
+        this.capturePhotoObserver = param.subject;
+        this.isPhotoCapturing = true;
+    }
+    protected closeCapturePhoto() {
+        this.isOpenAppointment = false;
+        this.photoAttributes = undefined;
+        this.capturePhotoObserver?.next(undefined);
+    }
+
+    protected onCaptureCompleted(file: File) {
+        this.capturePhotoObserver?.next(file);
+        this.isOpenAppointment = false;
+        this.photoAttributes = undefined;
+    }
+
 }

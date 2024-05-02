@@ -6,6 +6,7 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
 import { AudioRecordingModule } from "../../../../components/shared-components/audio-recording/audio-recording.module";
 import { Assets } from "../../../../models/assets.model";
+import { FileInformation, EnumFileUploadStatus } from "../../../../models/file-data.model";
 
 @UntilDestroy()
 @Component({
@@ -66,11 +67,11 @@ export class ChatAudioComponent implements OnInit {
         this.file$.next(file)
     }
 
-    @Output() fileSelected: EventEmitter<{
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
+    @Output() fileSubmitted: EventEmitter<{
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
     }> = new EventEmitter();
-    private subject = new BehaviorSubject<string | undefined>(undefined);
+    private subject = new BehaviorSubject<FileInformation | undefined>(undefined);
     protected onSubmitFile() {
         const file = this.file$.getValue();
         if (!file) { return; }
@@ -78,15 +79,22 @@ export class ChatAudioComponent implements OnInit {
         this.isUploading = true;
 
         this.subject.unsubscribe();
-        this.subject = new BehaviorSubject<string | undefined>(undefined);
-        this.subject.pipe(untilDestroyed(this)).subscribe(reason => {
-            if (reason) {
-                this.isUploading = false;
-                this.error$.next(reason);
+
+        this.subject.unsubscribe();
+        this.subject = new BehaviorSubject<FileInformation | undefined>(undefined);
+        this.subject.pipe(untilDestroyed(this)).subscribe(result => {
+            if (result) {
+                this.isUploading = result.uploadStatus === EnumFileUploadStatus.Uploading;
+                const error = result.uploadError || null;
+
+                if (error) {
+                    this.error$.next(error);
+                }
+
             }
         })
-        this.fileSelected.next({
-            file: file,
+        this.fileSubmitted.next({
+            files: [new FileInformation(file)],
             subscriber: this.subject
         })
 

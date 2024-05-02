@@ -10,6 +10,7 @@ import { Assets } from "../../../../models/assets.model";
 import { ActionAttachmentAttributes } from "../../../../models/chat-message.model";
 import { FileSizePipe } from "../../../../pipes/filesize.pipe";
 import { getFileExtension } from "../../../../helpers/attachment-helpers.helper";
+import { EnumFileUploadStatus, FileInformation } from "../../../../models/file-data.model";
 
 
 @UntilDestroy()
@@ -39,7 +40,6 @@ export class ChatUploadComponent implements OnInit {
         })
     }
 
-    protected errorMessage?: string = undefined;
     protected maxFileSize: number = 200;
     protected supportedFiles = '*/*'
 
@@ -53,19 +53,15 @@ export class ChatUploadComponent implements OnInit {
 
     @Input() primaryColor: string = '#434'
 
-    protected UploadStatus = ChatUploadStatus;
-    protected currentStatus = ChatUploadStatus.None;
-
     protected onFileSelected(event: any) {
         const files = event.target.files;
-        if (files && files.length) {
-            this.selectAFile(files[0])
-        }
+        this.addFilesinList(files)
     }
 
     @ViewChild('fileInput') fileInput?: ElementRef;
 
-    private selectAFile(file: File) {
+
+    private verifyAndAddAfile(file: File) {
         if (file.size / 1024 / 1024 > this.maxFileSize) {
             this.setErrorMessage('File size limit exceeded.')
         } else {
@@ -74,34 +70,43 @@ export class ChatUploadComponent implements OnInit {
             if (invalidFileformat) {
                 this.setErrorMessage('The supported formats does not include this file format.')
             } else {
-                this.selectedFile = file;
-                this.currentStatus = ChatUploadStatus.FileReceived;
+                if (!this.filelist.find(x => x.file.name === file.name && x.file.type === file.type && x.file.size === file.size)) {
+                    this.filelist.push(new FileInformation(file));
+                }
             }
 
         }
+
+
     }
 
+    protected fileSelectionError?: string = undefined;
+
     private setErrorMessage(message: string) {
-        this.errorMessage = message
-        this.currentStatus = ChatUploadStatus.UploadFailed;
+        this.fileSelectionError = message
         setTimeout(() => {
-            if (this.fileInput) (this.fileInput.nativeElement as HTMLInputElement).value = '';
-            this.errorMessage = undefined;
-            this.currentStatus = ChatUploadStatus.None;
-            this.selectedFile = null;
+            this.fileSelectionError = undefined;
         }, 3000)
     }
 
     onDrop(event: any) {
         const files: FileList = event.dataTransfer.files;
-        if (files && files.length) {
-            const file = files.item(0);
-            if (file) {
-                this.selectAFile(file)
-            }
-
-        }
+        this.addFilesinList(files);
         event.preventDefault();
+    }
+
+    private addFilesinList(files: FileList) {
+        if (files && files.length) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files.item(i);
+                if (file) {
+                    setTimeout(() => { this.verifyAndAddAfile(file); }, i * 100);
+                }
+            }
+        }
+
+
+        if (this.fileInput) (this.fileInput.nativeElement as HTMLInputElement).value = '';
     }
 
     onDragOver(event: any) {
@@ -109,37 +114,47 @@ export class ChatUploadComponent implements OnInit {
     }
 
 
-    @Output() fileSelected: EventEmitter<{
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
+    @Output() fileSubmitted: EventEmitter<{
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
     }> = new EventEmitter();
-    private subject = new BehaviorSubject<string | undefined>(undefined);
-    protected onSubmitFile() {
-        if (this.currentStatus !== ChatUploadStatus.FileReceived || !this.selectedFile) { return; }
-        this.currentStatus = ChatUploadStatus.Uploading
 
+    protected isUploading = false;
+    private subject = new BehaviorSubject<FileInformation | undefined>(undefined);
+    protected onSubmitFile() {
+        if (this.filelist.length < 1) { return; }
+        this.isUploading = true;
         this.subject.unsubscribe();
-        this.subject = new BehaviorSubject<string | undefined>(undefined);
-        this.subject.pipe(untilDestroyed(this)).subscribe(reason => {
-            if (reason) {
-                this.setErrorMessage(reason)
+        this.subject = new BehaviorSubject<FileInformation | undefined>(undefined);
+        this.subject.pipe(untilDestroyed(this)).subscribe(info => {
+            if (info) {
+                const index = this.filelist.findIndex(x => x.id === info.id);
+                if (index !== -1) {
+                    this.filelist.splice(index, 1, info);
+                }
             }
+            this.isUploading = this.filelist.find(x => x.uploadStatus === EnumFileUploadStatus.Uploading) !== undefined;
         })
-        this.fileSelected.next({
-            file: this.selectedFile,
+        this.fileSubmitted.next({
+            files: this.filelist,
             subscriber: this.subject
         })
 
     }
 
     protected selectedFile: File | null = null;
+    protected filelist: FileInformation[] = [];
 
-}
+    protected removeFileFromlist(file: FileInformation) {
+        const index = this.filelist.findIndex(x => x.id === file.id);
+        if (index !== -1) {
+            this.filelist.splice(index, 1);
+        }
+    }
 
-export enum ChatUploadStatus {
-    None = 0,
-    FileReceived = 1,
-    Uploading = 2,
-    Uploaded = 3,
-    UploadFailed = 4
+    protected trackfilelist(index: number, file: FileInformation) {
+        return file.id;
+    }
+
+    protected UploadStatus = EnumFileUploadStatus;
 }

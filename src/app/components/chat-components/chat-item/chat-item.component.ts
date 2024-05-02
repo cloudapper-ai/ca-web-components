@@ -3,11 +3,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MarkdownService } from "ngx-markdown";
 import { BehaviorSubject } from "rxjs";
 import { ChatConstants } from "../../../models/chat-constants.model";
-import { ActionAttachmentAttributes, ActionScheduleAttributes, ChatMessage, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
+import { ActionAttachmentAttributes, ActionImageDataAttributes, ActionScheduleAttributes, ChatMessage, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
 import { ChatColorProfile } from "../../../models/chat-ui.model";
 import { isVimeoLink, isYouTubeLink, getFileExtension, isAnImage, isAVideo, VideoFile, isAnAudio, AudioFile, isAPDF, PdfFile, isADocument, DocFile, isAnHtml, HtmlFile, getVimeoEmbedUrl, getYoutubeEmbedUrl, isValidYouTubeLink } from "../../../helpers/attachment-helpers.helper";
 import { RESULT } from "../../../models/result.model";
 import { Assets } from "../../../models/assets.model";
+import { FileInformation } from "../../../models/file-data.model";
 
 @Component({
     selector: 'chat-item',
@@ -162,6 +163,10 @@ export class ChatItemComponent implements OnInit {
         return `${index}-${choice}`;
     }
 
+    protected trackAttachment(index: number, attachment: any) {
+        return index
+    }
+
     protected MessagePreviewTypes = EnumChatMessagePreviewType;
 
     protected userColorProfile: ChatColorProfile = new ChatColorProfile('#38383b', '#0e1221', '#c7c7c9')
@@ -207,9 +212,9 @@ export class ChatItemComponent implements OnInit {
         type: EnumChatMessagePreviewType
     }> = new EventEmitter();
     @Output() searchScheduleRequest: EventEmitter<string> = new EventEmitter();
-    @Output() fileSelected: EventEmitter<{
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
+    @Output() fileSubmitted: EventEmitter<{
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
     }> = new EventEmitter();
     @Output() recordVideoRequested: EventEmitter<{
         attribute: ActionAttachmentAttributes,
@@ -219,6 +224,13 @@ export class ChatItemComponent implements OnInit {
         attribute: ActionScheduleAttributes,
         subject: BehaviorSubject<RESULT<boolean>>
     }>()
+
+    @Output() capturePhotoRequested = new EventEmitter<{
+        attribute: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }>()
+
+    @Output() retryRequested: EventEmitter<void> = new EventEmitter();
 
     protected onSuggestionSelected(param: {
         message: string,
@@ -236,10 +248,10 @@ export class ChatItemComponent implements OnInit {
     }
 
     protected onFileSelected(param: {
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
     }) {
-        this.fileSelected.next(param);
+        this.fileSubmitted.next(param);
     }
 
     protected onRecordVideoRequested(param: {
@@ -253,5 +265,16 @@ export class ChatItemComponent implements OnInit {
         subject: BehaviorSubject<RESULT<boolean>>
     }) {
         this.openAppointmentWindow.next(param);
+    }
+
+    protected onCapturePhotoRequested(event: {
+        attribute: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }) {
+        this.capturePhotoRequested.next(event);
+    }
+
+    protected retryClicked() {
+        this.retryRequested.next();
     }
 }

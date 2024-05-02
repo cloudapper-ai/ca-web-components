@@ -1,4 +1,4 @@
-<div class="upload-file-container" [style.--primarycolor]="primaryColor">
+<!-- <div class="upload-file-container" [style.--primarycolor]="primaryColor">
     <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" [accept]="supportedFiles">
     <div class="file-section">
         <ng-container *ngIf="currentStatus === UploadStatus.None" [ngTemplateOutlet]="uploadfiles"></ng-container>
@@ -16,7 +16,7 @@
         <h3 class="text-center">Drag and drop file here.</h3>
 
         <div class="upload-button" (click)="fileInput.click()">Upload File</div>
-        <span>
+        <!-- <span>
             Max. File Size:
             <span class="data">{{maxFileSize}}MB</span>
 
@@ -39,14 +39,6 @@
 
         </span>
     </div>
-    <!-- <div class="button-section">
-        <div class="upload-button" (click)="fileInput.click()">
-            Change
-        </div>
-        <div class="upload-button" (click)="onSubmitFile()">
-            Submit
-        </div>
-    </div> -->
     <div class="button-containers buttons-middle">
         <div class="button horizontal-contents" (click)="fileInput.click()">
             <img [src]="Assets.Images.Edit" alt="change">
@@ -75,4 +67,47 @@
         <span
             style="color: red; text-align: center; width: 80%; text-align: center; text-align: center; overflow: hidden; word-wrap: break-word;">{{errorMessage}}</span>
     </div>
-</ng-template>
+</ng-template> -->
+<div class="upload-container" [style.--primary-color]="primaryColor">
+    <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" [accept]="supportedFiles"
+        multiple="multiple">
+    <ng-container *ngIf="!isUploading">
+        <div class="file-upload" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
+            <img [src]="Assets.Images.FileUpload" alt="Upload file icon" srcset="">
+            <div>
+                <div class="text-block">Drag and drop your files</div>
+                <div class="text-block">Or <span class="button-span" (click)="fileInput.click()">Upload files</span>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="filelist.length">
+        <div class="files-selected">
+            <ng-container *ngFor="let file of filelist; trackBy: trackfilelist">
+                <div class="file-card">
+                    <img class="file-asset" file-to-image [file]="file.file" alt="">
+                    <div class="file-data">
+                        <span class="highlighted-data">{{file.file.name}}</span>
+                        <span class="data">{{file.file.size|filesize}}</span>
+                    </div>
+                    <ng-container
+                        *ngIf="file.uploadStatus === UploadStatus.None || file.uploadStatus === UploadStatus.UploadFailed">
+                        <div class="file-action" (click)="removeFileFromlist(file)">
+                            <img [src]="Assets.Images.Delete" alt="Remove file icon" srcset="">
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="file.uploadStatus === UploadStatus.Uploading">
+                        <img class="file-asset" [src]="Assets.Gifs.Loading" alt="Uploading file animation" srcset="">
+                    </ng-container>
+
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="!isUploading">
+                <div class="upload-button" (click)="onSubmitFile()">
+                    Upload
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>

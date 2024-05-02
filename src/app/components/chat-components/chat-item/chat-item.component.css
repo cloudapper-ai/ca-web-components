@@ -10,16 +10,43 @@
     font-weight: 400;
 }
 
-.chat-box-message-section {
+.chat-box-error-section {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
 }
 
-.chat-box-message-section img {
+.chat-box-error-section img {
     max-width: 72px;
     padding: 8px;
+}
+
+.reload-button {
+    display: flex;
+    width: fit-content;
+    box-sizing: border-box;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    user-select: none;
+    cursor: pointer;
+}
+
+.reload-button img {
+    width: 20px;
+    box-sizing: border-box;
+}
+
+.reload-button span {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--default-text-color-light);
+    user-select: none;
+}
+
+.reload-button:hover span {
+    color: var(--default-text-color);
 }
 
 .chat-box-message {
@@ -64,7 +91,6 @@
 
 ::ng-deep .chat-box-message .linked-messages a img {
     margin: auto;
-    max-width: 70%;
     max-height: 400px;
     border-radius: 8px;
     display: block;
@@ -165,9 +191,11 @@
 ::ng-deep .chat-box-message .attachment-messages {
     border-radius: 8px;
     padding: 4px;
-    background-color: #f4f4f4;
+    background-color: #FFF;
     max-width: fit-content;
     margin-top: 8px;
+    width: fit-content;
+    max-width: 370px;
 }
 
 ::ng-deep .chat-box-message .attachment-messages a {
@@ -178,21 +206,18 @@
 
 ::ng-deep .chat-box-message .attachment-messages a .message-body {
     display: flex;
-    flex-direction: column;
     padding: 8px;
     gap: 10px;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     border-radius: 4px;
-    width: 120px;
 }
 
 ::ng-deep .chat-box-message .attachment-messages a .message-body img {
-    width: 64px;
+    width: 40px;
 }
 
 ::ng-deep .chat-box-message .attachment-messages a .message-body span {
-    text-align: center;
     text-overflow: ellipsis;
     /* white-space: nowrap; */
     overflow: hidden;
@@ -248,7 +273,7 @@
 .chat-choices {
     flex: 1;
     display: flex;
-    gap: 16px;
+    gap: 8px;
     align-items: center;
     justify-content: flex-start;
     box-sizing: border-box;
@@ -268,12 +293,23 @@
 .chat-choice {
     font-size: 14px;
     cursor: pointer;
-    color: var(--on-primary-color);
-    background-color: var(--primary-color);
+    color: white;
+    background-color: var(--default-text-color);
     box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 1px;
     border-radius: 6px;
-    font-weight: 300;
+    font-weight: 400;
 
+}
+
+.chat-attachments {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    margin-top: 8px;
 }
 
 @media screen and (max-width: 768px) {

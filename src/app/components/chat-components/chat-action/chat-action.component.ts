@@ -10,15 +10,17 @@ import { BehaviorSubject } from "rxjs";
 import { ChatSchedularComponent } from "./chat-scheduler/chat-schedular.component";
 import { ChatAudioComponent } from "./chat-audio/chat-audio.component";
 import { ChatVideoComponent } from "./chat-video/chat-video.component";
-import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
+import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes, EnumChatMessagePreviewType, ActionImageDataAttributes } from "../../../models/chat-message.model";
 import { RESULT } from "../../../models/result.model";
+import { FileInformation } from "../../../models/file-data.model";
+import { ChatPhotoComponent } from "./chat-photo/chat-photo.component";
 
 @Component({
     selector: 'chat-action',
     templateUrl: './chat-action.component.html',
     styleUrls: ['./chat-action.component.css'],
     standalone: true,
-    imports: [CommonModule, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
+    imports: [CommonModule, ChatPhotoComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
 })
 export class ChatActionComponent {
 
@@ -44,14 +46,14 @@ export class ChatActionComponent {
         })
     }
 
-    @Output() fileSelected: EventEmitter<{
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
+    @Output() fileSubmitted: EventEmitter<{
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
     }> = new EventEmitter();
     protected onFileSelected(event: {
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
-    }) { this.fileSelected.next(event); }
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
+    }) { this.fileSubmitted.next(event); }
 
     @Output() recordVideoRequested = new EventEmitter<{
         attribute: ActionAttachmentAttributes,
@@ -78,5 +80,16 @@ export class ChatActionComponent {
     @Output() scheduleRequest: EventEmitter<string> = new EventEmitter();
     protected onReceiveScheduleRequest(message: string) {
         this.scheduleRequest.next(message)
+    }
+
+    @Output() capturePhotoRequested = new EventEmitter<{
+        attribute: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }>()
+    protected onPhotoCaptureRequested(event: BehaviorSubject<File | undefined>) {
+        this.capturePhotoRequested.next({
+            attribute: this.action.CaptureImageDataAttributes || { DisableSwitchingCamera: false, IsDefaultToFrontCamera: true },
+            subject: event
+        })
     }
 }

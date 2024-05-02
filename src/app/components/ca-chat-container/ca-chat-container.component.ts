@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild, ViewEncapsulation } from "@angular/core";
 import { CaChatBoxComponent } from "../chat-components/ca-chat-box/ca-chat-box.component";
-import { BehaviorSubject, Subscription, debounceTime, distinctUntilChanged, takeWhile } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, debounceTime, distinctUntilChanged, map, takeWhile } from "rxjs";
 import { ChatDataService } from "../../data-layer/chat-service.data-service";
 import { DummyChatDataService } from "../../data-layer/dummy-chat-service.data-service";
 import { ChatConstants } from "../../models/chat-constants.model";
@@ -9,8 +9,9 @@ import { RESULT } from "../../models/result.model";
 import { ChatService } from "../../service-layer/chat-service.service";
 import { uuidv4 } from "../../helpers/utils";
 import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
-import { ChatSuggestion, ChatUIActionData, EnumChatActionTypes } from "../../models/chat-message.model";
+import { ChatSuggestion, ChatUIActionData } from "../../models/chat-message.model";
 import { FileService } from "../../service-layer/file-service.service";
+import { EnumFileUploadStatus, FileInformation } from "../../models/file-data.model";
 
 @UntilDestroy()
 @Component({
@@ -189,10 +190,34 @@ export class CAChatContainer implements OnInit, AfterViewInit {
         }
     }
 
-    protected onSubmitFileMessage(file: File) {
-        this.fileService.uploadfile(file).pipe(untilDestroyed(this)).subscribe({
-            next: (url) => { if (this.chatBox) { this.chatBox.addFileResponseFromUser(url, file) } },
-            error: (reason) => { if (this.chatBox) { this.chatBox.uploadFileFailed(reason); } }
+    protected onSubmitFileMessage(files: FileInformation[]) {
+        const fileArray = [...files];
+        const observables: Observable<FileInformation>[] = []
+        fileArray.forEach(x => { if (x.uploadStatus !== EnumFileUploadStatus.Uploaded) observables.push(this.fileService.uploadfile(x)) });
+        combineLatest(observables.map((obs) => obs.pipe(
+            map((value: FileInformation) => ({ value, timestamp: Date.now() }))
+        ))
+        ).pipe(untilDestroyed(this)).subscribe({
+            next: (data) => {
+                const newResponse = data.reduce((latest, current) => {
+                    if (!latest || current.timestamp > latest.timestamp) {
+                        return current;
+                    }
+
+                    return latest;
+                })
+                const index = fileArray.findIndex(x => x.id === newResponse.value.id);
+                if (index !== -1) {
+                    fileArray.splice(index, 1, newResponse.value)
+                }
+                if (this.chatBox) { this.chatBox.updateFileInformation(newResponse.value) }
+            },
+            complete: () => {
+                const hasError = fileArray.find(x => x.uploadError) !== undefined;
+                if (!hasError) {
+                    if (this.chatBox) { this.chatBox.addFileResponseFromUser(fileArray) }
+                }
+            }
         })
     }
 

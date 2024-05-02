@@ -16,7 +16,8 @@ export class ChatMessage {
 
 export enum EnumChatMessagePreviewType {
     Default = 1,
-    Pill = 2
+    Pill = 2,
+    Attachment = 3
 }
 
 export enum EnumChatUserRoles {
@@ -66,7 +67,13 @@ export enum EnumChatActionTypes {
     UploadFile = "UPLOAD_FILE",
     ChooseOption = "CHOOSE_OPTION",
     ChooseOptions = "CHOOSE_OPTIONS",
-    CreateSchedule = "CREATE_SCHEDULE"
+    CreateSchedule = "CREATE_SCHEDULE",
+    TakePicture = "TAKE_PICTURE",
+    FaceCapture = "SCAN_FACE_IMAGE",
+    ReadPIN = "READ_PIN",
+    ScanQRCode = "SCAN_CODE",
+    ScanDocument = "SCAN_DOCUMENT",
+    ShareLocation = "LOCATION_SHARE"
 }
 
 export interface ActionAttachmentAttributes {
@@ -100,6 +107,12 @@ export interface ActionViewRecordsAttributes {
     AppId: string;
     ClientId: number;
 }
+
+export interface ActionImageDataAttributes {
+    DisableSwitchingCamera: boolean;
+    IsDefaultToFrontCamera: boolean;
+}
+
 export interface ChatUIActions {
     actions: ChatUIActionData[];
 }
@@ -109,6 +122,7 @@ export interface ChatUIActionData {
     ActionChoiceAttributes?: ActionChoiceAttributes;
     ActionScheduleAttributes?: ActionScheduleAttributes;
     ActionViewRecordsAttributes?: ActionViewRecordsAttributes[];
+    CaptureImageDataAttributes?: ActionImageDataAttributes;
 }
 
 export interface ChatResponseStream {

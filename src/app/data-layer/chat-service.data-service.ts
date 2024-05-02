@@ -233,12 +233,11 @@ export class ChatDataService implements IChatService {
 
             callback({
                 event: 'message', data: JSON.stringify({
-                    content: error.message,
+                    content: `We encountered an error while reading stream. Error: ${error.message}`,
                     finish_reason: null,
                     error: error
                 })
-            })
-            console.error(`We encountered an error while reading stream. Error: ${error.message}`)
+            });
 
             // Close the reader in case of error
             setTimeout(() => {

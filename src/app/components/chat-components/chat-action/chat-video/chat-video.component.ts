@@ -6,6 +6,7 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { BehaviorSubject } from "rxjs";
 import { Assets } from "../../../../models/assets.model";
 import { VideoFile } from "../../../../helpers/attachment-helpers.helper";
+import { FileInformation, EnumFileUploadStatus } from "../../../../models/file-data.model";
 
 @UntilDestroy()
 @Component({
@@ -33,11 +34,11 @@ export class ChatVideoComponent implements OnInit, OnDestroy {
     get videoFile(): File | null { return this.videoFile$.getValue(); }
     set videoFile(value: File | null) { this.videoFile$.next(value); }
 
-    @Output() fileSelected: EventEmitter<{
-        file: File,
-        subscriber: BehaviorSubject<string | undefined>
+    @Output() fileSubmitted: EventEmitter<{
+        files: FileInformation[],
+        subscriber: BehaviorSubject<FileInformation | undefined>
     }> = new EventEmitter();
-    private subject = new BehaviorSubject<string | undefined>(undefined);
+    private subject = new BehaviorSubject<FileInformation | undefined>(undefined);
     protected onSubmitFile() {
         const file = this.videoFile;
         if (!file) { return; }
@@ -45,21 +46,23 @@ export class ChatVideoComponent implements OnInit, OnDestroy {
         this.isUploading = true;
 
         this.subject.unsubscribe();
-        this.subject = new BehaviorSubject<string | undefined>(undefined);
-        this.subject.pipe(untilDestroyed(this)).subscribe(reason => {
-            if (reason) {
-                this.isUploading = false;
-                this.error = reason;
-                setTimeout(() => {
-                    this.error = null;
-                }, 3000);
+        this.subject = new BehaviorSubject<FileInformation | undefined>(undefined);
+        this.subject.pipe(untilDestroyed(this)).subscribe(result => {
+            if (result) {
+                this.isUploading = result.uploadStatus === EnumFileUploadStatus.Uploading;
+                this.error = result.uploadError || null;
+                if (this.error) {
+                    setTimeout(() => {
+                        this.error = null;
+                    }, 3000);
+                }
+
             }
         })
-        this.fileSelected.next({
-            file: file,
+        this.fileSubmitted.next({
+            files: [new FileInformation(file)],
             subscriber: this.subject
         })
-
     }
 
     protected startRecording() {

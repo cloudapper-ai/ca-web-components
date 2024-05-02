@@ -16,7 +16,8 @@ import { IframePreviewComponent } from './components/shared-components/iframe-pr
 import { HttpClientModule } from '@angular/common/http';
 import { TOKEN_FILE_SERVICE } from './data-layer/interfaces/injectable-token.token';
 import { FileDataService } from './data-layer/file-service.data-service';
-import { ChoiceAttributePipe } from './components/chat-components/chat-action/chat-action.pipes';
+import { AttachmentAttributePipe, ChoiceAttributePipe } from './components/chat-components/chat-action/chat-action.pipes';
+import { TakePhotoComponent } from './components/shared-components/take-photo/take-photo.component';
 
 @NgModule({
   declarations: [
@@ -33,10 +34,12 @@ import { ChoiceAttributePipe } from './components/chat-components/chat-action/ch
     HttpClientModule,
     BrowserAnimationsModule,
     ChatActionComponent,
+    TakePhotoComponent,
     VideoRecordingModule,
     IframePreviewComponent,
     MarkdownModule.forRoot(),
-    ChoiceAttributePipe
+    ChoiceAttributePipe,
+    AttachmentAttributePipe
   ],
   providers: [
     { provide: TOKEN_FILE_SERVICE, useClass: FileDataService }
