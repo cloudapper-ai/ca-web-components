@@ -64,6 +64,7 @@ export class TakePhotoComponent implements OnInit, AfterViewInit, OnDestroy {
 
     protected startCapture(stream: MediaStream, activeDeviceIndex: number) {
         if (this.videoElement) {
+            this.stream = stream;
             this.videoElement.nativeElement.srcObject = stream;
             this.deviceIndex = activeDeviceIndex;
             this.videoElement.nativeElement.play();
