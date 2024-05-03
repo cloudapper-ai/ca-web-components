@@ -14,6 +14,7 @@ body {
     --font-family: 'Be Vietnam Pro', sans-serif;
     --default-text-color: #0a0a11;
     --default-text-color-light: #090910cc;
+    --default-text-color-lighter: #09091080;
 }
 
 * {

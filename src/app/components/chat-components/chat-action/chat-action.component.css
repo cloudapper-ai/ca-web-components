@@ -4,3 +4,16 @@
     overflow-x: hidden;
     margin-top: 8px;
 }
+
+.skip-button {
+    color: var(--default-text-color-lighter);
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    font-weight: 400;
+    width: fit-content;
+}
+
+.skip-button:hover {
+    color: var(--default-text-color);
+}

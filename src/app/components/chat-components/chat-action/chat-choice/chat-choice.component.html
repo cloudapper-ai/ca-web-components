@@ -1,5 +1,5 @@
 <div class="choice-container" [style.--primary-color]="primaryColor">
-    <div class="chat-choices" [style.flex-direction]="choices.length > 8 ? 'row' : 'column'"
+    <div class="chat-choices" [style.flex-direction]="choices.length > 5 ? 'row' : 'column'"
         [style.align-items]="choices.length > 10 ? 'center' : 'flex-start'">
         <ng-container *ngFor="let choice of choices; let i=index; trackBy:trackChoice.bind(this)">
             <div [style.--delay]="(i * 0.1) + 's'" (click)="selected$.next(choice)"
