@@ -65,7 +65,8 @@ export class CaChatBoxComponent {
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             if (i !== 0) { response += ';'; }
-            response += `[${file.file.name}](${file.url})`
+            // response += `[${file.file.name}](${file.url})`
+            response += `${file.url}`
         }
         this.postUserReply(response, undefined, EnumChatMessagePreviewType.Attachment)
     }
