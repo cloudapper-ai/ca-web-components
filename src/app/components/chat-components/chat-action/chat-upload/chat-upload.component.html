@@ -80,6 +80,8 @@
                 </div>
             </div>
         </div>
+        <ng-container *ngIf="fileSelectionError" [ngTemplateOutlet]="error">
+        </ng-container>
     </ng-container>
     <ng-container *ngIf="filelist.length">
         <div class="files-selected">
@@ -111,3 +113,10 @@
         </div>
     </ng-container>
 </div>
+
+<ng-template #error>
+    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
+        <span
+            style="color: red; text-align: center; width: 80%; text-align: center; text-align: center; overflow: hidden; word-wrap: break-word;">{{fileSelectionError}}</span>
+    </div>
+</ng-template>

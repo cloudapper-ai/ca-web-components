@@ -26,12 +26,16 @@ export class ChatUploadComponent implements OnInit {
     ngOnInit(): void {
         this.data$.pipe(untilDestroyed(this)).subscribe(value => {
             if (value.SupportedFileTypes && value.SupportedFileTypes.length) {
+
                 let fileTypes = ''
-                value.SupportedFileTypes.split(new RegExp('[,;]', 'gi')).map(x => x.trim()).filter(x => !IsNullOrUndefinedOrEmptyString(x)).forEach(x => {
-                    if (fileTypes.length > 0) { fileTypes += ','; }
-                    if (x.startsWith('.')) { fileTypes += x; }
-                    else { fileTypes += `.${x}`; }
-                })
+                if (value.SupportedFileTypes !== '*/*') {
+                    value.SupportedFileTypes.split(new RegExp('[,;]', 'gi')).map(x => x.trim()).filter(x => !IsNullOrUndefinedOrEmptyString(x)).forEach(x => {
+                        if (fileTypes.length > 0) { fileTypes += ','; }
+                        if (x.startsWith('.')) { fileTypes += x; }
+                        else { fileTypes += `.${x}`; }
+                    })
+                }
+
                 this.supportedFiles = fileTypes;
             } else {
                 this.supportedFiles = '*/*'
