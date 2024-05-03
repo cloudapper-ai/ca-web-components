@@ -1,0 +1,35 @@
+.location-container {
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+}
+
+.button {
+    height: 48px;
+    cursor: pointer;
+    background-color: white;
+    box-sizing: border-box;
+    padding: 8px 16px 8px 8px;
+    border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.button img {
+    width: 24px;
+    user-select: none;
+}
+
+.button span {
+    user-select: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-weight: 400;
+    color: var(--default-text-color);
+}

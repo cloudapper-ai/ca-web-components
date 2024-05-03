@@ -230,6 +230,8 @@ export class ChatItemComponent implements OnInit {
         subject: BehaviorSubject<File | undefined>
     }>()
 
+    @Output() geolocationReceived = new EventEmitter<{ lat: number, lng: number }>();
+
     @Output() retryRequested: EventEmitter<void> = new EventEmitter();
 
     protected onSuggestionSelected(param: {
@@ -276,5 +278,9 @@ export class ChatItemComponent implements OnInit {
 
     protected retryClicked() {
         this.retryRequested.next();
+    }
+
+    protected onGeolocationReceived(data: { lat: number, lng: number }) {
+        this.geolocationReceived.next(data);
     }
 }

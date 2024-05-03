@@ -35,6 +35,7 @@
                     DisableSwitchingCamera: false,
                     IsDefaultToFrontCamera: true
                 }}"></ng-container>
+        <ng-container *ngSwitchCase="ChatActionTypes.ShareLocation" [ngTemplateOutlet]="takelocation"></ng-container>
     </ng-container>
 </div>
 
@@ -46,7 +47,7 @@
 </ng-template>
 
 <ng-template #recordview>
-    <chat-record [primaryColor]="primaryColor" [records]="action.ActionViewRecordsAttributes || []"></chat-record>
+    <chat-record [primaryColor]="primaryColor" [records]="action.ActionListAttributes?.RecordList || []"></chat-record>
 </ng-template>
 <ng-template #uploadfile let-data>
     <chat-upload [data]="data" [primaryColor]="primaryColor" (fileSubmitted)="onFileSelected($event)"></chat-upload>
@@ -71,4 +72,8 @@
 <ng-template #takephoto let-data>
     <chat-photo [disableSwitchingCamera]="data.DisableSwitchingCamera"
         (capturePhotoRequested)="onPhotoCaptureRequested($event)" (submitPhoto)="onFileSelected($event)"></chat-photo>
+</ng-template>
+
+<ng-template #takelocation>
+    <chat-location (geoLocationReceived)="onGeoLocationReceived($event)"></chat-location>
 </ng-template>

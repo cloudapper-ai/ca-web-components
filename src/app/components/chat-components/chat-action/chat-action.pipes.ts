@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { IsNullOrUndefinedOrEmptyString } from "../../../helpers/helper-functions.helper";
+import { IsNullOrUndefined, IsNullOrUndefinedOrEmptyString } from "../../../helpers/helper-functions.helper";
 
 @Pipe({
     name: 'choices',
@@ -40,4 +40,21 @@ export class AttachmentAttributePipe implements PipeTransform {
         console.log(links)
         return links;
     }
+}
+
+@Pipe({
+    name: 'geolocation',
+    standalone: true
+})
+
+export class GeoLocationAttributePipe implements PipeTransform {
+    transform(value: string, ...args: any[]): { lat: number, lng: number } | null {
+        const parts = value.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x));
+        if (parts.length === 2) {
+            return { lat: parts[0], lng: parts[1] }
+        }
+
+        return null;
+    }
+
 }

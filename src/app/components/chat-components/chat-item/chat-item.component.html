@@ -33,12 +33,20 @@
 
                 <span style="flex: 1; color: var(--default-text-color); font-size: 14px; font-weight: 300;">
                     <ng-container *ngIf="attachments.length > 1; else singlefile">
-                        Submitted {{attachments.length}} file(s)
+                        Submitted {{attachments.length}} files.
                     </ng-container>
 
                     <ng-template #singlefile>
-                        Submitted 1 file
+                        Submitted 1 file.
                     </ng-template>
+                </span>
+            </ng-container>
+
+            <ng-container
+                *ngIf="message.style === MessagePreviewTypes.Location && (message.message | geolocation) as geolocation">
+
+                <span style="flex: 1; color: var(--default-text-color); font-size: 14px; font-weight: 300;">
+                    Shared current location.
                 </span>
             </ng-container>
         </div>
@@ -113,6 +121,7 @@
                 (scheduleRequest)="onRequestSearchSchedule($event)" (replyReceived)="onActionReplied($event)"
                 (recordVideoRequested)="onRecordVideoRequested($event)" (fileSubmitted)="onFileSelected($event)"
                 (capturePhotoRequested)="onCapturePhotoRequested($event)"
+                (geoLocationReceived)="onGeolocationReceived($event)"
                 (openAppointmentWindow)="onOpenAppointmentWindowRequest($event)"></chat-action>
         </div>
 

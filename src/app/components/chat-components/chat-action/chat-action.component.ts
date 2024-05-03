@@ -14,13 +14,14 @@ import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, Acti
 import { RESULT } from "../../../models/result.model";
 import { FileInformation } from "../../../models/file-data.model";
 import { ChatPhotoComponent } from "./chat-photo/chat-photo.component";
+import { ChatLocationComponent } from "./chat-location/chat-location.component";
 
 @Component({
     selector: 'chat-action',
     templateUrl: './chat-action.component.html',
     styleUrls: ['./chat-action.component.css'],
     standalone: true,
-    imports: [CommonModule, ChatPhotoComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
+    imports: [CommonModule, ChatPhotoComponent, ChatLocationComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
 })
 export class ChatActionComponent {
 
@@ -91,5 +92,10 @@ export class ChatActionComponent {
             attribute: this.action.CaptureImageDataAttributes || { DisableSwitchingCamera: false, IsDefaultToFrontCamera: true },
             subject: event
         })
+    }
+
+    @Output() geoLocationReceived: EventEmitter<{ lat: number, lng: number }> = new EventEmitter();
+    protected onGeoLocationReceived(data: { lat: number, lng: number }) {
+        this.geoLocationReceived.next(data);
     }
 }

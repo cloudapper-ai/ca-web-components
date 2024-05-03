@@ -17,7 +17,8 @@ export class ChatMessage {
 export enum EnumChatMessagePreviewType {
     Default = 1,
     Pill = 2,
-    Attachment = 3
+    Attachment = 3,
+    Location = 4
 }
 
 export enum EnumChatUserRoles {
@@ -100,12 +101,35 @@ export interface ActionScheduleAttributes {
     // "OnCompleteMessageFormat": "I have scheduled in your calendar. Please confirm. Event Id: {{$Identifier}}"
 }
 
-export interface ActionViewRecordsAttributes {
-    Id: string;
-    DisplayName: string;
-    TypeId: string;
-    AppId: string;
-    ClientId: number;
+export type PrimitiveData = boolean | string | number | string[];
+export type DynamicObject = { [key: string]: PrimitiveData }
+export type AnyObject = { [key: string]: PrimitiveData | DynamicObject | DynamicObject[] };
+
+export interface ActionListAttributes {
+    RecordList: DynamicObject[]
+    // Id: string;
+    // DisplayName: string;
+    // TypeId: string;
+    // AppId: string;
+    // ClientId: number;
+}
+
+export class ActionRecordViewAttributes {
+    constructor(public Id: string, public TypeId: string, public AppId: string, public ClientId: number, public DisplayName: string) { }
+
+    static get(record: DynamicObject): ActionRecordViewAttributes | null {
+        const id = record['id'] as string;
+        const typeId = record['TypeId'] as string;
+        const appId = record['AppId'] as string;
+        const clientId = record['ClientId'] as number;
+        const displayName = record['DisplayName'] as string;
+
+        if (id && typeId && clientId && appId) {
+            return new ActionRecordViewAttributes(id, typeId, appId, clientId, displayName ? displayName === '__null__' ? 'Not provided' : displayName : 'Not provided')
+        }
+
+        return null;
+    }
 }
 
 export interface ActionImageDataAttributes {
@@ -121,7 +145,7 @@ export interface ChatUIActionData {
     ActionAttachmentAttributes?: ActionAttachmentAttributes;
     ActionChoiceAttributes?: ActionChoiceAttributes;
     ActionScheduleAttributes?: ActionScheduleAttributes;
-    ActionViewRecordsAttributes?: ActionViewRecordsAttributes[];
+    ActionListAttributes?: ActionListAttributes;
     CaptureImageDataAttributes?: ActionImageDataAttributes;
 }
 

@@ -56,6 +56,9 @@ export class CaChatBoxComponent {
         }
     }
 
+    addGeolocationResponseFromUser(data: { lat: number, lng: number }) {
+        this.postUserReply(`${data.lat},${data.lng}`, undefined, EnumChatMessagePreviewType.Location);
+    }
 
     addFileResponseFromUser(files: FileInformation[]) {
         let response = ''

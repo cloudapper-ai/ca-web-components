@@ -1,0 +1,17 @@
+<div class="location-container">
+    <ng-container *ngIf="error$ | async as error; else getlocation">
+        <h3 style="color: #cc0000; margin: 0;">{{error}}</h3>
+    </ng-container>
+
+    <ng-template #getlocation>
+        <div class="button" (click)="getlocationClicked()">
+            <ng-container *ngIf="isFetching; else marker">
+                <img [src]="Assets.Gifs.Loading" alt="" srcset="">
+            </ng-container>
+            <ng-template #marker>
+                <img [src]="Assets.Images.PlaceMarker" alt="Location icon" srcset="">
+            </ng-template>
+            <span>Share current location</span>
+        </div>
+    </ng-template>
+</div>
