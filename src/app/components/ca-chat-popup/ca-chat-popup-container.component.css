@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap');
+
+html {
+    font-weight: 300;
+    font-size: 14px;
+}
+
 .container {
     all: initial;
     --bubble-background-color: '#edefef';
@@ -16,42 +23,40 @@
     line-height: 24px;
 }
 
-::ng-global {
-    * {
-        font-family: var(--font-family) !important;
-        -webkit-font-smoothing: antialiased !important;
-        font-variation-settings: normal !important;
-    }
+* {
+    font-family: var(--font-family) !important;
+    -webkit-font-smoothing: antialiased !important;
+    font-variation-settings: normal !important;
+}
 
-    h1 {
-        font-size: 26px !important;
-        font-weight: 400 !important;
-        color: var(--default-text-color) !important;
-    }
+h1 {
+    font-size: 26px !important;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
 
-    h2 {
-        font-size: 24px;
-        font-weight: 400 !important;
-        color: var(--default-text-color) !important;
-    }
+h2 {
+    font-size: 24px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
 
-    h3 {
-        font-size: 22px;
-        font-weight: 400 !important;
-        color: var(--default-text-color) !important;
-    }
+h3 {
+    font-size: 22px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
 
-    h4 {
-        font-size: 20px;
-        font-weight: 400 !important;
-        color: var(--default-text-color) !important;
-    }
+h4 {
+    font-size: 20px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
+}
 
-    h5 {
-        font-size: 18px;
-        font-weight: 400 !important;
-        color: var(--default-text-color) !important;
-    }
+h5 {
+    font-size: 18px;
+    font-weight: 400 !important;
+    color: var(--default-text-color) !important;
 }
 
 .chat-container-background {
