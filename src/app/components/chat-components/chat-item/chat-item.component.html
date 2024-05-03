@@ -85,6 +85,14 @@
                 </ng-container>
             </div>
         </ng-container>
+        <ng-container *ngIf="message.suggestionObjects && message.suggestionObjects.length > 0">
+            <div class="chat-suggestion" [ngStyle]="{'background-color': botColorProfile.backgroundColor}">
+                <ng-container *ngFor="let suggestion of message.suggestionObjects">
+                    <suggestion-item [queryText]="suggestion.query_text" [message]="suggestion.display_text"
+                        (onMessageSelected)="onSuggestionSelected($event)"></suggestion-item>
+                </ng-container>
+            </div>
+        </ng-container>
     </ng-container>
 
 </div>
