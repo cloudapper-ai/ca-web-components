@@ -18,6 +18,7 @@ import { TOKEN_FILE_SERVICE } from './data-layer/interfaces/injectable-token.tok
 import { FileDataService } from './data-layer/file-service.data-service';
 import { AttachmentAttributePipe, ChoiceAttributePipe, GeoLocationAttributePipe } from './components/chat-components/chat-action/chat-action.pipes';
 import { TakePhotoComponent } from './components/shared-components/take-photo/take-photo.component';
+import { ScanCodeComponent } from './components/shared-components/scan-code/scan-code.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { TakePhotoComponent } from './components/shared-components/take-photo/ta
     MarkdownModule.forRoot(),
     ChoiceAttributePipe,
     AttachmentAttributePipe,
-    GeoLocationAttributePipe
+    GeoLocationAttributePipe,
+    ScanCodeComponent
   ],
   providers: [
     { provide: TOKEN_FILE_SERVICE, useClass: FileDataService }

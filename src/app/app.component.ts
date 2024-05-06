@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ChatPopupContainerComponent } from './components/ca-chat-popup/ca-chat-popup-container.component';
 import { CAChatContainer } from './components/ca-chat-container/ca-chat-container.component';
+import { CodeScanResult } from './components/shared-components/scan-code/scan-code.component';
 
 @Component({
   selector: 'app-root',
@@ -67,4 +68,5 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
+  protected codeResult?: CodeScanResult;
 }

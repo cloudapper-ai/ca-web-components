@@ -15,13 +15,14 @@ import { RESULT } from "../../../models/result.model";
 import { FileInformation } from "../../../models/file-data.model";
 import { ChatPhotoComponent } from "./chat-photo/chat-photo.component";
 import { ChatLocationComponent } from "./chat-location/chat-location.component";
+import { ChatScanComponent } from "./chat-scan/chat-scan.component";
 
 @Component({
     selector: 'chat-action',
     templateUrl: './chat-action.component.html',
     styleUrls: ['./chat-action.component.css'],
     standalone: true,
-    imports: [CommonModule, ChatPhotoComponent, ChatLocationComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
+    imports: [CommonModule, ChatScanComponent, ChatPhotoComponent, ChatLocationComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
 })
 export class ChatActionComponent {
 
@@ -97,5 +98,10 @@ export class ChatActionComponent {
     @Output() geoLocationReceived: EventEmitter<{ lat: number, lng: number }> = new EventEmitter();
     protected onGeoLocationReceived(data: { lat: number, lng: number }) {
         this.geoLocationReceived.next(data);
+    }
+
+    @Output() requestCodeScan: EventEmitter<void> = new EventEmitter();
+    protected onRequestCodeScan() {
+        this.requestCodeScan.next();
     }
 }

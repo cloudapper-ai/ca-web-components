@@ -42,6 +42,14 @@
                 </span>
             </ng-container>
 
+            <ng-container *ngIf="message.style === MessagePreviewTypes.Code && message.message">
+                <div style="flex: 1;" class="code-block">
+                    <div class="code-content">
+                        {{message.message}}
+                    </div>
+                </div>
+            </ng-container>
+
             <ng-container
                 *ngIf="message.style === MessagePreviewTypes.Location && (message.message | geolocation) as geolocation">
 
@@ -129,7 +137,7 @@
                 (scheduleRequest)="onRequestSearchSchedule($event)" (replyReceived)="onActionReplied($event)"
                 (recordVideoRequested)="onRecordVideoRequested($event)" (fileSubmitted)="onFileSelected($event)"
                 (capturePhotoRequested)="onCapturePhotoRequested($event)"
-                (geoLocationReceived)="onGeolocationReceived($event)"
+                (geoLocationReceived)="onGeolocationReceived($event)" (requestCodeScan)="onRequestCodeScan()"
                 (openAppointmentWindow)="onOpenAppointmentWindowRequest($event)"></chat-action>
         </div>
 

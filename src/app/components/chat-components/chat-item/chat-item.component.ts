@@ -58,101 +58,6 @@ export class ChatItemComponent implements OnInit {
                             </div>
                         `
             } else {
-                const extension = getFileExtension(href);
-                if (extension) {
-                    if (isAnImage(extension)) {
-                        return `
-                        <div class="linked-messages">
-                            <a target="_blank" href="${href}">
-                                <img src="${href}" alt="${text}" >
-                            </a>
-                        </div>
-                    `;
-                    } else if (isAVideo(extension)) {
-                        if (extension === 'mp4') {
-                            return `
-                            <div class="video-attachment">
-                                <video controls>
-                                    <source
-                                        src="${href}"
-                                        type="video/${extension}">
-                                    Your browser does not support the video tag.
-                                </video>
-
-                            </div>
-                        `
-                        } else {
-                            return `
-                            <div class="attachment-messages">
-                                <a target="_blank" href="${href}">
-                                    <div class="message-body">
-                                        <img src="${VideoFile}" alt="${text}">
-                                        <span>${title ?? text}</span>
-                                    </div>
-                                </a>
-                            </div>                        
-                            `
-                        }
-
-                    } else if (isAnAudio(extension)) {
-                        if (extension === 'mp3') {
-                            return `
-                                <div class="audio-attachment">
-                                    <audio controls>
-                                        <source src="${href}">
-                                        Your browser does not support the video tag.
-                                    </audio>
-
-                                </div>
-                            `
-                        } else {
-                            return `
-                            <div class="attachment-messages">
-                                <a target="_blank" href="${href}">
-                                    <div class="message-body">
-                                        <img src="${AudioFile}" alt="${text}">
-                                        <span>${title ?? text}</span>
-                                    </div>
-                                </a>
-                            </div>                        
-                            `
-                        }
-                    } else if (isAPDF(extension)) {
-                        return `
-                            <div class="attachment-messages">
-                                <a target="_blank" href="${href}">
-                                    <div class="message-body">
-                                        <img src="${PdfFile}" alt="${text}">
-                                        <span>${title ?? text}</span>
-                                    </div>
-                                </a>
-                            </div>                        
-                            `
-                    } else if (isADocument(extension)) {
-                        return `
-                            <div class="attachment-messages">
-                                <a target="_blank" href="${href}">
-                                    <div class="message-body">
-                                        <img src="${DocFile}" alt="${text}">
-                                        <span>${title ?? text}</span>
-                                    </div>
-                                </a>
-                            </div>                        
-                            `
-                    } else if (isAnHtml(extension)) {
-                        return `
-                            <div class="attachment-messages">
-                                <a target="_blank" href="${href}">
-                                    <div class="message-body">
-                                        <img src="${HtmlFile}" alt="${text}">
-                                        <span>${title ?? text}</span>
-                                    </div>
-                                </a>
-                            </div>                        
-                            `
-                    }
-                }
-
                 return `<a target="_blank" href=${href}>${title ?? text}</a>`
             }
 
@@ -233,6 +138,7 @@ export class ChatItemComponent implements OnInit {
     @Output() geolocationReceived = new EventEmitter<{ lat: number, lng: number }>();
 
     @Output() retryRequested: EventEmitter<void> = new EventEmitter();
+    @Output() requestCodeScan: EventEmitter<void> = new EventEmitter();
 
     protected onSuggestionSelected(param: {
         message: string,
@@ -282,5 +188,9 @@ export class ChatItemComponent implements OnInit {
 
     protected onGeolocationReceived(data: { lat: number, lng: number }) {
         this.geolocationReceived.next(data);
+    }
+
+    protected onRequestCodeScan() {
+        this.requestCodeScan.next();
     }
 }

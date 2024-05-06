@@ -18,7 +18,8 @@ export enum EnumChatMessagePreviewType {
     Default = 1,
     Pill = 2,
     Attachment = 3,
-    Location = 4
+    Location = 4,
+    Code = 5
 }
 
 export enum EnumChatUserRoles {
@@ -135,6 +136,7 @@ export class ActionRecordViewAttributes {
 export interface ActionImageDataAttributes {
     DisableSwitchingCamera: boolean;
     IsDefaultToFrontCamera: boolean;
+    CodeFormat?: string;
 }
 
 export interface ChatUIActions {

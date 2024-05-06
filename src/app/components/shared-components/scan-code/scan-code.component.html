@@ -1,0 +1,27 @@
+<div #container class="container">
+    <ng-container *ngIf="devices$ | async as devices">
+        <div class="scanner">
+            <ngx-scanner-qrcode #scanner (event)="onScannedACode($event)"></ngx-scanner-qrcode>
+        </div>
+
+        <ng-container *ngIf="container.clientWidth >= container.clientHeight; else biggerHeight">
+
+        </ng-container>
+        <ng-container *ngIf="devices.length > 1">
+            <div class="rotate-camera">
+                <img (click)="rotateCameraClicked()" [src]="Assets.Images.RotateCamera" alt="Rotate Camera" srcset="">
+            </div>
+        </ng-container>
+
+    </ng-container>
+    <ng-template #biggerHeight>
+        <div [style.width.px]="container.clientWidth * 0.7" class="scanner-animation">
+            <div class="scanner-view"></div>
+        </div>
+    </ng-template>
+    <ng-template #smallerHeight>
+        <div [style.width.px]="container.clientHeight * 0.7" class="scanner-animation">
+            <div class="scanner-view"></div>
+        </div>
+    </ng-template>
+</div>

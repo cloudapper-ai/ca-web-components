@@ -1,6 +1,6 @@
 {
   "name": "ca-web-components",
-  "version": "1.4.20",
+  "version": "1.4.21",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -25,6 +25,7 @@
     "lodash": "^4.17.21",
     "marked": "^4.3.0",
     "ngx-markdown": "^16.0.0",
+    "ngx-scanner-qrcode": "^1.6.8",
     "recordrtc": "^5.6.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

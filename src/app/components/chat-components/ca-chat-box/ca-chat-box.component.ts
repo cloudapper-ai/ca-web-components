@@ -7,6 +7,7 @@ import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
 import { Assets } from '../../../models/assets.model';
 import { FileInformation } from '../../../models/file-data.model';
+import { CodeScanResult } from '../../shared-components/scan-code/scan-code.component';
 
 @Component({
     selector: 'ca-chat-box',
@@ -339,4 +340,23 @@ export class CaChatBoxComponent {
         this.photoAttributes = undefined;
     }
 
+    // #region scanning barcode
+    protected isScanningCode: boolean = false
+    protected scanResult?: CodeScanResult;
+    protected onCodeScanRequested() {
+        this.scanResult = undefined;
+        this.isScanningCode = true;
+    }
+
+    protected onScanCompleted(result: CodeScanResult) {
+        this.scanResult = result;
+        this.isScanningCode = true;
+        this.postUserReply(result.code, undefined, EnumChatMessagePreviewType.Code);
+    }
+
+    protected closeCodeScanning() {
+        this.scanResult = undefined;
+        this.isScanningCode = false;
+    }
+    // #endregion scanning barcode
 }

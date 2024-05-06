@@ -39,6 +39,7 @@
                             }}"></ng-container>
                 <ng-container *ngSwitchCase="ChatActionTypes.ShareLocation"
                     [ngTemplateOutlet]="takelocation"></ng-container>
+                <ng-container *ngSwitchCase="ChatActionTypes.ScanQRCode" [ngTemplateOutlet]="codescan"></ng-container>
             </ng-container>
         </div>
         <ng-container
@@ -89,4 +90,8 @@
 
 <ng-template #takelocation>
     <chat-location (geoLocationReceived)="onGeoLocationReceived($event)"></chat-location>
+</ng-template>
+
+<ng-template #codescan>
+    <chat-scan (requestCodeScan)="onRequestCodeScan()"></chat-scan>
 </ng-template>

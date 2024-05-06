@@ -1,11 +1,12 @@
 * {
-    font-family:'Roboto', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 20px;
 }
-.center_element { 
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
+
+.center_element {
+    position: absolute;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
 }
 
@@ -13,13 +14,13 @@ h1 {
     font-size: 2em;
 }
 
-.box-container { 
+.box-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
 }
 
-.box { 
+.box {
     position: relative;
     width: 120px;
     height: 120px;
@@ -40,7 +41,7 @@ h1 {
     font-weight: 500;
 }
 
-.chat-container{
+.chat-container {
     box-sizing: border-box;
     width: 80%;
     margin: auto;
@@ -49,7 +50,7 @@ h1 {
 }
 
 @media screen and (max-width:480px) {
-    .chat-container{
+    .chat-container {
         width: 100%;
         padding: 0;
     }
