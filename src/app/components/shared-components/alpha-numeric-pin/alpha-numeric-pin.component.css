@@ -30,6 +30,9 @@ h3 {
     justify-content: center;
     text-align: center;
     max-width: 320px;
+    font-size: 14px;
+    color: var(--default-text-color-lighter);
+    user-select: none;
 }
 
 .pass-code {
