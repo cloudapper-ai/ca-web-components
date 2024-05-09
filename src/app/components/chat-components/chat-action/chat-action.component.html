@@ -40,6 +40,12 @@
                 <ng-container *ngSwitchCase="ChatActionTypes.ShareLocation"
                     [ngTemplateOutlet]="takelocation"></ng-container>
                 <ng-container *ngSwitchCase="ChatActionTypes.ScanQRCode" [ngTemplateOutlet]="codescan"></ng-container>
+                <ng-container *ngSwitchCase="ChatActionTypes.ReadPIN" [ngTemplateOutlet]="readpin"
+                    [ngTemplateOutletContext]="{ $implicit: action.ReadPinCodeAttributes || { 
+                    Title: 'Enter your pin',
+                    PinLength: 4,
+                    IsAlphaNumericPin: false
+                }}"></ng-container>
             </ng-container>
         </div>
         <ng-container
@@ -47,6 +53,7 @@
             <span (click)="onSubmitReply('SKIP')" class="skip-button"
                 style="flex: 0 1 auto; padding: 0 8px; box-sizing: border-box;">SKIP</span>
         </ng-container>
+
 
     </div>
 
@@ -94,4 +101,8 @@
 
 <ng-template #codescan>
     <chat-scan (requestCodeScan)="onRequestCodeScan()"></chat-scan>
+</ng-template>
+
+<ng-template #readpin let-data>
+    <chat-pin [setting]="data" (requestPin)="onRequestPin($event)"></chat-pin>
 </ng-template>

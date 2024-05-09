@@ -10,19 +10,20 @@ import { BehaviorSubject } from "rxjs";
 import { ChatSchedularComponent } from "./chat-scheduler/chat-schedular.component";
 import { ChatAudioComponent } from "./chat-audio/chat-audio.component";
 import { ChatVideoComponent } from "./chat-video/chat-video.component";
-import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes, EnumChatMessagePreviewType, ActionImageDataAttributes } from "../../../models/chat-message.model";
+import { EnumChatActionTypes, ChatUIActionData, ActionAttachmentAttributes, ActionScheduleAttributes, EnumChatMessagePreviewType, ActionImageDataAttributes, ActionReadPinAttributes } from "../../../models/chat-message.model";
 import { RESULT } from "../../../models/result.model";
 import { FileInformation } from "../../../models/file-data.model";
 import { ChatPhotoComponent } from "./chat-photo/chat-photo.component";
 import { ChatLocationComponent } from "./chat-location/chat-location.component";
 import { ChatScanComponent } from "./chat-scan/chat-scan.component";
+import { ChatPinComponent } from "./chat-pin/chat-pin.component";
 
 @Component({
     selector: 'chat-action',
     templateUrl: './chat-action.component.html',
     styleUrls: ['./chat-action.component.css'],
     standalone: true,
-    imports: [CommonModule, ChatScanComponent, ChatPhotoComponent, ChatLocationComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
+    imports: [CommonModule, ChatPinComponent, ChatScanComponent, ChatPhotoComponent, ChatLocationComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
 })
 export class ChatActionComponent {
 
@@ -103,5 +104,10 @@ export class ChatActionComponent {
     @Output() requestCodeScan: EventEmitter<void> = new EventEmitter();
     protected onRequestCodeScan() {
         this.requestCodeScan.next();
+    }
+
+    @Output() requestPin = new EventEmitter<ActionReadPinAttributes>();
+    protected onRequestPin(data: ActionReadPinAttributes) {
+        this.requestPin.next(data);
     }
 }

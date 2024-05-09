@@ -19,7 +19,8 @@ export enum EnumChatMessagePreviewType {
     Pill = 2,
     Attachment = 3,
     Location = 4,
-    Code = 5
+    Code = 5,
+    Secret = 6
 }
 
 export enum EnumChatUserRoles {
@@ -139,6 +140,13 @@ export interface ActionImageDataAttributes {
     CodeFormat?: string;
 }
 
+export interface ActionReadPinAttributes {
+    Title: string;
+    Subtitle?: string;
+    IsAlphaNumericPin: boolean;
+    PinLength: number;
+}
+
 export interface ChatUIActions {
     actions: ChatUIActionData[];
 }
@@ -149,6 +157,7 @@ export interface ChatUIActionData {
     ActionScheduleAttributes?: ActionScheduleAttributes;
     ActionListAttributes?: ActionListAttributes;
     CaptureImageDataAttributes?: ActionImageDataAttributes;
+    ReadPinCodeAttributes?: ActionReadPinAttributes;
 }
 
 export interface ChatResponseStream {

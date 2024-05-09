@@ -1,0 +1,23 @@
+<div class="page-container">
+    <div class="container">
+        <div class="item">
+            <h3>{{title}}</h3>
+        </div>
+        <ng-container *ngIf="subtitle">
+            <div class="item">
+                <span>{{subtitle}}</span>
+            </div>
+        </ng-container>
+
+        <div class="item">
+            <input #passcode inputMode="password" class="pass-code" type="password" (paste)="$event.preventDefault()"
+                (keyup)="verifyInput(passcode.value)" [value]="currentPin" [autocomplete]="false">
+        </div>
+    </div>
+    <div class="header">
+        <img class="button fade-in" (click)="onDismiss()" [src]="CloseButton" alt="Cancel" srcset="">
+        <ng-container *ngIf="showSubmitButton">
+            <span class="button" (click)="onSubmit()">Submit</span>
+        </ng-container>
+    </div>
+</div>

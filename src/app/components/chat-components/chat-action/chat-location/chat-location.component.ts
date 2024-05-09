@@ -25,6 +25,7 @@ export class ChatLocationComponent {
 
     protected isFetching: boolean = false;
     protected getlocationClicked() {
+        if (this.isFetching) { return; }
         if (navigator.permissions) {
             navigator.permissions.query({ name: 'geolocation' }).then(result => {
                 if (result.state === 'granted' || result.state === 'prompt') {

@@ -1,0 +1,26 @@
+.button {
+    margin: 2px;
+    box-sizing: border-box;
+    padding: 8px;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: fit-content;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 3px 1px;
+    border-radius: 6px;
+}
+
+.button img {
+    width: 24px;
+}
+
+.button span {
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--default-text-color);
+}

@@ -14,6 +14,7 @@ import { UntilDestroy, untilDestroyed } from "@ngneat/until-destroy";
 import { FileService } from "../../service-layer/file-service.service";
 import { Assets } from "../../models/assets.model";
 import { EnumFileUploadStatus, FileInformation } from "../../models/file-data.model";
+import { IsNullOrUndefinedOrEmptyString } from "src/app/helpers/helper-functions.helper";
 
 @UntilDestroy()
 @Component({
@@ -219,6 +220,12 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
         }
     }
 
+
+    private _initMsg?: string;
+    @Input()
+    get initmsg(): string | undefined { return this._initMsg; }
+    set initmsg(value: string | undefined) { this._initMsg = value; }
+
     protected initialParameter: ChatBoxInputs = new ChatBoxInputs(
         'CloudApper AI',
         'user0123',
@@ -307,7 +314,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
 
                 this.subscription = undefined
             });
-            this.subscription = observable.pipe(takeWhile(() => { return !ended; }), untilDestroyed(this)).subscribe({
+            this.subscription = observable.pipe(takeWhile(() => { return !ended || this.closed; }), untilDestroyed(this)).subscribe({
                 next: (result: RESULT<{
                     message: string;
                     action?: ChatUIActionData,
@@ -399,8 +406,15 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
         setTimeout(() => {
             if (this.chatBox) {
                 if (!this.minimized) {
+                    this.closed = false;
+                    this.chatBox.reset();
+                    this.chatService?.clearChatHistory();
                     let message: string = ''
-                    if (this.welcomemessages.length > 0) {
+                    if (this.initmsg && !IsNullOrUndefinedOrEmptyString(this.initmsg)) {
+                        this.chatBox.submitMessageWithoutShowing(this.initmsg);
+
+                        return;
+                    } else if (this.welcomemessages.length > 0) {
                         const nextIndex = Math.floor(Math.random() * (this.welcomemessages.length - 1));
                         message = this.welcomemessages[nextIndex];
                     } else {
@@ -408,7 +422,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                     }
 
                     this.chatBox.addReplyFromBot(uuidv4(), message, this.suggestionmessages)
-                    this.chatService?.clearChatHistory();
+
                 }
 
             }
@@ -417,6 +431,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
     }
 
     private minimized: boolean = false;
+    private closed: boolean = false;
 
     protected closeChatWindow(minimize: boolean = false) {
         if (this.chatBox) {
@@ -424,6 +439,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
                 // reset history when closed completely.
                 this.chatBox.reset();
                 this.minimized = false;
+                this.closed = true;
             } else {
                 this.minimized = true;
             }

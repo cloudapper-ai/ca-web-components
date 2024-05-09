@@ -19,6 +19,8 @@ import { FileDataService } from './data-layer/file-service.data-service';
 import { AttachmentAttributePipe, ChoiceAttributePipe, GeoLocationAttributePipe } from './components/chat-components/chat-action/chat-action.pipes';
 import { TakePhotoComponent } from './components/shared-components/take-photo/take-photo.component';
 import { ScanCodeComponent } from './components/shared-components/scan-code/scan-code.component';
+import { AlphaNumericPinComponent } from './components/shared-components/alpha-numeric-pin/alpha-numeric-pin.component';
+import { NumericPinComponent } from './components/shared-components/numeric-pin/numeric-pin.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { ScanCodeComponent } from './components/shared-components/scan-code/scan
     ChoiceAttributePipe,
     AttachmentAttributePipe,
     GeoLocationAttributePipe,
-    ScanCodeComponent
+    ScanCodeComponent,
+    AlphaNumericPinComponent,
+    NumericPinComponent
   ],
   providers: [
     { provide: TOKEN_FILE_SERVICE, useClass: FileDataService }

@@ -1,0 +1,77 @@
+<div #numpad class="container">
+    <div class="body" [style.flex-direction]="(isLandscape$ | async) ? 'row': 'column'">
+        <div class="body-top">
+            <div class="top-item">
+                <h3>{{title}}</h3>
+            </div>
+            <ng-container *ngIf="subtitle">
+                <div class="top-item">
+                    <span>{{subtitle}}</span>
+                </div>
+            </ng-container>
+
+            <div class="top-item">
+                <input class="pass-code" type="password" disabled [value]="currentPin" [autocomplete]="false">
+            </div>
+        </div>
+        <div class="body-down"
+            [ngClass]="{ 'landscape': (isLandscape$ | async) === false, 'portrait': isLandscape$ | async }">
+            <ng-container *ngIf="isLandscape$| async; else portrait" [ngTemplateOutlet]="landscape"></ng-container>
+        </div>
+    </div>
+    <div class="header">
+        <img class="button fade-in" (click)="onClose()" [src]="CloseButton" alt="Cancel" srcset="">
+        <ng-container *ngIf="showSubmitButton">
+            <span class="button" (click)="onSubmit()">Submit</span>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #landscape>
+    <div class="numpad-row">
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('1')">1</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('2')">2</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('3')">3</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('4')">4</div>
+
+    </div>
+    <div class="numpad-row">
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('5')">5</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('6')">6</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('7')">7</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('8')">8</div>
+    </div>
+    <div class="numpad-row">
+        <div class="numpad-item"></div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('9')">9</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('0')">0</div>
+        <div class="numpad-item" (click)="clearInput()">
+            <img style="cursor: pointer; user-select: none;" [src]="BackspaceIcon" alt="clear" srcset="">
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #portrait>
+    <div class="numpad-row">
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('1')">1</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('2')">2</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('3')">3</div>
+    </div>
+    <div class="numpad-row">
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('4')">4</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('5')">5</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('6')">6</div>
+    </div>
+    <div class="numpad-row">
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('7')">7</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('8')">8</div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('9')">9</div>
+    </div>
+    <div class="numpad-row">
+        <div class="numpad-item"></div>
+        <div class="numpad-item numberpad-item-number" (click)="verifyInput('0')">0</div>
+        <div class="numpad-item" (click)="clearInput()">
+            <img style="cursor: pointer; user-select: none;" [src]="BackspaceIcon" alt="clear" srcset="">
+        </div>
+    </div>
+</ng-template>

@@ -32,6 +32,7 @@
                 (openAppointmentWindow)="onMakeAppointmentRequested($event)"
                 (capturePhotoRequested)="openCapturePhoto($event)"
                 (geolocationReceived)="addGeolocationResponseFromUser($event)" (requestCodeScan)="onCodeScanRequested()"
+                (requestPin)="requestReadPin($event)"
                 (searchScheduleRequest)="onScheduleSearchRequested($event)"></chat-item>
         </ng-container>
     </div>
@@ -117,6 +118,23 @@
                 </div>
             </div>
 
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="isRequestingReadPin">
+        <div class="popup-window" (click)="$event.stopImmediatePropagation();">
+            <div class="popup-body">
+                <ng-container *ngIf="pinSetting.IsAlphaNumericPin">
+                    <alpha-numeric-pin [title]="pinSetting.Title" [subtitle]="pinSetting.Subtitle"
+                        [length]="pinSetting.PinLength" (dismiss)="onCanceledReadPin()"
+                        (pinReady)="onPinready($event)"></alpha-numeric-pin>
+                </ng-container>
+                <ng-container *ngIf="!pinSetting.IsAlphaNumericPin">
+                    <numeric-pin [title]="pinSetting.Title" [subtitle]="pinSetting.Subtitle"
+                        [length]="pinSetting.PinLength" (dismiss)="onCanceledReadPin()"
+                        (pinReady)="onPinready($event)"></numeric-pin>
+                </ng-container>
+            </div>
         </div>
     </ng-container>
 </div>

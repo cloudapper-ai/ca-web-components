@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ChatConstants } from '../../../models/chat-constants.model';
-import { ActionAttachmentAttributes, ActionImageDataAttributes, ActionScheduleAttributes, ChatMessage, ChatSuggestion, ChatUIActionData, EnumChatActionTypes, EnumChatMessagePreviewType } from '../../../models/chat-message.model';
+import { ActionAttachmentAttributes, ActionImageDataAttributes, ActionReadPinAttributes, ActionScheduleAttributes, ChatMessage, ChatSuggestion, ChatUIActionData, EnumChatActionTypes, EnumChatMessagePreviewType } from '../../../models/chat-message.model';
 import { ChatBoxInputs, ChatWindowColorProfile } from '../../../models/chat-ui.model';
 import { RESULT } from '../../../models/result.model';
 import { uuidv4 } from '../../../helpers/utils';
@@ -359,4 +359,26 @@ export class CaChatBoxComponent {
         this.isScanningCode = false;
     }
     // #endregion scanning barcode
+
+    // #region request pin code
+    protected isRequestingReadPin = false;
+    protected pinSetting: ActionReadPinAttributes = <ActionReadPinAttributes>{
+        Title: 'Enter your pin',
+        PinLength: 4,
+        IsAlphaNumericPin: false
+    };
+    protected onCanceledReadPin() {
+        this.isRequestingReadPin = false;
+    }
+
+    protected onPinready(value: string) {
+        this.postUserReply(value, undefined, EnumChatMessagePreviewType.Secret);
+        this.isRequestingReadPin = false;
+    }
+
+    protected requestReadPin(setting: ActionReadPinAttributes) {
+        this.pinSetting = setting;
+        this.isRequestingReadPin = true;
+    }
+    // #endregion
 }

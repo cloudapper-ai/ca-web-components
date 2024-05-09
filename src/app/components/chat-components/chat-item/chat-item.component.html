@@ -57,6 +57,14 @@
                     Shared current location.
                 </span>
             </ng-container>
+            <ng-container
+                *ngIf="message.style === MessagePreviewTypes.Secret && message.message && getLengthRange(message.message.length) as range">
+                <div class="secret-container">
+                    <ng-container *ngFor="let _ of range">
+                        <div class="secret-item"></div>
+                    </ng-container>
+                </div>
+            </ng-container>
         </div>
     </ng-container>
     <ng-container *ngIf="isBotReply">
@@ -138,6 +146,7 @@
                 (recordVideoRequested)="onRecordVideoRequested($event)" (fileSubmitted)="onFileSelected($event)"
                 (capturePhotoRequested)="onCapturePhotoRequested($event)"
                 (geoLocationReceived)="onGeolocationReceived($event)" (requestCodeScan)="onRequestCodeScan()"
+                (requestPin)="onRequestPin($event)"
                 (openAppointmentWindow)="onOpenAppointmentWindowRequest($event)"></chat-action>
         </div>
 

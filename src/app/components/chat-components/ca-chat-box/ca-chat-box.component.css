@@ -156,6 +156,36 @@
     background-color: black;
 }
 
+.popup-window {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 500;
+    background-color: rgba(255, 255, 255, 0.781);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 480px;
+    height: 90%;
+    box-sizing: border-box;
+    background-color: white;
+    box-shadow: #0002 0px 1px 5px 1px;
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 5;
+    opacity: 1;
+    animation: move-in 0.4s ease-in;
+}
+
 @media screen and (max-width: 480px) {
     .chat-box-input textarea {
         font-size: 16px !important;

@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { MarkdownService } from "ngx-markdown";
 import { BehaviorSubject } from "rxjs";
 import { ChatConstants } from "../../../models/chat-constants.model";
-import { ActionAttachmentAttributes, ActionImageDataAttributes, ActionScheduleAttributes, ChatMessage, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
+import { ActionAttachmentAttributes, ActionImageDataAttributes, ActionReadPinAttributes, ActionScheduleAttributes, ChatMessage, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
 import { ChatColorProfile } from "../../../models/chat-ui.model";
 import { isVimeoLink, isYouTubeLink, getFileExtension, isAnImage, isAVideo, VideoFile, isAnAudio, AudioFile, isAPDF, PdfFile, isADocument, DocFile, isAnHtml, HtmlFile, getVimeoEmbedUrl, getYoutubeEmbedUrl, isValidYouTubeLink } from "../../../helpers/attachment-helpers.helper";
 import { RESULT } from "../../../models/result.model";
@@ -139,6 +139,7 @@ export class ChatItemComponent implements OnInit {
 
     @Output() retryRequested: EventEmitter<void> = new EventEmitter();
     @Output() requestCodeScan: EventEmitter<void> = new EventEmitter();
+    @Output() requestPin: EventEmitter<ActionReadPinAttributes> = new EventEmitter();
 
     protected onSuggestionSelected(param: {
         message: string,
@@ -192,5 +193,11 @@ export class ChatItemComponent implements OnInit {
 
     protected onRequestCodeScan() {
         this.requestCodeScan.next();
+    }
+
+    protected onRequestPin(data: ActionReadPinAttributes) { this.requestPin.next(data); }
+
+    protected getLengthRange(number: number) {
+        return Array.from({ length: number }, (_, index) => index);
     }
 }
