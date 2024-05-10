@@ -27,11 +27,11 @@ export class NumericPinComponent implements AfterViewInit {
     private checkOrientation() {
         setTimeout(() => {
             if (this.numpad) {
-                const islandscape = this.numpad.nativeElement.clientHeight < 420;
-                console.log('isLandscape: ', islandscape, this.numpad.nativeElement.clientWidth, this.numpad.nativeElement.clientHeight)
+                const islandscape = this.numpad.nativeElement.offsetHeight < 420;
+                console.log('isLandscape: ', islandscape, this.numpad.nativeElement.offsetWidth, this.numpad.nativeElement.offsetHeight)
                 this.isLandscape$.next(islandscape);
             }
-        }, 50);
+        }, 500);
 
     }
 

@@ -3,12 +3,13 @@
     width: 100%;
     height: 100%;
     background-color: white;
-    overflow: auto;
+    overflow: hidden;
     pointer-events: all;
 }
 
 h3 {
     margin: 0;
+    color: var(--default-text-color);
 }
 
 .body {
@@ -42,6 +43,8 @@ h3 {
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-size: 14px;
+    color: var(--default-text-color-lighter);
 }
 
 .pass-code {
