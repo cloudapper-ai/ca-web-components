@@ -17,13 +17,14 @@ import { ChatPhotoComponent } from "./chat-photo/chat-photo.component";
 import { ChatLocationComponent } from "./chat-location/chat-location.component";
 import { ChatScanComponent } from "./chat-scan/chat-scan.component";
 import { ChatPinComponent } from "./chat-pin/chat-pin.component";
+import { ChatFaceComponent } from "./chat-face/chat-face.component";
 
 @Component({
     selector: 'chat-action',
     templateUrl: './chat-action.component.html',
     styleUrls: ['./chat-action.component.css'],
     standalone: true,
-    imports: [CommonModule, ChatPinComponent, ChatScanComponent, ChatPhotoComponent, ChatLocationComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
+    imports: [CommonModule, ChatFaceComponent, ChatPinComponent, ChatScanComponent, ChatPhotoComponent, ChatLocationComponent, ChatSchedularComponent, ChatVideoComponent, ChatUploadComponent, ChatRecordComponent, ChoiceAttributePipe, ChatChoiceComponent, ChatAudioComponent]
 })
 export class ChatActionComponent {
 
@@ -109,5 +110,16 @@ export class ChatActionComponent {
     @Output() requestPin = new EventEmitter<ActionReadPinAttributes>();
     protected onRequestPin(data: ActionReadPinAttributes) {
         this.requestPin.next(data);
+    }
+
+    @Output() requestFaceScan = new EventEmitter<{
+        setting: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }>();
+    protected onRequestFacescan(data: {
+        setting: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }) {
+        this.requestFaceScan.next(data);
     }
 }

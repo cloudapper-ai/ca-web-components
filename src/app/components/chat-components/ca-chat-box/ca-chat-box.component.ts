@@ -8,6 +8,7 @@ import { uuidv4 } from '../../../helpers/utils';
 import { Assets } from '../../../models/assets.model';
 import { FileInformation } from '../../../models/file-data.model';
 import { CodeScanResult } from '../../shared-components/scan-code/scan-code.component';
+import { EnumFaceDirection } from '../../shared-components/face-camera-lib/lib-models/face-enums.model';
 
 @Component({
     selector: 'ca-chat-box',
@@ -381,4 +382,30 @@ export class CaChatBoxComponent {
         this.isRequestingReadPin = true;
     }
     // #endregion
+
+    //#region request face scan
+    protected isScanningFace: boolean = false;
+    protected faceScanAttributes?: ActionImageDataAttributes;
+    protected faceScanObserver?: BehaviorSubject<File | undefined>;
+    protected FaceDirections = EnumFaceDirection;
+    protected onRequestFaceScan(data: {
+        setting: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }) {
+        this.faceScanAttributes = data.setting;
+        this.faceScanObserver = data.subject;
+        this.isScanningFace = true;
+    }
+    protected onFaceScanCanceled() {
+        this.faceScanAttributes = undefined;
+        this.faceScanObserver = undefined;
+        this.isScanningFace = false;
+    }
+    protected onFaceScanCompleted(file: File) {
+        this.faceScanObserver?.next(file);
+        this.faceScanAttributes = undefined;
+        this.faceScanObserver = undefined;
+        this.isScanningFace = false;
+    }
+    //#endregion
 }

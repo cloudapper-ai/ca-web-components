@@ -140,6 +140,10 @@ export class ChatItemComponent implements OnInit {
     @Output() retryRequested: EventEmitter<void> = new EventEmitter();
     @Output() requestCodeScan: EventEmitter<void> = new EventEmitter();
     @Output() requestPin: EventEmitter<ActionReadPinAttributes> = new EventEmitter();
+    @Output() requestFacescan: EventEmitter<{
+        setting: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }> = new EventEmitter();
 
     protected onSuggestionSelected(param: {
         message: string,
@@ -200,4 +204,9 @@ export class ChatItemComponent implements OnInit {
     protected getLengthRange(number: number) {
         return Array.from({ length: number }, (_, index) => index);
     }
+
+    protected onRequestFaceScan(data: {
+        setting: ActionImageDataAttributes,
+        subject: BehaviorSubject<File | undefined>
+    }) { this.requestFacescan.next(data); }
 }

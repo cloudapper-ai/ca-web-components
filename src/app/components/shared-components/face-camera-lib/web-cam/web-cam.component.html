@@ -1,0 +1,46 @@
+<div class="capture-container">
+    <ng-container *ngIf="error$ | async as error">
+        <h3 class="error">{{error}}</h3>
+    </ng-container>
+
+    <div class="video-container"
+        [style.display]="!isPreviewing && ((error$ | async) === null || (error$ | async) === undefined) ? 'block' : 'none'">
+        <canvas #Canvas style="display: none;"></canvas>
+        <video [playsInline]="true" [autoplay]="false" #VideoElement></video>
+        <ng-container *ngIf="allowOverlay">
+            <canvas #Overlay style="background-color: transparent;"></canvas>
+        </ng-container>
+    </div>
+
+
+    <ng-container *ngIf="isPreviewing && dataUrl">
+        <div class="preview">
+            <img [src]="dataUrl" alt="" srcset="">
+        </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="!isPreviewing && ((error$ | async) === null || (error$ | async) === undefined)">
+        <div *ngIf="availableDevices.length > 1" class="top-controls">
+
+            <div class="button" (click)="rotateCameraClicked()">
+                <img [src]="Assets.Images.RotateCamera" alt="Rotate camera">
+            </div>
+        </div>
+    </ng-container>
+
+
+    <div class="controls" [style.display]="((error$ | async) || autocapture) ? 'none' : 'flex'">
+        <ng-container *ngIf="isPreviewing; else capturing">
+            <div class="button" (click)="submitImageClicked()">
+                <img [src]="Assets.Images.Submit" alt="Submit">
+            </div>
+            <div class="button" (click)="refreshImageClicked()">
+                <img [src]="Assets.Images.Refresh" alt="Capture Again">
+            </div>
+        </ng-container>
+        <ng-template #capturing>
+            <div class="capture" (click)="captureImageClicked()"></div>
+        </ng-template>
+    </div>
+</div>

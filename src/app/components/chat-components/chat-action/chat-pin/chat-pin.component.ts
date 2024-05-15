@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Assets } from "src/app/models/assets.model";
-import { ActionReadPinAttributes } from "src/app/models/chat-message.model";
+import { Assets } from "../../../../models/assets.model";
+import { ActionReadPinAttributes } from "../../../../models/chat-message.model";
 
 @Component({
     selector: 'chat-pin',

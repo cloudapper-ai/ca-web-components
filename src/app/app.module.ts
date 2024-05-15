@@ -17,10 +17,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { TOKEN_FILE_SERVICE } from './data-layer/interfaces/injectable-token.token';
 import { FileDataService } from './data-layer/file-service.data-service';
 import { AttachmentAttributePipe, ChoiceAttributePipe, GeoLocationAttributePipe } from './components/chat-components/chat-action/chat-action.pipes';
-import { TakePhotoComponent } from './components/shared-components/take-photo/take-photo.component';
 import { ScanCodeComponent } from './components/shared-components/scan-code/scan-code.component';
 import { AlphaNumericPinComponent } from './components/shared-components/alpha-numeric-pin/alpha-numeric-pin.component';
 import { NumericPinComponent } from './components/shared-components/numeric-pin/numeric-pin.component';
+import { WebCamComponent } from './components/shared-components/face-camera-lib/web-cam/web-cam.component';
+import { FaceCameraLibComponent } from './components/shared-components/face-camera-lib/face-camera-lib.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { NumericPinComponent } from './components/shared-components/numeric-pin/
     HttpClientModule,
     BrowserAnimationsModule,
     ChatActionComponent,
-    TakePhotoComponent,
+    WebCamComponent,
+    FaceCameraLibComponent,
     VideoRecordingModule,
     IframePreviewComponent,
     MarkdownModule.forRoot(),

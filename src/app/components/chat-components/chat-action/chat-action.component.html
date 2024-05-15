@@ -46,6 +46,11 @@
                     PinLength: 4,
                     IsAlphaNumericPin: false
                 }}"></ng-container>
+
+                <ng-container *ngSwitchCase="ChatActionTypes.FaceCapture" [ngTemplateOutlet]="facescan"
+                    [ngTemplateOutletContext]="{ $implicit: action.CaptureImageDataAttributes || { 
+                                    IsDefaultToFrontCamera: true, DisableSwitchingCamera: false
+                                }}"></ng-container>
             </ng-container>
         </div>
         <ng-container
@@ -105,4 +110,9 @@
 
 <ng-template #readpin let-data>
     <chat-pin [setting]="data" (requestPin)="onRequestPin($event)"></chat-pin>
+</ng-template>
+
+<ng-template #facescan let-data>
+    <chat-face [setting]="data" (requestFacescan)="onRequestFacescan($event)"
+        (submitPhoto)="onFileSelected($event)"></chat-face>
 </ng-template>
