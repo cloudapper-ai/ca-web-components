@@ -83,12 +83,17 @@ export class ScanCodeComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.scanner) {
             const devices = this.devices$.getValue();
             if (devices.length > index) {
-                this.stopScanning();
-                this.scanner.start(() => {
-                    if (this.scanner)
-                        this.scanner.playDevice(devices[index].deviceId);
-                    this.deviceIndex = index;
-                })
+                if (!this.scanner.isStart) {
+                    this.scanner.start();
+                } else {
+                    this.stopScanning();
+                    this.scanner.start(() => {
+                        if (this.scanner)
+                            this.scanner.playDevice(devices[index].deviceId);
+                        this.deviceIndex = index;
+                    })
+                }
+
             }
         }
 
