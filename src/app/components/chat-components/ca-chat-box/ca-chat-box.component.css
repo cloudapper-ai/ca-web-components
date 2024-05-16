@@ -172,7 +172,7 @@
 .popup-body {
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 50%;
     width: 100%;
     max-width: 480px;
     height: 90%;
@@ -183,6 +183,7 @@
     overflow: hidden;
     z-index: 5;
     opacity: 1;
+    transform: translateX(-50%);
     animation: move-in 0.4s ease-in;
 }
 
