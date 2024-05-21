@@ -1,9 +1,16 @@
 .error-view {
     color: red;
     text-align: center;
-    margin: 10px 0;
     box-sizing: border-box;
-    padding: 0 10px;
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    width: 70%;
+    transform: translateX(-50%);
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .camera-container {

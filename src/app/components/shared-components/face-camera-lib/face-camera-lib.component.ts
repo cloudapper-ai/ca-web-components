@@ -23,8 +23,10 @@ export class FaceCameraLibComponent implements OnInit {
     protected readonly KEY_TURN_LEFT = 'TurnLeftInstruction';
     protected readonly KEY_TURN_STRAIGHT = 'TurnStraightInstruction';
     protected readonly KEY_COME_BEFORE_CAMERA = 'NoFaceInstruction';
+    protected readonly KEY_POOR_DETECTION_SCORE = 'DetectionScorePoor';
 
     protected modelLoaded$ = new BehaviorSubject<boolean>(false);
+    protected videoReady$ = new BehaviorSubject<boolean>(false);
     protected loadError$ = new BehaviorSubject<string | undefined>(undefined);
 
     @ViewChild('webcam') webcam?: WebCamComponent;
@@ -45,6 +47,7 @@ export class FaceCameraLibComponent implements OnInit {
             case this.KEY_TURN_LEFT: return 'Please turn to your left';
             case this.KEY_TURN_RIGHT: return 'Please turn to your right';
             case this.KEY_TURN_STRAIGHT: return 'Please look straight to the camera';
+            case this.KEY_POOR_DETECTION_SCORE: return 'Poor detection score. Ensure the face is clearly visible and try again.';
         }
         return key;
     }
@@ -72,12 +75,22 @@ export class FaceCameraLibComponent implements OnInit {
         faceapi.matchDimensions(data.canvas, displaySize);
         const stillFaceDurationThreshold = 2000;
         let stillFaceDuration: number = 0;
+        this.videoReady$.next(true);
         this.timer = setInterval(async () => {
             const detections = await faceapi.detectAllFaces(data.video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptors();
-            const resizedDetections = faceapi.resizeResults(detections, displaySize);
             data.canvas.getContext('2d')?.clearRect(0, 0, data.canvas.width, data.canvas.height);
-            faceapi.draw.drawDetections(data.canvas, resizedDetections);
-            // faceapi.draw.drawFaceLandmarks(data.canvas, resizedDetections);
+            const resizedDetections = faceapi.resizeResults(detections, displaySize);
+            resizedDetections.forEach(resizedDetection => {
+                const box: faceapi.IRect = {
+                    x: resizedDetection.detection.box.left,
+                    y: resizedDetection.detection.box.top,
+                    width: resizedDetection.detection.box.width,
+                    height: resizedDetection.detection.box.height,
+                };
+
+                faceapi.draw.drawDetections(data.canvas, box);
+
+            })
             if (detections.length > 0) {
                 if (this.expectedFaceDirection !== EnumFaceDirection.None) {
                     if (detections.length > 1) {
@@ -88,14 +101,17 @@ export class FaceCameraLibComponent implements OnInit {
                             for (let i = 0; i < detections.length; i++) {
                                 const direction = this.checkDirection(detections[i])
                                 if (direction === this.expectedFaceDirection) {
-                                    const duration = stillFaceDuration + 100;
-                                    if (duration < stillFaceDurationThreshold) {
-                                        stillFaceDuration = duration;
+                                    if (detections[i].detection.score > 0.6) {
+                                        const duration = stillFaceDuration + 100;
+                                        if (duration < stillFaceDurationThreshold) {
+                                            stillFaceDuration = duration;
+                                        } else {
+                                            this.webcam?.requestCaptureImage();
+                                        }
+                                        foundDirection = direction;
                                     } else {
-                                        this.webcam?.requestCaptureImage();
+                                        this.instructiontext$.next(this.KEY_POOR_DETECTION_SCORE);
                                     }
-                                    foundDirection = direction;
-
                                     break;
                                 }
                             }
@@ -178,6 +194,7 @@ export class FaceCameraLibComponent implements OnInit {
     }
 
     protected onVideoEnded() {
+        this.videoReady$.next(false);
         if (this.timer) {
             clearInterval(this.timer)
         }
