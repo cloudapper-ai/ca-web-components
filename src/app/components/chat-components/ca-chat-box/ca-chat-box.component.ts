@@ -258,18 +258,14 @@ export class CaChatBoxComponent {
         this.isRecordingVideo = true;
     }
 
-    protected cancelRecording(message?: string) {
+    protected cancelRecording() {
         this.isRecordingVideo = false;
-        if (message) {
-            this.videoRecordObserver?.error(message)
-        } else {
-            this.videoRecordObserver?.next(null);
-        }
+        this.videoRecordObserver?.next(null);
     }
 
-    protected onRecordCompleted(file: File) {
+    protected onRecordCompleted(file: { data: Blob, name: string }) {
         this.isRecordingVideo = false;
-        this.videoRecordObserver?.next(file);
+        this.videoRecordObserver?.next(new File([file.data], file.name));
     }
 
     // #endregion

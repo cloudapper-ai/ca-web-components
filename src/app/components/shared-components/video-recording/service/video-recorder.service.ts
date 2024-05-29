@@ -1,233 +1,203 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-// recording.service.ts
 
-import { EventEmitter } from "@angular/core";
-import { MediaStreamRecorder, RecordRTCPromisesHandler } from 'recordrtc';
-/**
- * This service manages recording video streams using the MediaRecorder API.
- * It allows starting, stopping, pausing, resuming, and clearing recordings,
- * and provides events when the recording is ready.
- */
-export class RecordingService {
-    private recordRTC?: RecordRTCPromisesHandler; // RecordRTC instance for recording video
+export class VideoRecorderService {
+    private static DEFAULT_VIDEO_OPTIONS: MediaTrackConstraints = { facingMode: 'environment' };
 
-    // MediaRecorder instance for recording video
-    // private mediaRecorder?: MediaRecorder;
+    /**
+     * Lists available videoInput devices
+     * @returns a list of media device info.
+     */
+    getAvailableDevices(): Promise<MediaDeviceInfo[]> {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            return Promise.reject("Couldn't find camera information");
+        }
 
-    // Array to store recorded video blobs
-    private recordedBlobs: Blob[] = [];
-    // Duration of recording (in seconds)
-    private duration: number = 300;
-    // Maximum size of recorded video (in bytes)
-    private maxSize: number = 200;
-    // Flags to track recording and pause states
-    private isRecording = false;
-    private isPaused = false;
-    // Variables to track recording duration and timing
-    private startTime: number = 0;
-    private elapsedTime: number = 0;
-    // Interval reference for updating recording duration
-    private timerInterval: any;
-
-    private stream?: MediaStream;
-
-    // Event emitter for notifying when the video recording is ready
-    onVideoReady: EventEmitter<File> = new EventEmitter();
-
-    constructor() { }
-
-    startRecording(duration: number, maxSize: number): Promise<void> {
         return new Promise((resolve, reject) => {
+            navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((stream) => {
 
-            if (typeof MediaStreamRecorder === undefined) {
-                reject('Your browser does not support this feature.')
-                return;
-            }
-
-            this.duration = duration;
-            this.maxSize = maxSize * 1024 * 1024;
-            this.elapsedTime = 0
-            this.stream = undefined;
-
-            try {
-                navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: {
-                        echoCancellation: true
-                    }
-                }).then(stream => {
-                    this.recordRTC = new RecordRTCPromisesHandler(stream, {
-                        type: 'video',
-                        timeSlice: 1000,
-                        mimeType: 'video/webm',
-                        disableLogs: true,
-                        ondataavailable: (data) => {
-                            this.recordedBlobs.push(data);
-                        }
-                    });
-                    this.recordRTC.startRecording().then(() => {
-                        this.stream = stream;
-
-                        this.isRecording = true;
-                        this.startTime = Date.now();
-
-                        this.timerInterval = setInterval(() => {
-                            // Update elapsed time periodically
-                            this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
-                            // Check recording size periodically and stop if exceeds maximum size
-                            if (this.recordedBlobs.length > 0 && this.getBlobSize() >= this.maxSize) {
-                                this.stopRecording();
-                            }
+                navigator.mediaDevices.enumerateDevices()
+                    .then((devices: MediaDeviceInfo[]) => {
+                        stream.getTracks().forEach(x => x.stop());
+                        setTimeout(() => {
+                            resolve(devices.filter(x => x.kind === 'videoinput'));
                         }, 1000);
-
-                        setTimeout(() => {
-                            this.stopRecording();
-                        }, this.duration * 1000);
-
-                        resolve();
-                    }).catch(reason => {
-                        reject(reason)
-                    });
-
-                }).catch(reason => {
-                    reject(reason)
-                });
-
-            } catch (error: any) {
-                console.error('Error accessing media devices:', error);
-                reject(error.message)
-            }
-        })
-
-    }
-
-    stopRecording(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (this.isRecording) {
-                this.recordRTC?.stopRecording().then(() => {
-                    // const videoBlob = new Blob(this.recordedBlobs);
-                    this.recordRTC?.getBlob().then(videoBlob => {
-                        const file = new File([videoBlob], this.filename(videoBlob.type), {
-                            type: videoBlob.type,
-                            lastModified: Date.now()
-                        });
-                        this.onVideoReady.next(file);
-                        this.isRecording = false;
-                        if (this.timerInterval) {
-                            clearInterval(this.timerInterval);
-                        }
-                        setTimeout(() => {
-                            this.clearRecording();
-                        }, 250);
-                        resolve();
-                    }).catch(error => {
-                        if (this.timerInterval) {
-                            clearInterval(this.timerInterval);
-                        }
-                        setTimeout(() => {
-                            this.clearRecording();
-                        }, 250);
-                        if (error) {
-                            if (error === 'Empty blob.') {
-                                reject('Your browser does not support this feature.');
-                            } else {
-                                reject(error);
-                            }
-                        } else {
-                            reject('Unfortunately we could not record anything.');
-                        }
-                        reject(error ? error : 'Unknown error');
                     })
-
-                }).catch(error => {
-                    if (this.timerInterval) {
-                        clearInterval(this.timerInterval);
-                    }
-                    setTimeout(() => {
-                        this.clearRecording();
-                    }, 250);
-                    if (error) {
-                        if (error === 'Empty blob.') {
-                            reject('Your browser does not support this feature.');
-                        } else {
-                            reject(error);
-                        }
-                    } else {
-                        reject('Unfortunately we could not record anything.');
-                    }
-                    reject(error ? error : 'Unknown error');
-                })
-            } else {
-                reject('Recoding is not on going');
-            }
-        })
-
-    }
-
-    /**
-     * Pauses the current recording.
-     */
-    pauseRecording() {
-        if (this.isRecording) {
-            this.recordRTC?.pauseRecording().then(() => {
-                this.isPaused = true;
-                // stop elapsed time count down.
-                clearInterval(this.timerInterval);
-            });
-
-        }
-    }
-
-    /**
-     * Resumes the paused recording.
-     */
-    resumeRecording() {
-        if (this.isPaused) {
-            this.recordRTC?.resumeRecording().then(() => {
-                this.isPaused = false;
-                this.startTime = Date.now() - (this.elapsedTime * 1000);
-                // Resume updating elapsed time periodically
-                this.timerInterval = setInterval(() => {
-                    this.elapsedTime = Math.floor((Date.now() - this.startTime) / 1000);
-                    // Check recording size periodically and stop if exceeds maximum size
-                    if (this.recordedBlobs.length > 0 && this.getBlobSize() >= this.maxSize) {
-                        this.stopRecording();
-                    }
-                }, 1000);
+                    .catch(err => {
+                        reject(err.message || err);
+                        stream.getTracks().forEach(x => x.stop());
+                    })
             })
+
+        })
+    }
+
+    /**
+     * Stops all active media tracks.
+     * This prevents the webcam from being indicated as active,
+     * even if it is no longer used by this component.
+     */
+    stopMediaTracks(stream: MediaStream) {
+        const tracks = stream.getTracks();
+        if (tracks && tracks.length) {
+            // pause video to prevent mobile browser freezes
+            tracks.forEach(x => x.stop());
         }
     }
 
     /**
-     * Clears the current recording.
-     */
-    clearRecording() {
-        // Clear recorded blobs and reset elapsed time
-        try {
-            this.recordedBlobs = [];
-            this.elapsedTime = 0;
-            this.stream?.getTracks().forEach(x => x.stop());
-            this.recordRTC?.reset()
-            this.recordRTC?.destroy();
-            this.stream = undefined;
-        } catch (_error) { }
+     * Get MediaTrackConstraints to request streaming the given device
+     * @param deviceId
+     * @param baseMediaTrackConstraints base constraints to merge deviceId-constraint into
+     * @returns
+   */
+    private getMediaConstraintsForDevice(deviceId?: string, baseMediaTrackConstraints?: MediaTrackConstraints): MediaTrackConstraints {
+        const result: MediaTrackConstraints = baseMediaTrackConstraints ? baseMediaTrackConstraints : VideoRecorderService.DEFAULT_VIDEO_OPTIONS;
+        if (deviceId) {
+            result.deviceId = { exact: deviceId };
+        }
 
+        return result;
     }
 
     /**
-     * Retrieves the current media stream.
-     * @returns The current media stream, if available.
+     * Extracts the value from the given ConstrainDOMString
+     * @param constrainDOMString
      */
-    getStream(): MediaStream | undefined {
-        return this.stream;
+    private getValueFromConstrainDOMString(constrainDOMString: ConstrainDOMString): string | undefined {
+        if (constrainDOMString) {
+            if (constrainDOMString instanceof String) {
+                return String(constrainDOMString);
+            } else if (Array.isArray(constrainDOMString) && Array(constrainDOMString).length > 0) {
+                return String(constrainDOMString[0]);
+            } else if (typeof constrainDOMString === 'object') {
+                const obj = constrainDOMString as ConstrainDOMStringParameters;
+                if (obj.exact) {
+                    return String(obj.exact);
+                } else if (obj.ideal) {
+                    return String(obj.ideal);
+                }
+            }
+        }
+
+        return undefined;
     }
 
     /**
-     * Calculates the size of recorded blobs.
-     * @returns The total size of recorded blobs (in bytes).
+     * Tries to harvest the deviceId from the given mediaStreamTrack object.
+     * Browsers populate this object differently; this method tries some different approaches
+     * to read the id.
+     * @param mediaStreamTrack
+     * @returns deviceId if found in the mediaStreamTrack
      */
-    private getBlobSize() {
-        return new Blob(this.recordedBlobs).size;
+    private getDeviceIdFromMediaStreamTrack(mediaStreamTrack: MediaStreamTrack): string | undefined {
+        if (mediaStreamTrack.getSettings && mediaStreamTrack.getSettings() && mediaStreamTrack.getSettings().deviceId) {
+            return mediaStreamTrack.getSettings().deviceId;
+        } else if (mediaStreamTrack.getConstraints && mediaStreamTrack.getConstraints() && mediaStreamTrack.getConstraints().deviceId) {
+            const deviceIdObj: ConstrainDOMString = mediaStreamTrack.getConstraints().deviceId || '';
+            return this.getValueFromConstrainDOMString(deviceIdObj);
+        }
+
+        return undefined;
+    }
+
+    initiateWebcam(availableDevices: MediaDeviceInfo[], deviceId?: string, userVideoTrackConstraints?: MediaTrackConstraints): Promise<{
+        stream: MediaStream,
+        activeDeviceIndex: number
+    }> {
+        return new Promise((resolve, reject) => {
+            const trackConstraints = this.getMediaConstraintsForDevice(deviceId, userVideoTrackConstraints)
+            navigator.mediaDevices.getUserMedia(<MediaStreamConstraints>{ video: trackConstraints, audio: true })
+                .then((stream: MediaStream) => {
+                    const tracks = stream.getVideoTracks();
+                    // let setting: MediaTrackSettings | undefined = undefined;
+                    let activeDeviceIndex: number = -1;
+                    if (tracks.length) {
+                        // setting = tracks[0].getSettings();
+                        const activeDeviceId: string | undefined = this.getDeviceIdFromMediaStreamTrack(tracks[0]);
+                        if (activeDeviceId) {
+                            activeDeviceIndex = availableDevices.findIndex(x => x.deviceId === activeDeviceId)
+                        }
+                    }
+
+                    resolve({
+                        stream: stream,
+                        activeDeviceIndex: activeDeviceIndex
+                    })
+                })
+                .catch(err => {
+                    reject(err.message || err);
+                })
+        });
+    }
+
+    /**
+     * Turns on the torch (flashlight) of the device if available.
+     * 
+     * @param stream The media stream containing video tracks.
+     * @returns A promise that resolves to true if the torch was successfully turned on, or false if there was an error or no video tracks were found.
+     */
+    turnOnTorch(stream: MediaStream): Promise<boolean> {
+        return new Promise(resolve => {
+            const videoTracks = stream.getVideoTracks();
+            if (videoTracks.length > 0) {
+                try {
+                    // Apply constraints to turn on the torch.
+                    videoTracks[0].applyConstraints({
+                        advanced: [{ torch: true } as MediaTrackConstraints]
+                    });
+                    resolve(true); // Resolve promise with true indicating success.
+                } catch (error: any) {
+                    console.error(error.message || error); // Log any errors encountered.
+                    resolve(false); // Resolve promise with false indicating failure.
+                }
+            } else {
+                resolve(true); // Resolve promise with true if no video tracks were found.
+            }
+        });
+    }
+
+    /**
+     * Turns off the torch (flashlight) of the device if available.
+     * 
+     * @param stream The media stream containing video tracks.
+     * @returns A promise that resolves to true if the torch was successfully turned off, or false if there was an error or no video tracks were found.
+     */
+    turnOffTorch(stream: MediaStream): Promise<boolean> {
+        return new Promise(resolve => {
+            const videoTracks = stream.getVideoTracks();
+            if (videoTracks.length > 0) {
+                try {
+                    // Apply constraints to turn off the torch.
+                    videoTracks[0].applyConstraints({
+                        advanced: [{ torch: false } as MediaTrackConstraints]
+                    });
+                    resolve(true); // Resolve promise with true indicating success.
+                } catch (error: any) {
+                    console.error(error.message || error); // Log any errors encountered.
+                    resolve(false); // Resolve promise with false indicating failure.
+                }
+            } else {
+                resolve(true); // Resolve promise with true if no video tracks were found.
+            }
+        });
+    }
+
+
+    /**
+     * Get Output mimetype for the video recorder
+     */
+    private getOutputMimetype(): string {
+        if (MediaRecorder.isTypeSupported('video/mp4')) {
+            return 'video/mp4';
+        } else if (MediaRecorder.isTypeSupported('video/x-matroska')) {
+            return 'video/x-matroska';
+        } else if (MediaRecorder.isTypeSupported('video/3gp')) {
+            return 'video/3gp';
+        } else if (MediaRecorder.isTypeSupported('video/quicktime')) {
+            return 'video/quicktime';
+        } else {
+            return 'video/webm';
+        }
     }
 
     /**
@@ -257,8 +227,17 @@ export class RecordingService {
      * @param mimeType The MIME type of the file.
      * @returns The generated filename.
      */
-    private filename(mimeType: string): string {
+    getFilename(mimeType: string): string {
         const extension = this.getFileExtensionFromMimeType(mimeType);
         return 'Recording-' + Date.now() + extension;
+    }
+
+    setupRecorder(stream: MediaStream, onData: (blob: BlobEvent) => void, onStart: () => void, onStop: () => void): MediaRecorder {
+        const recorder = new MediaRecorder(stream, { mimeType: this.getOutputMimetype() });
+        recorder.onstart = (_e) => { onStart(); }
+        recorder.onstop = (_e) => { onStop(); }
+        recorder.ondataavailable = (event: BlobEvent) => { onData(event) }
+
+        return recorder;
     }
 }

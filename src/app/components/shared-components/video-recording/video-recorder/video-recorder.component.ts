@@ -1,143 +1,258 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit, Output, EventEmitter, NgZone, Input } from '@angular/core';
-import { RecordingService } from '../service/video-recorder.service';
-import { Assets } from '../../../../models/assets.model';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { VideoRecorderService } from '../service/video-recorder.service';
+import { Assets } from '../models/assets.model';
+import { FileInformation } from '../models/file-info.model';
 
 @Component({
-    selector: 'video-recorder',
+    selector: 'ca-video-recorder',
     templateUrl: './video-recorder.component.html',
-    styleUrls: ['./video-recorder.component.css']
+    styleUrls: ['./video-recorder.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VideoRecorderComponent implements AfterViewInit, OnDestroy {
-    protected Assets = Assets;
-    @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
-    @ViewChild('videoCanvas') canvasElement!: ElementRef<HTMLCanvasElement>;
+export class VideoRecorderComponent implements OnInit, OnDestroy {
 
-    recordingService?: RecordingService;
-    @Input() duration: number = 300;
-    @Input() maxSize: number = 200;
-    @Output() recordCompleted: EventEmitter<File> = new EventEmitter();
-    @Output() cancel: EventEmitter<string | undefined> = new EventEmitter();
+    constructor(private cdr: ChangeDetectorRef) { }
 
-    protected stopCanvasRendering = false;
-    protected elapsedTime: number = 0;
-    private timerInterval: any;
+    private videoService: VideoRecorderService = new VideoRecorderService();
 
-    constructor(private zone: NgZone) { }
-    ngAfterViewInit(): void {
-        this.displayVideoPreview();
-
-        setTimeout(() => { this.startRecording() }, 10);
-    }
-
-    ngOnDestroy() {
-        this.recordingService?.clearRecording();
-    }
-
-    protected isRecording: boolean = false;
-    protected isPaused: boolean = false;
-
-
-    protected async onFileReady(file: File) {
-        this.recordingService = undefined;
-        this.zone.run(() => {
-            this.recordCompleted.next(file)
-        })
-    }
-
-    protected async startRecording() {
-        this.recordingService = new RecordingService();
-        this.recordingService.onVideoReady.subscribe(file => {
-            this.onFileReady(file);
-
-        })
-        this.elapsedTime = 0;
-        this.recordingService?.startRecording(this.duration, this.maxSize).then(() => {
-            this.isRecording = true;
-            this.isPaused = false;
-            this.displayVideoPreview();
-            this.playVideo();
-            this.startTimer();
-        }).catch(reason => {
-            this.cancel.next(reason)
-        })
-
-    }
-
-    protected stopRecording() {
-        this.stopCanvasRendering = true;
-        clearInterval(this.timerInterval);
-        this.recordingService?.stopRecording()
-            .then(() => {
-                this.pauseVideo();
-                this.isRecording = false;
-                this.isPaused = false;
+    protected startCamera(deviceId?: string) {
+        if (this.stream)
+            this.stopCamera(this.stream);
+        const tempId = deviceId ? deviceId : this.devices[0].deviceId
+        this.videoService.initiateWebcam(this.devices, tempId)
+            .then(result => {
+                this.isCameraRunning = true;
+                this.activeDeviceIndex = result.activeDeviceIndex;
+                this.isBackcamera = !this.devices[this.activeDeviceIndex].label.toLowerCase().includes('front');
+                if (this.videoLive) {
+                    this.videoLive.nativeElement.srcObject = result.stream
+                    this.videoLive.nativeElement.muted = true;
+                    this.videoLive.nativeElement.play();
+                }
+                this.stream = result.stream;
+                this.cdr.detectChanges();
             })
             .catch(reason => {
-                this.cancel.next(reason)
-            });
-
+                this.error$.next(reason);
+                this.isCameraRunning = false;
+                this.cdr.detectChanges();
+            })
     }
 
-    protected pauseRecording() {
-        this.recordingService?.pauseRecording();
-        clearInterval(this.timerInterval);
-        this.pauseVideo();
-        this.isRecording = true;
-        this.isPaused = true;
+    protected startRecording2() {
+        if (!this.stream) { return; }
+        this.startRecording(this.stream);
     }
 
-    protected resumeRecording() {
-        this.recordingService?.resumeRecording();
-        this.startTimer();
-        this.playVideo();
-        this.isRecording = true;
-        this.isPaused = false;
-    }
 
-    protected displayVideoPreview() {
-        const videoElement: HTMLVideoElement = this.videoElement.nativeElement;
-        videoElement.muted = true;
-        const stream = this.recordingService?.getStream()
-        if (stream) {
-            videoElement.srcObject = stream;
-            this.stopCanvasRendering = false;
-            this.processVideoFrames(videoElement, this.canvasElement.nativeElement)
+    protected stopRecording2() {
+        if (this.stream) {
+            if (this.recorder)
+                this.stopRecording(this.recorder);
+            this.stopCamera(this.stream);
+            this.recorder = undefined;
         }
     }
 
-    private processVideoFrames(videoElement: HTMLVideoElement, canvasElement: HTMLCanvasElement) {
-        const context = canvasElement.getContext('2d');
-        const processFrame = () => {
-            if (context && !videoElement.paused && !videoElement.ended) {
-                canvasElement.width = videoElement.videoWidth;
-                canvasElement.height = videoElement.videoHeight;
-                context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-                // Perform processing or analysis on the canvas image data
-                // For example, you can use libraries like TensorFlow.js for machine learning tasks
+    private stopRecording(recorder: MediaRecorder) {
+        this.isReplaying = this.allowReplay;
+        recorder.stop();
+        this.cdr.detectChanges();
+    }
+
+
+    protected onVideoDataRecived(event: BlobEvent) {
+        this.processRecordedBytes(event.data);
+    }
+
+    private processRecordedBytes(blob: Blob) {
+        if (blob && blob.size > 0) { this.recordedBlobParts.push(blob); this.recordedBlobSize += blob.size; if (this.recordedBlobSize >= this.maxSizeinByte) { this.stopRecording2(); } }
+    }
+
+    protected onVideoStarted() {
+        this.recordingTimer = setInterval(() => {
+            this.recorder?.requestData();
+
+            this.timeElapsed += 1;
+            if (this.timeElapsed > this.maxDurationInSec) {
+                this.stopRecording2();
             }
-            if (!this.stopCanvasRendering)
-                requestAnimationFrame(processFrame);
-        };
-        if (!this.stopCanvasRendering)
-            requestAnimationFrame(processFrame);
-    }
-
-    protected playVideo() {
-        const videoElement: HTMLVideoElement = this.videoElement.nativeElement;
-        if (videoElement) { videoElement.play(); }
-    }
-
-    protected pauseVideo() {
-        const videoElement: HTMLVideoElement = this.videoElement.nativeElement;
-        if (videoElement) { videoElement.pause(); }
-    }
-
-    protected startTimer() {
-        this.timerInterval = setInterval(() => {
-            this.elapsedTime++;
+            this.cdr.detectChanges();
         }, 1000);
     }
 
+
+    protected recordedBlob?: FileInformation;
+
+    protected onVideoStopped() {
+        if (this.recordingTimer) clearInterval(this.recordingTimer);
+        this.timeElapsed = 0;
+        if (this.isRecording) {
+            console.log('I am here')
+            this.processRecordedBlobs().then(data => {
+                if (this.isReplaying && this.videoRecorded) {
+                    this.videoRecorded.nativeElement.srcObject = null;
+                    this.videoRecorded.nativeElement.src = URL.createObjectURL(data.data);
+                    this.videoRecorded.nativeElement.muted = false;
+                    this.cdr.detectChanges();
+                }
+
+                this.recordedBlob = data;
+            }).catch(error => {
+                this.error$.next(error.message || error);
+                this.cdr.detectChanges();
+            })
+        }
+        this.isRecording = false;
+        this.cdr.detectChanges();
+    }
+
+    private processRecordedBlobs(): Promise<FileInformation> {
+        return new Promise((resolve, reject) => {
+            if (this.recordedBlobParts.length > 0) {
+                const mimeType = this.recordedBlobParts[0].type;
+                const blob = new Blob(this.recordedBlobParts, { type: mimeType });
+                this.recordedBlobParts = [];
+                this.recordedBlobSize = 0;
+                resolve(new FileInformation(this.videoService.getFilename(mimeType), blob));
+            } else {
+                reject('Recording Failed');
+            }
+        })
+
+    }
+
+    private startRecording(stream: MediaStream) {
+        this.recordedBlob = undefined;
+        this.turnOnOffTorch(stream, this.isFlashOn);
+        this.timeElapsed = 0;
+        if (this.videoLive) {
+            this.videoLive.nativeElement.muted = true;
+            this.videoLive.nativeElement.srcObject = stream;
+            this.videoLive.nativeElement.play();
+            this.cdr.detectChanges();
+        }
+
+        const recorder = this.videoService.setupRecorder(stream, this.onVideoDataRecived.bind(this), this.onVideoStarted.bind(this), this.onVideoStopped.bind(this));
+        this.recorder = recorder;
+        recorder.start();
+        this.isRecording = true;
+        this.isReplaying = false;
+        this.cdr.detectChanges();
+    }
+
+    protected switchCamera() {
+        const newIndex = ((this.activeDeviceIndex + 1) % this.devices.length);
+
+        this.startCamera(this.devices[newIndex].deviceId);
+    }
+
+    protected turnOnOffTorch2(turnOn: boolean) {
+        if (this.stream) { this.turnOnOffTorch(this.stream, turnOn); }
+    }
+
+    private turnOnOffTorch(stream: MediaStream, turnOn: boolean) {
+        if (this.isMobileDevice) {
+            if (turnOn) {
+                this.videoService.turnOnTorch(stream).then(success => { if (success) { this.isFlashOn = true; this.cdr.detectChanges(); } })
+            } else {
+                this.videoService.turnOffTorch(stream).then(success => { if (success) { this.isFlashOn = false; this.cdr.detectChanges(); } })
+            }
+        }
+    }
+
+    private stopCamera(stream: MediaStream) {
+        if (!this.isCameraRunning) { return; }
+        this.turnOnOffTorch(stream, false);
+        this.videoService.stopMediaTracks(stream);
+        if (this.videoLive) {
+            this.videoLive.nativeElement.srcObject = null;
+        }
+        this.stream = undefined;
+        this.isCameraRunning = false;
+        this.cdr.detectChanges();
+    }
+
+    protected onCancelRecording() {
+        this.isRecording = false;
+        this.stopRecording2();
+        this.cdr.detectChanges();
+        this.recordingCanceled.emit();
+
+    }
+
+    ngOnDestroy(): void {
+        this.isRecording = false;
+        this.stopRecording2();
+        this.recordedBlobParts = [];
+        this.recordedBlobSize = 0;
+    }
+
+    protected devices: MediaDeviceInfo[] = []
+    protected error$: BehaviorSubject<string | undefined> = new BehaviorSubject<string | undefined>(undefined);
+    private stream: MediaStream | undefined = undefined;
+    private recorder: MediaRecorder | undefined = undefined;
+    private recordedBlobParts: Blob[] = []
+    private recordedBlobSize: number = 0;
+
+    ngOnInit(): void {
+        this.videoService.getAvailableDevices().then(devices => {
+            this.devices = devices;
+            this.allowSwitchingCamera = devices.length > 1;
+            this.error$.next(undefined);
+            this.startCamera();
+            this.cdr.detectChanges();
+        }
+        ).catch(reason => {
+            this.allowSwitchingCamera = false;
+            console.error(reason);
+            this.devices = [];
+            this.error$.next(reason);
+            this.cdr.detectChanges();
+        })
+    }
+
+    protected onSubmitFile() {
+        if (this.recordedBlob) { this.recordCompleted.next(this.recordedBlob); }
+    }
+
+    protected tryAgain() {
+        if (this.devices.length > this.activeDeviceIndex) {
+            this.isReplaying = false;
+            this.isRecording = false;
+            const deviceId = this.devices[this.activeDeviceIndex].deviceId;
+            this.startCamera(deviceId);
+        }
+    }
+
+    protected recordingTimer: NodeJS.Timeout | undefined = undefined;
+    protected activeDeviceIndex: number = 0;
+    protected isCameraRunning = false;
+    protected Assets = Assets;
+    protected isFlashOn: boolean = false;
+    protected isRecording: boolean = false;
+    protected timeElapsed: number = 0;
+
+    protected isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    protected isReplaying: boolean = false;
+    protected allowSwitchingCamera = false;
+    protected isBackcamera = false;
+
+    @ViewChild('videoLive') videoLive: ElementRef<HTMLVideoElement> | undefined = undefined;
+    @ViewChild('videoRecorded') videoRecorded: ElementRef<HTMLVideoElement> | undefined = undefined;
+
+    private maxSizeinByte: number = 200000000;
+    private _maxSizeInMb: number = 200;
+    @Input()
+    get maxSizeInMb(): number { return this._maxSizeInMb; }
+    set maxSizeInMb(value: number) { this._maxSizeInMb = value; this.maxSizeinByte = value * 1024 * 1024; }
+    @Input() maxDurationInSec: number = 600;
+
+    @Input() allowReplay = true;
+
+    @Output() recordCompleted = new EventEmitter<FileInformation>()
+    @Output() recordingCanceled = new EventEmitter<void>()
 
 }

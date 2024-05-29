@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { VideoRecorderComponent } from './video-recorder/video-recorder.component';
 import { SecondsToTimePipe } from '../../../pipes/second-to-timestring.pipe';
+import { TimeSpanComponent } from './time-span.component';
+import { VideoRecorderComponent } from './video-recorder/video-recorder.component';
 @NgModule({
-    declarations: [VideoRecorderComponent],
+    declarations: [VideoRecorderComponent, TimeSpanComponent],
     imports: [CommonModule, SecondsToTimePipe],
     exports: [VideoRecorderComponent]
 
