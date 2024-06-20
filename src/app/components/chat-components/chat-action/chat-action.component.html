@@ -54,7 +54,7 @@
             </ng-container>
         </div>
         <ng-container
-            *ngIf="action.ActionType !== ChatActionTypes.ShowRecord && action.ActionType !== ChatActionTypes.ShowRecords">
+            *ngIf="(action.ActionType !== ChatActionTypes.ShowRecord && action.ActionType !== ChatActionTypes.ShowRecords) || !action.IsOptional">
             <span (click)="onSubmitReply('SKIP')" class="skip-button"
                 style="flex: 0 1 auto; padding: 0 8px; box-sizing: border-box;">SKIP</span>
         </ng-container>

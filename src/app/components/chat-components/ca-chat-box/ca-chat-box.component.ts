@@ -124,7 +124,7 @@ export class CaChatBoxComponent {
 
         this.action = messages.length ? messages[messages.length - 1].action : undefined;;
         if (this.action) {
-            this.allowChatInput = this.action.ActionType === EnumChatActionTypes.ShowRecord || this.action.ActionType === EnumChatActionTypes.ShowRecords
+            this.allowChatInput = this.action.ActionType === EnumChatActionTypes.ShowRecord || this.action.ActionType === EnumChatActionTypes.ShowRecords || this.action.IsOptional
         } else {
             this.allowChatInput = true;
         }

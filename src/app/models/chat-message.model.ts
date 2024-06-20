@@ -158,6 +158,7 @@ export interface ChatUIActionData {
     ActionListAttributes?: ActionListAttributes;
     CaptureImageDataAttributes?: ActionImageDataAttributes;
     ReadPinCodeAttributes?: ActionReadPinAttributes;
+    IsOptional: boolean;
 }
 
 export interface ChatResponseStream {
