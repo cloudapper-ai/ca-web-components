@@ -5,7 +5,7 @@ import { BehaviorSubject } from "rxjs";
 import { ChatConstants } from "../../../models/chat-constants.model";
 import { ActionAttachmentAttributes, ActionImageDataAttributes, ActionReadPinAttributes, ActionScheduleAttributes, ChatMessage, EnumChatMessagePreviewType } from "../../../models/chat-message.model";
 import { ChatColorProfile } from "../../../models/chat-ui.model";
-import { isVimeoLink, isYouTubeLink, getFileExtension, isAnImage, isAVideo, VideoFile, isAnAudio, AudioFile, isAPDF, PdfFile, isADocument, DocFile, isAnHtml, HtmlFile, getVimeoEmbedUrl, getYoutubeEmbedUrl, isValidYouTubeLink } from "../../../helpers/attachment-helpers.helper";
+import { isVimeoLink, isYouTubeLink, getFileExtension, isAnImage, getVimeoEmbedUrl, getYoutubeEmbedUrl, isValidYouTubeLink } from "../../../helpers/attachment-helpers.helper";
 import { RESULT } from "../../../models/result.model";
 import { Assets } from "../../../models/assets.model";
 import { FileInformation } from "../../../models/file-data.model";
@@ -44,6 +44,7 @@ export class ChatItemComponent implements OnInit {
         };
 
         this.mdService.renderer.link = (href: string, title: string, text: string) => {
+            const ext = getFileExtension(href);
             if (isVimeoLink(href)) {
                 return `
                             <div class="video-attachment">
@@ -54,9 +55,18 @@ export class ChatItemComponent implements OnInit {
             } else if (isYouTubeLink(href) && isValidYouTubeLink(href)) {
                 return `
                             <div class="video-attachment">
-                                <iframe src="${getYoutubeEmbedUrl(href)}" frameborder="0" allowfullscreen></iframe>
+                                <iframe src="${getYoutubeEmbedUrl(href)}" 
+                                 frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             </div>
-                        `
+                        `;
+            } else if (ext && isAnImage(ext)) {
+                return `
+                    <div class="linked-messages">
+                        <a target="_blank" href="${href}">
+                            <img src="${href}" alt="${text}" >
+                        </a>
+                    </div>
+                `;
             } else {
                 return `<a target="_blank" href=${href}>${title ?? text}</a>`
             }
