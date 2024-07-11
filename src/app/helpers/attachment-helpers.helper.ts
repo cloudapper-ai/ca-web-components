@@ -26,8 +26,8 @@ export function getVimeoEmbedUrl(url: string) {
 
 export function getYoutubeEmbedUrl(url: string): string {
     const videoId = getYoutubeId(url);
-
-    return 'https://www.youtube.com/embed/' + videoId;
+    const embedUrl = 'https://www.youtube.com/embed/' + videoId;
+    return embedUrl;
 }
 
 export function getFileExtension(url: string): string | null {

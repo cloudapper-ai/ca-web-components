@@ -1,4 +1,4 @@
-import { ApplicationRef, DoBootstrap, Injector, NgModule } from '@angular/core';
+import { ApplicationRef, DoBootstrap, Injector, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -42,7 +42,7 @@ import { FaceCameraLibComponent } from './components/shared-components/face-came
     FaceCameraLibComponent,
     VideoRecordingModule,
     IframePreviewComponent,
-    MarkdownModule.forRoot(),
+    MarkdownModule.forRoot({ sanitize: SecurityContext.NONE }),
     ChoiceAttributePipe,
     AttachmentAttributePipe,
     GeoLocationAttributePipe,
@@ -52,7 +52,8 @@ import { FaceCameraLibComponent } from './components/shared-components/face-came
   ],
   providers: [
     { provide: TOKEN_FILE_SERVICE, useClass: FileDataService }
-  ]
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule implements DoBootstrap {
   constructor(injector: Injector) {
