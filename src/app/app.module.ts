@@ -52,8 +52,7 @@ import { FaceCameraLibComponent } from './components/shared-components/face-came
   ],
   providers: [
     { provide: TOKEN_FILE_SERVICE, useClass: FileDataService }
-  ],
-  bootstrap: [AppComponent]
+  ]
 })
 export class AppModule implements DoBootstrap {
   constructor(injector: Injector) {
