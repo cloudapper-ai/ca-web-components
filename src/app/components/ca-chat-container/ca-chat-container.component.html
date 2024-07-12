@@ -1,8 +1,0 @@
-<div class="chat-box-container" [style.--chat-box-primary-color]="initialParameter.windowColors.primaryColor"
-    [style.--chat-box-on-primary-color]="initialParameter.windowColors.onPrimaryColor"
-    [style.--suggestion-border-color]="botlabelcolor" [style.--suggestion-foreground-color]="bottextcolor"
-    [style.--suggestion-border-color-hover]="bottextcolor" [style.--suggestion-foreground-color-hover]="botlabelcolor">
-    <ca-chat-box #simplechatBox [initialParameters]="initialParameter" (userReplySubmitted)="onReceiveUserReply($event)"
-        (cancelUserRequest)="onCancelUserRequest()" (submitFileMessage)="onSubmitFileMessage($event)"
-        [allowMinimize]="false"></ca-chat-box>
-</div>
