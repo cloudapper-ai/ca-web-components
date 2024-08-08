@@ -74,9 +74,12 @@ export class ChatUploadComponent implements OnInit {
             if (invalidFileformat) {
                 this.setErrorMessage('The supported formats does not include this file format.')
             } else {
-                if (!this.filelist.find(x => x.file.name === file.name && x.file.type === file.type && x.file.size === file.size)) {
-                    this.filelist.push(new FileInformation(file));
+                if (!this.data.FileSubmissionCount || this.data.FileSubmissionCount > 0 && this.filelist.length < this.data.FileSubmissionCount) {
+                    if (!this.filelist.find(x => x.file.name === file.name && x.file.type === file.type && x.file.size === file.size)) {
+                        this.filelist.push(new FileInformation(file));
+                    }
                 }
+
             }
 
         }

@@ -83,6 +83,7 @@ export interface ActionAttachmentAttributes {
     MaxFileSizeInMb: number;
     SupportedFileTypes?: string; //mp4, mp3
     DurationInSec: number;
+    FileSubmissionCount: number;
 }
 
 export interface ActionChoiceAttributes {

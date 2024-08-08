@@ -71,7 +71,8 @@
 <div class="upload-container" [style.--primary-color]="primaryColor">
     <input type="file" #fileInput style="display: none;" (change)="onFileSelected($event)" [accept]="supportedFiles"
         multiple="multiple">
-    <ng-container *ngIf="!isUploading">
+    <ng-container
+        *ngIf="(!isUploading && !data.FileSubmissionCount) || (!isUploading && data.FileSubmissionCount > 0 && filelist.length < data.FileSubmissionCount)">
         <div class="file-upload" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
             <img [src]="Assets.Images.FileUpload" alt="Upload file icon" srcset="">
             <div>
