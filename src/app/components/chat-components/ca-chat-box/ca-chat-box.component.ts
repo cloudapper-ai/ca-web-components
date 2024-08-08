@@ -17,7 +17,7 @@ import { EnumFaceDirection } from '../../shared-components/face-camera-lib/lib-m
 })
 export class CaChatBoxComponent {
 
-    @Input() initialParameters: ChatBoxInputs = new ChatBoxInputs('CloudApper AI', 'user0123', 'AI Assistant', new ChatWindowColorProfile('#1960d1', '#ffffff', '#f2f2f2'), {}, false)
+    @Input() initialParameters: ChatBoxInputs = new ChatBoxInputs('CloudApper AI', 'Powered by CloudApper AI', 'user0123', 'AI Assistant', new ChatWindowColorProfile('#1960d1', '#ffffff', '#f2f2f2'), {}, false)
 
     addWarningfromBot(id: string, message: string) {
         const chatMessage = new ChatMessage(id, ChatConstants.BotId, message);

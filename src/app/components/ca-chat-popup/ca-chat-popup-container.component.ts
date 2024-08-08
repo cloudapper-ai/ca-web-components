@@ -144,6 +144,11 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
     get title(): string { return this._title; }
     set title(value: string) { this._title = value; this.initialParameter.title = value; }
 
+    private _subtitle: string = 'CloudApper AI'
+    @Input()
+    get subtitle(): string { return this._subtitle; }
+    set subtitle(value: string) { this._subtitle = value; this.initialParameter.subtitle = value; }
+
     private _userName: string = 'user123'
     @Input()
     get username(): string { return this._userName; }
@@ -228,6 +233,7 @@ export class ChatPopupContainerComponent implements AfterViewInit, OnChanges {
 
     protected initialParameter: ChatBoxInputs = new ChatBoxInputs(
         'CloudApper AI',
+        'Powered by CloudApper AI',
         'user0123',
         'AI Assistant',
         new ChatWindowColorProfile('#1960d1', '#ffffff', '#FFFFFF'),
