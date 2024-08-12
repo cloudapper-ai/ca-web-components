@@ -106,7 +106,8 @@
                 </div>
             </ng-container>
 
-            <ng-container *ngIf="!isUploading">
+            <ng-container
+                *ngIf="(!isUploading && !data.FileSubmissionCount) || (!isUploading && data.FileSubmissionCount === filelist.length)">
                 <div class="upload-button" (click)="onSubmitFile()">
                     Upload
                 </div>
