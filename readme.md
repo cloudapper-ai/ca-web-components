@@ -24,7 +24,7 @@ With CloudApper AI Public Chat-box, businesses can easily integrate the chatbot 
 	<!--
 		Add this line inside the body tag after putting chat-container element.
 	-->
-	<script src="https://cdn.jsdelivr.net/gh/cloudapperinc/ca-web-components@1.0.12/dist/ca-chat-container.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/cloudapperinc/ca-web-components@1.6.75/dist/ca-chat-container.min.js?v=1.6.75"></script>
 
 	<script>
 		const chatContainer = document.getElementById('chatContainer')
